@@ -7,14 +7,14 @@
 package org.hibernate.ogm.datastore.mongodb.type.impl;
 import org.hibernate.ogm.datastore.mongodb.type.AbstractGeoJsonObject;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
+import org.hibernate.type.descriptor.java.AbstractClassJavaType;
 
 /**
  * Base type descriptor for GeoJSON objects.
  *
  * @author Guillaume Smet
  */
-abstract class AbstractGeoJsonObjectTypeDescriptor<T extends AbstractGeoJsonObject> extends AbstractTypeDescriptor<T> {
+abstract class AbstractGeoJsonObjectTypeDescriptor<T extends AbstractGeoJsonObject> extends AbstractClassJavaType<T> {
 
 	protected AbstractGeoJsonObjectTypeDescriptor(Class<T> type) {
 		super( type );
@@ -26,7 +26,7 @@ abstract class AbstractGeoJsonObjectTypeDescriptor<T extends AbstractGeoJsonObje
 	}
 
 	@Override
-	public T fromString(String string) {
+	public T fromString(CharSequence string) {
 		throw new UnsupportedOperationException( "Converting a string to a " + getJavaTypeClass().getSimpleName() + " is not supported." );
 	}
 

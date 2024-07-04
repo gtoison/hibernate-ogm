@@ -12,6 +12,7 @@ import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
 import org.hibernate.type.descriptor.java.LocalTimeJavaDescriptor;
+import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 
 /**
  * Uses a {@link TimeGridTypeDescriptor} instead of {@link PassThroughGridTypeDescriptor},
@@ -23,7 +24,7 @@ public class LocalTimeType extends AbstractGenericBasicType<LocalTime> {
 	public static final LocalTimeType INSTANCE = new LocalTimeType();
 
 	public LocalTimeType() {
-		super( TimeGridTypeDescriptor.INSTANCE, LocalTimeJavaDescriptor.INSTANCE );
+		super( TimeGridTypeDescriptor.INSTANCE, LocalTimeJavaType.INSTANCE );
 	}
 
 	@Override

@@ -66,8 +66,8 @@ public abstract class ClusteredCounterHandler {
 	}
 
 	private void validateGlobalConfiguration() {
-		boolean globalConfigIsEnabled = cacheManager.getGlobalComponentRegistry()
-			.getGlobalConfiguration().globalState()
+		boolean globalConfigIsEnabled = cacheManager.getCacheManagerConfiguration()
+			.globalState()
 			.enabled();
 
 		if ( !globalConfigIsEnabled ) {

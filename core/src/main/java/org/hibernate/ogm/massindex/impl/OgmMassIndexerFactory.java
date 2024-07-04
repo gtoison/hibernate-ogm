@@ -10,8 +10,8 @@ import java.util.Properties;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.dialect.spi.GridDialect;
-import org.hibernate.search.MassIndexer;
 import org.hibernate.search.batchindexing.spi.MassIndexerFactory;
+import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.spi.SearchIntegrator;
 
 /**

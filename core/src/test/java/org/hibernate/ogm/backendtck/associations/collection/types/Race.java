@@ -10,11 +10,12 @@ package org.hibernate.ogm.backendtck.associations.collection.types;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.IntegerTypeDescriptor;
+import org.hibernate.type.descriptor.java.IntegerJavaType;
 
 /**
  * Represents an Integer type
@@ -20,7 +20,7 @@ public class IntegerType extends AbstractGenericBasicType<Integer> {
 	public static final IntegerType INSTANCE = new IntegerType();
 
 	public IntegerType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, IntegerTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, IntegerJavaType.INSTANCE );
 	}
 
 	@Override

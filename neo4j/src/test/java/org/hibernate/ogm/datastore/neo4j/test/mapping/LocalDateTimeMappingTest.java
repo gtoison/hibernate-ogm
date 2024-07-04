@@ -15,7 +15,6 @@ import java.time.Month;
 import org.hibernate.ogm.backendtck.type.datetime.LocalDateEntity;
 import org.hibernate.ogm.backendtck.type.datetime.LocalTimeEntity;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

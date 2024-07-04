@@ -12,11 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.infinispan.commons.marshall.AdvancedExternalizer;
-import org.jboss.marshalling.Marshaller;
-import org.jboss.marshalling.MarshallerFactory;
+import org.infinispan.commons.marshall.Marshaller;
+import org.infinispan.factories.MarshallerFactory;
 import org.jboss.marshalling.Marshalling;
 import org.jboss.marshalling.MarshallingConfiguration;
-import org.jboss.marshalling.Unmarshaller;
+
+import jakarta.xml.bind.Unmarshaller;
 
 /**
  * Helper for externalizer tests. Uses the "River" serialization protocol.

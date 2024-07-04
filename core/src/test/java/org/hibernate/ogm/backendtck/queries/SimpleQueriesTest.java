@@ -23,9 +23,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.persistence.PersistenceException;
-import javax.persistence.TemporalType;
-
 import org.hamcrest.core.CombinableMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.hibernate.FlushMode;
@@ -46,6 +43,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.TemporalType;
 
 /**
  * @author Sanne Grinovero &lt;sanne@hibernate.org&gt; (C) 2012 Red Hat Inc.

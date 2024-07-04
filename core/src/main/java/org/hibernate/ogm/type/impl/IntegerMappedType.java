@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.IntegerMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.IntegerTypeDescriptor;
+import org.hibernate.type.descriptor.java.IntegerJavaType;
 
 /**
  * The value must be representable using an {@link Integer}.
@@ -21,7 +21,7 @@ public class IntegerMappedType extends AbstractGenericBasicType<Integer> {
 	public static final IntegerMappedType INSTANCE = new IntegerMappedType();
 
 	public IntegerMappedType() {
-		super( IntegerMappedGridTypeDescriptor.INSTANCE, IntegerTypeDescriptor.INSTANCE );
+		super( IntegerMappedGridTypeDescriptor.INSTANCE, IntegerJavaType.INSTANCE );
 	}
 
 	@Override

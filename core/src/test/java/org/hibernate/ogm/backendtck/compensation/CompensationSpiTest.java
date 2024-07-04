@@ -16,8 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceException;
 
 import org.hibernate.Transaction;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -44,12 +42,14 @@ import org.hibernate.ogm.utils.GridDialectType;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestHelper;
-
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
 
 /**
  * Tests around the error compensation SPI.

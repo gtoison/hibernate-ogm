@@ -10,7 +10,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.WrappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.FloatTypeDescriptor;
+import org.hibernate.type.descriptor.java.FloatJavaType;
 
 /**
  * Represents a Float type
@@ -21,7 +21,7 @@ public class FloatType extends AbstractGenericBasicType<Float> {
 	public static FloatType INSTANCE = new FloatType();
 
 	public FloatType() {
-		super( WrappedGridTypeDescriptor.INSTANCE, FloatTypeDescriptor.INSTANCE );
+		super( WrappedGridTypeDescriptor.INSTANCE, FloatJavaType.INSTANCE );
 	}
 
 	@Override

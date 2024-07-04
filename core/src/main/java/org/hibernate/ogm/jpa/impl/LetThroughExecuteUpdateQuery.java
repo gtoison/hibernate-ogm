@@ -11,13 +11,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
 
 import org.hibernate.ogm.exception.NotSupportedException;
+
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.Query;
+import jakarta.persistence.TemporalType;
 
 /**
  * Let through executeUpdate() operations and raise not supported exceptions otherwise

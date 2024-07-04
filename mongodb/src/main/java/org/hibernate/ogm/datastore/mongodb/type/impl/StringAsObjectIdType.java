@@ -8,7 +8,7 @@ package org.hibernate.ogm.datastore.mongodb.type.impl;
 
 import org.bson.types.ObjectId;
 import org.hibernate.annotations.Type;
-import org.hibernate.type.StringType;
+import org.hibernate.type.descriptor.java.StringJavaType;
 
 /**
  * A Hibernate ORM type (i.e. no grid type) used for storing {@code String}s as {@link ObjectId} in MongoDB. It is
@@ -17,7 +17,7 @@ import org.hibernate.type.StringType;
  *
  * @author Gunnar Morling
  */
-public class StringAsObjectIdType extends StringType {
+public class StringAsObjectIdType extends StringJavaType {
 
 	public StringAsObjectIdType() {
 	}

@@ -13,13 +13,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.PersistenceException;
-import javax.persistence.RollbackException;
-import javax.persistence.Table;
-
 import org.hibernate.Session;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.datastore.neo4j.dialect.impl.NodeLabel;
@@ -33,6 +26,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.Label;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.RollbackException;
+import jakarta.persistence.Table;
 
 
 /**

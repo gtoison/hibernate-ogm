@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.options.writeconcern;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.ogm.datastore.mongodb.options.WriteConcern;
 import org.hibernate.ogm.datastore.mongodb.options.WriteConcernType;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

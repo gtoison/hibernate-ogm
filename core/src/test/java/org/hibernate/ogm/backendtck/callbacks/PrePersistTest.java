@@ -10,12 +10,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 public class PrePersistTest extends OgmJpaTestCase {
 

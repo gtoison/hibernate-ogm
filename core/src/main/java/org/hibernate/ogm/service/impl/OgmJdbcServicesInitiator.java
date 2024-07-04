@@ -17,12 +17,13 @@ import org.hibernate.engine.jdbc.env.spi.ExtractedDatabaseMetaData;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.internal.JdbcServicesImpl;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
-import org.hibernate.engine.jdbc.spi.ResultSetWrapper;
 import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.hibernate.engine.jdbc.spi.SqlStatementLogger;
 import org.hibernate.service.spi.Configurable;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
+import org.hibernate.sql.ast.spi.ParameterMarkerStrategy;
+import org.hibernate.sql.exec.spi.JdbcSelectExecutor;
 
 /**
  * Return a JdbcServicesImpl that does not access the underlying database
@@ -45,6 +46,11 @@ public class OgmJdbcServicesInitiator implements StandardServiceInitiator<JdbcSe
 	private static final class OgmJdbcServicesImpl implements JdbcServices, ServiceRegistryAwareService, Configurable {
 		public JdbcServicesImpl delegate = new JdbcServicesImpl();
 
+		@Override
+		public JdbcSelectExecutor getJdbcSelectExecutor() {
+			return new OgmJdbcSelectExecutorImpl();
+		}
+		
 		@Override
 		public void configure(Map configurationValues) {
 			configurationValues.put( "hibernate.temp.use_jdbc_metadata_defaults", Boolean.FALSE );
@@ -82,11 +88,6 @@ public class OgmJdbcServicesInitiator implements StandardServiceInitiator<JdbcSe
 		}
 
 		@Override
-		public ResultSetWrapper getResultSetWrapper() {
-			return delegate.getResultSetWrapper();
-		}
-
-		@Override
 		public JdbcEnvironment getJdbcEnvironment() {
 			return delegate.getJdbcEnvironment();
 		}
@@ -94,6 +95,11 @@ public class OgmJdbcServicesInitiator implements StandardServiceInitiator<JdbcSe
 		@Override
 		public JdbcConnectionAccess getBootstrapJdbcConnectionAccess() {
 			return delegate.getBootstrapJdbcConnectionAccess();
+		}
+
+		@Override
+		public ParameterMarkerStrategy getParameterMarkerStrategy() {
+			return delegate.getParameterMarkerStrategy();
 		}
 	}
 }

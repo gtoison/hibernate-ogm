@@ -8,44 +8,21 @@ package org.hibernate.ogm.query.impl;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 
-import org.hibernate.HibernateException;
-import org.hibernate.MappingException;
-import org.hibernate.QueryException;
-import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.engine.spi.TypedValue;
-import org.hibernate.event.spi.EventSource;
-import org.hibernate.hql.internal.ast.HqlParser;
-import org.hibernate.hql.internal.ast.HqlSqlWalker;
-import org.hibernate.hql.internal.ast.QueryTranslatorImpl.JavaConstantConverter;
-import org.hibernate.hql.internal.ast.tree.SelectClause;
-import org.hibernate.hql.internal.ast.util.NodeTraverser;
-import org.hibernate.hql.spi.QueryTranslator;
 import org.hibernate.internal.util.collections.BoundedConcurrentHashMap;
-import org.hibernate.loader.hql.QueryLoader;
-import org.hibernate.ogm.dialect.query.spi.BackendQuery;
 import org.hibernate.ogm.model.spi.EntityMetadataInformation;
-import org.hibernate.ogm.persister.impl.OgmEntityPersister;
 import org.hibernate.ogm.query.spi.QueryParserService;
 import org.hibernate.ogm.query.spi.QueryParsingResult;
-import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.query.spi.ScrollableResultsImplementor;
-import org.hibernate.type.EntityType;
-import org.hibernate.type.Type;
-
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
-import antlr.collections.AST;
+import org.hibernate.sql.ast.spi.AbstractSqlAstTranslator;
+import org.hibernate.sql.ast.tree.Statement;
+import org.hibernate.sql.ast.tree.select.SelectClause;
+import org.hibernate.sql.exec.spi.JdbcOperation;
 
 /**
  * A {@link QueryTranslator} which converts JP-QL queries into store-dependent native queries, e.g. Cypher queries for
@@ -58,13 +35,11 @@ import antlr.collections.AST;
  *
  * @author Gunnar Morling
  */
-public class OgmQueryTranslator extends LegacyParserBridgeQueryTranslator {
+public class OgmQueryTranslator<T extends JdbcOperation> extends AbstractSqlAstTranslator<T> {
 
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
-	private final String query;
-	private final SessionFactoryImplementor sessionFactory;
-	private final Map<?, ?> filters;
+	private final Statement statement;
 
 	private final QueryParserService queryParser;
 
@@ -92,169 +67,17 @@ public class OgmQueryTranslator extends LegacyParserBridgeQueryTranslator {
 	 */
 	private final ConcurrentMap<CacheKey, QueryParsingResult> queryCache;
 
-	public OgmQueryTranslator(SessionFactoryImplementor sessionFactory, QueryParserService queryParser, String queryIdentifier, String query, Map<?, ?> filters) {
-		super( sessionFactory, queryIdentifier, query, filters );
-
+	public OgmQueryTranslator(SessionFactoryImplementor sessionFactory, QueryParserService queryParser, Statement statement) {
+		super( sessionFactory, statement );
+		
 		this.queryParser = queryParser;
-		this.query = query;
-		this.sessionFactory = sessionFactory;
-		this.filters = filters;
+		this.statement = statement;
 
 		queryCache = new BoundedConcurrentHashMap<CacheKey, QueryParsingResult>(
 				100,
 				20,
 				BoundedConcurrentHashMap.Eviction.LIRS
 		);
-	}
-
-	@Override
-	protected void doCompile(Map replacements, boolean shallow) throws QueryException, MappingException {
-		try {
-			// Unfortunately, we cannot obtain the select clause from the delegate, so we need to parse it again
-			selectClause = getSelectClause( replacements, null );
-			Type[] queryReturnTypes = selectClause.getQueryReturnTypes();
-			singleEntityMetadataInformation = determineSingleEntityInformation( queryReturnTypes );
-		}
-		catch ( Exception qse ) {
-			throw log.querySyntaxException( qse, query );
-		}
-
-		if ( queryParser.supportsParameters() ) {
-			loader = getLoader( null );
-		}
-	}
-
-	@Override
-	public List<?> list(SharedSessionContractImplementor session, QueryParameters queryParameters) throws HibernateException {
-		OgmQueryLoader loaderToUse = loader != null ? loader : getLoader( queryParameters );
-		return loaderToUse.list( session, queryParameters );
-	}
-
-	private <T> OgmQueryLoader getLoader(QueryParameters queryParameters) {
-		QueryParsingResult queryParsingResult = queryParameters != null
-				? getQuery( queryParameters )
-				: queryParser.parseQuery( sessionFactory, query );
-
-		BackendQuery<T> query = new BackendQuery<T>( (T) queryParsingResult.getQueryObject(), singleEntityMetadataInformation );
-
-		return new OgmQueryLoader( delegate, sessionFactory, selectClause, query, queryParsingResult.getColumnNames() );
-	}
-
-	/**
-	 * Determine the relevant information for the entity type selected by this query or {@code null} in case this
-	 * query does not select exactly one entity type (e.g. in case of scalar values or joins (if supported in future revisions)).
-	 * @param queryReturnTypes
-	 */
-	private EntityMetadataInformation determineSingleEntityInformation(Type[] queryReturnTypes) {
-		EntityMetadataInformation metadataInformation = null;
-
-		for ( Type queryReturn : queryReturnTypes ) {
-			if ( queryReturn instanceof EntityType ) {
-				if ( metadataInformation != null ) {
-					return null;
-				}
-				EntityType rootReturn = (EntityType) queryReturn;
-				OgmEntityPersister persister = (OgmEntityPersister) sessionFactory.getMetamodel().entityPersister( rootReturn.getName() );
-				metadataInformation = new EntityMetadataInformation( persister.getEntityKeyMetadata(), rootReturn.getReturnedClass().getName() );
-			}
-		}
-
-		return metadataInformation;
-	}
-
-	private QueryParsingResult getQuery(QueryParameters queryParameters) {
-		CacheKey cacheKey = new CacheKey( queryParameters.getNamedParameters() );
-		QueryParsingResult parsingResult = queryCache.get( cacheKey );
-
-		if ( parsingResult == null ) {
-			parsingResult = queryParser.parseQuery(
-					sessionFactory,
-					query,
-					getNamedParameterValuesConvertedByGridType( queryParameters )
-			);
-
-			QueryParsingResult cached = queryCache.putIfAbsent( cacheKey, parsingResult );
-			if ( cached != null ) {
-				parsingResult = cached;
-			}
-		}
-
-		return parsingResult;
-	}
-
-	/**
-	 * Returns a map with the named parameter values from the given parameters object, converted by the {@link GridType}
-	 * corresponding to each parameter type.
-	 */
-	private Map<String, Object> getNamedParameterValuesConvertedByGridType(QueryParameters queryParameters) {
-		Map<String, Object> parameterValues = new HashMap<String, Object>( queryParameters.getNamedParameters().size() );
-		for ( Entry<String, TypedValue> parameter : queryParameters.getNamedParameters().entrySet() ) {
-			parameterValues.put( parameter.getKey(), parameter.getValue().getValue() );
-		}
-
-		return parameterValues;
-	}
-
-	@Override
-	public Iterator<?> iterate(QueryParameters queryParameters, EventSource session) throws HibernateException {
-		throw new UnsupportedOperationException( "Not yet implemented" );
-	}
-
-	@Override
-	public ScrollableResultsImplementor scroll(QueryParameters queryParameters, SharedSessionContractImplementor session) throws HibernateException {
-		throw new UnsupportedOperationException( "Not yet implemented" );
-	}
-
-	@Override
-	public int executeUpdate(QueryParameters queryParameters, SharedSessionContractImplementor session) throws HibernateException {
-		throw new UnsupportedOperationException( "Not yet implemented" );
-	}
-
-	private SelectClause getSelectClause(Map<?, ?> replacements, String collectionRole) throws Exception {
-		if ( replacements == null ) {
-			replacements = Collections.emptyMap();
-		}
-
-		// PHASE 1 : Parse the HQL into an AST.
-		final HqlParser parser = parse( true );
-
-		// PHASE 2 : Analyze the HQL AST, and produce an SQL AST.
-		final HqlSqlWalker w = analyze( parser, replacements, collectionRole );
-
-		return w.getSelectClause();
-	}
-
-	private HqlSqlWalker analyze(HqlParser parser, Map<?, ?> tokenReplacements, String collectionRole) throws QueryException, RecognitionException {
-		final HqlSqlWalker w = new HqlSqlWalker( delegate, sessionFactory, parser, tokenReplacements, collectionRole ) {
-			@Override
-			public Map getEnabledFilters() {
-				return filters;
-			}
-		};
-		final AST hqlAst = parser.getAST();
-
-		// Transform the tree.
-		w.statement( hqlAst );
-
-		w.getParseErrorHandler().throwQueryException();
-
-		return w;
-	}
-
-	private HqlParser parse(boolean filter) throws TokenStreamException, RecognitionException {
-		// Parse the query string into an HQL AST.
-		final HqlParser parser = HqlParser.getInstance( query );
-		parser.setFilter( filter );
-
-		parser.statement();
-
-		final AST hqlAst = parser.getAST();
-
-		final NodeTraverser walker = new NodeTraverser( new JavaConstantConverter( sessionFactory ) );
-		walker.traverseDepthFirst( hqlAst );
-
-		parser.getParseErrorHandler().throwQueryException();
-		return parser;
 	}
 
 	private static class CacheKey {

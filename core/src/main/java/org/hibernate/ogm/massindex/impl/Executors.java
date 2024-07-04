@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.massindex.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -14,8 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.search.util.logging.impl.Log;
-import java.lang.invoke.MethodHandles;
+import org.hibernate.search.engine.logging.impl.Log;
 
 /**
  * Helper class to create threads;

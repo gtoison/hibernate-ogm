@@ -6,11 +6,10 @@
  */
 package org.hibernate.ogm.datastore.infinispan.impl;
 
-import javax.transaction.TransactionManager;
-
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
-
 import org.infinispan.commons.tx.lookup.TransactionManagerLookup;
+
+import jakarta.transaction.TransactionManager;
 
 /**
  * Wraps the TransactionManager lookup strategy as configured in the Hibernate main properties

@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.persister.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.dialect.Dialect;
@@ -17,13 +17,14 @@ import org.hibernate.internal.util.MarkerObject;
 import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Subclass;
+import org.hibernate.metamodel.mapping.DiscriminatorType;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
+import org.hibernate.persister.entity.DiscriminatorHelper;
 import org.hibernate.sql.InFragment;
-import org.hibernate.type.DiscriminatorType;
-import org.hibernate.type.StringType;
+import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.java.StringJavaType;
 
 /**
  * The discriminator is a column containing a different value for each entity type.
@@ -39,7 +40,7 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 
 	private final String alias;
 	private final String columnName;
-	private final Type discriminatorType;
+	private final BasicType<?> discriminatorType;
 	private final boolean forced;
 	private final boolean needed;
 	private final String sqlValue;
@@ -52,9 +53,7 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 		forced = persistentClass.isForceDiscriminator();
 		columnName = column.getQuotedName( dialect );
 		alias = column.getAlias( dialect, persistentClass.getRootTable() );
-		discriminatorType = persistentClass.getDiscriminator().getType() == null
-				? StringType.INSTANCE
-				: persistentClass.getDiscriminator().getType();
+		discriminatorType = getDiscriminatorType( persistentClass );
 		value = value( persistentClass, discriminatorType );
 		sqlValue = sqlValue( persistentClass, dialect, value, discriminatorType );
 		subclassesByValue = subclassesByValue( persistentClass, value, discriminatorType );
@@ -66,10 +65,7 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 		subclassesByDsicriminator.put( value, persistentClass.getEntityName() );
 
 		if ( persistentClass.isPolymorphic() ) {
-			@SuppressWarnings("unchecked")
-			Iterator<Subclass> iter = persistentClass.getSubclassIterator();
-			while ( iter.hasNext() ) {
-				Subclass sc = iter.next();
+			for ( Subclass sc : persistentClass.getSubclasses() ) {
 				subclassesByDsicriminator.put( value( sc, type ), sc.getEntityName() );
 			}
 		}
@@ -101,7 +97,7 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 
 		@SuppressWarnings("unchecked")
 		DiscriminatorType<Object> dtype = (DiscriminatorType<Object>) discriminatorType;
-		return dtype.objectToSQLString( value, dialect );
+		return dtype.getJavaTypeDescriptor().toString( value );
 	}
 
 	public static Object value(PersistentClass persistentClass, Type discriminatorType) {
@@ -128,7 +124,7 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 
 		@SuppressWarnings("unchecked")
 		DiscriminatorType<Object> dtype = (DiscriminatorType<Object>) discriminatorType;
-		return dtype.stringToObject( persistentClass.getDiscriminatorValue() );
+		return dtype.getJavaTypeDescriptor().fromString( persistentClass.getDiscriminatorValue() );
 	}
 
 	@Override
@@ -152,7 +148,7 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 	}
 
 	@Override
-	public Type getType() {
+	public BasicType<?> getType() {
 		return discriminatorType;
 	}
 

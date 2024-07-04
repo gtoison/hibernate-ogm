@@ -8,6 +8,7 @@ package org.hibernate.ogm.datastore.map.impl;
 
 import static org.hibernate.ogm.util.impl.CollectionHelper.newConcurrentHashMap;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,8 +22,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.persistence.PessimisticLockException;
-
 import org.hibernate.ogm.datastore.spi.BaseDatastoreProvider;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.model.key.spi.AssociationKey;
@@ -31,9 +30,10 @@ import org.hibernate.ogm.model.key.spi.IdSourceKey;
 import org.hibernate.ogm.model.key.spi.RowKey;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.service.spi.Startable;
 import org.hibernate.service.spi.Stoppable;
+
+import jakarta.persistence.PessimisticLockException;
 
 /**
  * This is an example a DatastoreProvider, implementing only the basic interface needed by Hibernate OGM.

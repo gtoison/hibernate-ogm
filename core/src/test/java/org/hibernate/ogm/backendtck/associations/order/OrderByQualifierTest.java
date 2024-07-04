@@ -8,10 +8,7 @@ package org.hibernate.ogm.backendtck.associations.order;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.OrderBy;
-
 import org.hibernate.ogm.utils.OgmTestCase;
-
 import org.junit.After;
 import org.junit.Test;
 

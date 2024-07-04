@@ -10,6 +10,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.ogm.storedprocedure.impl.NoSQLProcedureCallMemento;
 import org.hibernate.ogm.storedprocedure.impl.NoSQLProcedureOutputsImpl;
 import org.hibernate.procedure.ProcedureOutputs;
+import org.hibernate.procedure.spi.NamedCallableQueryMemento;
 
 /**
  * @author Sergey Chernolyas &amp;sergey_chernolyas@gmail.com&amp;
@@ -34,7 +35,7 @@ public class NoSQLProcedureCallImpl extends ProcedureCallImpl {
 	}
 
 	public NoSQLProcedureCallImpl(SharedSessionContractImplementor session, NoSQLProcedureCallMemento memento) {
-		super( session, memento.unwrap( ProcedureCallMementoImpl.class ) );
+		super( session, memento.unwrap( NamedCallableQueryMemento.class ) );
 		this.memento = memento;
 	}
 

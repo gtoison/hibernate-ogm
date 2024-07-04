@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.StringTypeDescriptor;
+import org.hibernate.type.descriptor.java.StringJavaType;
 
 /**
  * @author Emmanuel Bernard
@@ -19,7 +19,7 @@ public class StringType extends AbstractGenericBasicType<String> {
 	public static final StringType INSTANCE = new StringType();
 
 	public StringType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, StringTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, StringJavaType.INSTANCE );
 	}
 
 	@Override

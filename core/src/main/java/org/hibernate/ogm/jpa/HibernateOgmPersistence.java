@@ -11,19 +11,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceException;
-import javax.persistence.spi.PersistenceProvider;
-import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.ProviderUtil;
-
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Environment;
-import org.hibernate.jpa.AvailableSettings;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.hibernate.jpa.boot.internal.ParsedPersistenceXmlDescriptor;
 import org.hibernate.jpa.boot.internal.PersistenceXmlParser;
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.jpa.impl.DelegatorPersistenceUnitInfo;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.spi.PersistenceProvider;
+import jakarta.persistence.spi.PersistenceUnitInfo;
+import jakarta.persistence.spi.ProviderUtil;
 
 /**
  * JPA PersistenceProvider implementation specific to Hibernate OGM
@@ -53,7 +53,7 @@ public class HibernateOgmPersistence implements PersistenceProvider {
 					//correct provider
 					Map<Object, Object> protectiveCopy = new HashMap<Object, Object>( integration );
 					enforceOgmConfig( protectiveCopy );
-					protectiveCopy.put( AvailableSettings.PROVIDER, delegate.getClass().getName() );
+					protectiveCopy.put( AvailableSettings.JAKARTA_PERSISTENCE_PROVIDER, delegate.getClass().getName() );
 					return delegate.createEntityManagerFactory(
 							emName, protectiveCopy
 					);

@@ -10,9 +10,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
-import org.apache.lucene.search.Query;
 import org.hibernate.Session;
 import org.hibernate.ogm.utils.GridDialectType;
 import org.hibernate.ogm.utils.SkipByGridDialect;
@@ -22,9 +19,12 @@ import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import org.hibernate.search.jpa.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

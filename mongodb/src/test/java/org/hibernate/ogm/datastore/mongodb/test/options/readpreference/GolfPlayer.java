@@ -10,12 +10,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
 import org.hibernate.ogm.datastore.mongodb.options.ReadPreference;
 import org.hibernate.ogm.datastore.mongodb.options.ReadPreferenceType;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Gunnar Morling

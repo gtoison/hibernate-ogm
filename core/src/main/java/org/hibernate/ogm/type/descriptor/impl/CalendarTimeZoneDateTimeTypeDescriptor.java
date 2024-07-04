@@ -12,26 +12,26 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.hibernate.HibernateException;
-import org.hibernate.type.descriptor.java.CalendarDateTypeDescriptor;
+import org.hibernate.type.descriptor.java.CalendarDateJavaType;
 
 /**
  * @author Oliver Carr ocarr@redhat.com
  *
- * An extension of the {@link CalendarDateTypeDescriptor} for handling all the different
+ * An extension of the {@link CalendarDateJavaType} for handling all the different
  * aspects of a {@link Calendar} object.
  *
  */
-public class CalendarTimeZoneDateTimeTypeDescriptor extends CalendarDateTypeDescriptor {
+public class CalendarTimeZoneDateTimeTypeDescriptor extends CalendarDateJavaType {
 
 	public static final CalendarTimeZoneDateTimeTypeDescriptor INSTANCE = new CalendarTimeZoneDateTimeTypeDescriptor();
 
 	private static final String DATE_TIME_TIMEZONE_FORMAT = "yyyy/MM/dd HH:mm:ss:SSS Z";
 
 	@Override
-	public Calendar fromString(String string) {
+	public Calendar fromString(CharSequence string) {
 		Calendar calendar = new GregorianCalendar();
 		try {
-			calendar.setTime( createDateTimeTimeZoneFormat().parse( string ) );
+			calendar.setTime( createDateTimeTimeZoneFormat().parse( string.toString() ) );
 		}
 		catch ( ParseException pe ) {
 			throw new HibernateException( "could not parse date time string", pe );

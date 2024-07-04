@@ -12,15 +12,13 @@ import static org.hibernate.ogm.utils.TestHelper.dropSchemaAndDatabase;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.RollbackException;
-
-
 import org.hibernate.ogm.utils.PackagingRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

@@ -9,9 +9,6 @@ package org.hibernate.ogm.test.options.mapping;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hibernate.ogm.utils.TestHelper.dropSchemaAndDatabase;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.options.spi.OptionsContext;
 import org.hibernate.ogm.options.spi.OptionsService;
@@ -24,6 +21,9 @@ import org.hibernate.ogm.test.options.mapping.model.Refrigerator;
 import org.hibernate.ogm.utils.PackagingRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
  * Test for specifying the name of an {@link org.hibernate.ogm.cfg.OptionConfigurator} type in persistence.xml.

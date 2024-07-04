@@ -9,15 +9,15 @@ package org.hibernate.ogm.datastore.infinispan.dialect.impl;
 import java.util.Set;
 
 import org.hibernate.ogm.model.spi.TupleSnapshot;
-import org.infinispan.atomic.FineGrainedAtomicMap;
+import org.infinispan.Cache;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
  */
 public final class InfinispanTupleSnapshot implements TupleSnapshot {
-	private final FineGrainedAtomicMap<String, Object> atomicMap;
+	private final Cache<String, Object> atomicMap;
 
-	public InfinispanTupleSnapshot(FineGrainedAtomicMap<String,Object> atomicMap) {
+	public InfinispanTupleSnapshot(Cache<String,Object> atomicMap) {
 		this.atomicMap = atomicMap;
 	}
 	@Override
@@ -35,7 +35,7 @@ public final class InfinispanTupleSnapshot implements TupleSnapshot {
 		return atomicMap.keySet();
 	}
 
-	public FineGrainedAtomicMap<String, Object> getAtomicMap() {
+	public Cache<String, Object> getAtomicMap() {
 		return atomicMap;
 	}
 }

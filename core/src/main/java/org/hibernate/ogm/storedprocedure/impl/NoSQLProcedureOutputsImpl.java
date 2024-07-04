@@ -18,8 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.ParameterMode;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.metamodel.spi.MetamodelImplementor;
 import org.hibernate.ogm.dialect.impl.GridDialects;
@@ -35,10 +33,12 @@ import org.hibernate.ogm.storedprocedure.ProcedureQueryParameters;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.persister.entity.EntityPersister;
-import org.hibernate.procedure.ParameterRegistration;
 import org.hibernate.procedure.ProcedureOutputs;
 import org.hibernate.procedure.internal.NoSQLProcedureCallImpl;
+import org.hibernate.query.procedure.ProcedureParameter;
 import org.hibernate.result.Output;
+
+import jakarta.persistence.ParameterMode;
 
 /**
  * @author Davide D'Alto
@@ -71,7 +71,7 @@ public class NoSQLProcedureOutputsImpl implements ProcedureOutputs {
 	}
 
 	@Override
-	public <T> T getOutputParameterValue(ParameterRegistration<T> parameterRegistration) {
+	public <T> T getOutputParameterValue(ProcedureParameter<T> parameterRegistration) {
 		throw new UnsupportedOperationException( "Out parameters not supported yet!" );
 	}
 
@@ -87,7 +87,7 @@ public class NoSQLProcedureOutputsImpl implements ProcedureOutputs {
 
 	@Override
 	public Output getCurrent() {
-		ProcedureQueryParameters queryParameters = createProcedureQueryParameters( (List<ParameterRegistration<?>>) procedureCall.getRegisteredParameters() );
+		ProcedureQueryParameters queryParameters = createProcedureQueryParameters( (List<ProcedureParameter<?>>) procedureCall.getRegisteredParameters() );
 
 		if ( !procedureCall.getSynchronizedQuerySpaces().isEmpty() ) {
 			return entitiesOutput( procedureCall, queryParameters );
@@ -146,10 +146,10 @@ public class NoSQLProcedureOutputsImpl implements ProcedureOutputs {
 		return null;
 	}
 
-	private ProcedureQueryParameters createProcedureQueryParameters(List<ParameterRegistration<?>> list) {
+	private ProcedureQueryParameters createProcedureQueryParameters(List<ProcedureParameter<?>> list) {
 		List<Object> positionalParameters = new ArrayList<>();
 		Map<String, Object> namedParameters = new HashMap<>();
-		for ( ParameterRegistration<?> nosqlParameterRegistration : list ) {
+		for ( ProcedureParameter<?> nosqlParameterRegistration : list ) {
 			if ( nosqlParameterRegistration.getMode() != ParameterMode.REF_CURSOR ) {
 				Object value = nosqlParameterRegistration.getBind().getValue();
 				if ( nosqlParameterRegistration.getName() != null ) {

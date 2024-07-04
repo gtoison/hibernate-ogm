@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.persister.impl;
 
-import org.hibernate.type.Type;
+import org.hibernate.type.BasicType;
 
 /**
  * Used when a discriminator is not needed.
@@ -41,7 +41,7 @@ public class NotNeededDiscriminator implements EntityDiscriminator {
 	}
 
 	@Override
-	public Type getType() {
+	public BasicType<?> getType() {
 		return null;
 	}
 

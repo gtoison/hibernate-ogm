@@ -8,14 +8,16 @@ package org.hibernate.ogm.backendtck.queries.pagination;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.SortableField;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = Poem.TABLE_NAME)
@@ -27,16 +29,13 @@ public class Poem {
 	@Id
 	private Long id;
 
-	@Field(analyze = Analyze.NO)
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	private String name;
 
-	@Field(analyze = Analyze.NO)
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	private String author;
 
-	@Field(analyze = Analyze.NO)
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	private Integer year;
 
 	public Poem() {

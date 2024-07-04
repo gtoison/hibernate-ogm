@@ -6,25 +6,16 @@
  */
 package org.hibernate.ogm.boot;
 
-import java.util.Map;
-
-import org.hibernate.ConnectionReleaseMode;
 import org.hibernate.CustomEntityDirtinessStrategy;
-import org.hibernate.EntityMode;
 import org.hibernate.EntityNameResolver;
 import org.hibernate.Interceptor;
-import org.hibernate.MultiTenancyStrategy;
-import org.hibernate.NullPrecedence;
 import org.hibernate.SessionFactoryObserver;
+import org.hibernate.boot.SessionFactoryBuilder;
 import org.hibernate.boot.spi.SessionFactoryBuilderImplementor;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-import org.hibernate.dialect.function.SQLFunction;
-import org.hibernate.hql.spi.id.MultiTableBulkIdStrategy;
 import org.hibernate.loader.BatchFetchStyle;
 import org.hibernate.ogm.OgmSessionFactory;
 import org.hibernate.proxy.EntityNotFoundDelegate;
-import org.hibernate.tuple.entity.EntityTuplizer;
-import org.hibernate.tuple.entity.EntityTuplizerFactory;
 
 /**
  * A {@link SessionFactoryBuilderImplementor} which creates {@link OgmSessionFactory} instances.
@@ -73,26 +64,11 @@ public interface OgmSessionFactoryBuilderImplementor extends SessionFactoryBuild
 	OgmSessionFactoryBuilderImplementor applyIdentifierRollbackSupport(boolean enabled);
 
 	@Override
-	@Deprecated
-	OgmSessionFactoryBuilderImplementor applyDefaultEntityMode(EntityMode entityMode);
-
-	@Override
 	OgmSessionFactoryBuilderImplementor applyNullabilityChecking(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilderImplementor applyLazyInitializationOutsideTransaction(boolean enabled);
-
-	@Override
-	OgmSessionFactoryBuilderImplementor applyEntityTuplizerFactory(EntityTuplizerFactory entityTuplizerFactory);
-
-	@Override
-	OgmSessionFactoryBuilderImplementor applyEntityTuplizer(
-			EntityMode entityMode,
-			Class<? extends EntityTuplizer> tuplizerClass);
-
-	@Override
-	OgmSessionFactoryBuilderImplementor applyMultiTableBulkIdStrategy(MultiTableBulkIdStrategy strategy);
-
+	
 	@Override
 	OgmSessionFactoryBuilderImplementor applyBatchFetchStyle(BatchFetchStyle style);
 
@@ -103,30 +79,17 @@ public interface OgmSessionFactoryBuilderImplementor extends SessionFactoryBuild
 	OgmSessionFactoryBuilderImplementor applyMaximumFetchDepth(int depth);
 
 	@Override
-	OgmSessionFactoryBuilderImplementor applyDefaultNullPrecedence(NullPrecedence nullPrecedence);
-
-	@Override
 	OgmSessionFactoryBuilderImplementor applyOrderingOfInserts(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilderImplementor applyOrderingOfUpdates(boolean enabled);
 
 	@Override
-	OgmSessionFactoryBuilderImplementor applyMultiTenancyStrategy(MultiTenancyStrategy strategy);
-
-	@Override
-	OgmSessionFactoryBuilderImplementor applyCurrentTenantIdentifierResolver(CurrentTenantIdentifierResolver resolver);
+	OgmSessionFactoryBuilderImplementor applyCurrentTenantIdentifierResolver(CurrentTenantIdentifierResolver<?> resolver);
 
 	@Override
 	@Deprecated
 	OgmSessionFactoryBuilderImplementor applyJtaTrackingByThread(boolean enabled);
-
-	@Override
-	@Deprecated
-	OgmSessionFactoryBuilderImplementor applyQuerySubstitutions(Map substitutions);
-
-	@Override
-	OgmSessionFactoryBuilderImplementor applyStrictJpaQueryLanguageCompliance(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilderImplementor applyNamedQueryCheckingOnStartup(boolean enabled);
@@ -162,22 +125,13 @@ public interface OgmSessionFactoryBuilderImplementor extends SessionFactoryBuild
 	OgmSessionFactoryBuilderImplementor applyScrollableResultsSupport(boolean enabled);
 
 	@Override
-	OgmSessionFactoryBuilderImplementor applyResultSetsWrapping(boolean enabled);
-
-	@Override
 	OgmSessionFactoryBuilderImplementor applyGetGeneratedKeysSupport(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilderImplementor applyJdbcFetchSize(int size);
 
 	@Override
-	OgmSessionFactoryBuilderImplementor applyConnectionReleaseMode(ConnectionReleaseMode connectionReleaseMode);
-
-	@Override
 	OgmSessionFactoryBuilderImplementor applySqlComments(boolean enabled);
-
-	@Override
-	OgmSessionFactoryBuilderImplementor applySqlFunction(String registrationName, SQLFunction sqlFunction);
 
 	@Override
 	OgmSessionFactory build();

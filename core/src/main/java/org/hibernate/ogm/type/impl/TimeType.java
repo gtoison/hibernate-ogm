@@ -11,7 +11,7 @@ import java.util.Date;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.JdbcTimeTypeDescriptor;
+import org.hibernate.type.descriptor.java.JdbcTimeJavaType;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -20,7 +20,7 @@ public class TimeType extends AbstractGenericBasicType<Date> {
 	public static final TimeType INSTANCE = new TimeType();
 
 	public TimeType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, JdbcTimeTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, JdbcTimeJavaType.INSTANCE );
 	}
 	@Override
 	public int getColumnSpan(Mapping mapping) throws MappingException {

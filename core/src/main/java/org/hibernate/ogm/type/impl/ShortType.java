@@ -10,7 +10,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.WrappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.ShortTypeDescriptor;
+import org.hibernate.type.descriptor.java.ShortJavaType;
 
 /**
  * Represents a Short type
@@ -21,7 +21,7 @@ public class ShortType extends AbstractGenericBasicType<Short> {
 	public static ShortType INSTANCE = new ShortType();
 
 	public ShortType() {
-		super( WrappedGridTypeDescriptor.INSTANCE, ShortTypeDescriptor.INSTANCE );
+		super( WrappedGridTypeDescriptor.INSTANCE, ShortJavaType.INSTANCE );
 	}
 
 

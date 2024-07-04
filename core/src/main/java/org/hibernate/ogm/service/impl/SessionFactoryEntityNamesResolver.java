@@ -9,7 +9,6 @@ package org.hibernate.ogm.service.impl;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.hql.ast.spi.EntityNamesResolver;
 
 /**
  * Resolves entity names into Class references using the metadata
@@ -18,7 +17,7 @@ import org.hibernate.hql.ast.spi.EntityNamesResolver;
  * @author Sanne Grinovero &lt;sanne@hibernate.org&gt; (C) 2012 Red Hat Inc.
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
  */
-public class SessionFactoryEntityNamesResolver implements EntityNamesResolver {
+public class SessionFactoryEntityNamesResolver {
 
 	private final SessionFactoryImplementor sessionFactory;
 	private final ClassLoaderService classLoaderService;
@@ -26,10 +25,5 @@ public class SessionFactoryEntityNamesResolver implements EntityNamesResolver {
 	public SessionFactoryEntityNamesResolver(SessionFactory sessionFactory) {
 		this.sessionFactory = (SessionFactoryImplementor) sessionFactory;
 		this.classLoaderService = this.sessionFactory.getServiceRegistry().getService( ClassLoaderService.class );
-	}
-
-	@Override
-	public Class<?> getClassFromName(String entityName) {
-		return classLoaderService.classForName( sessionFactory.getMetamodel().getImportedClassName( entityName ) );
 	}
 }

@@ -11,12 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.hql.ast.origin.hql.resolve.path.AggregationPropertyPath;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PropertyPath;
 import org.hibernate.hql.ast.spi.EntityNamesResolver;
 import org.hibernate.hql.ast.spi.PropertyHelper;
 import org.hibernate.hql.ast.spi.SingleEntityQueryBuilder;
 import org.hibernate.hql.ast.spi.SingleEntityQueryRendererDelegate;
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate;
+import org.hibernate.loader.PropertyPath;
+import org.hibernate.sql.ast.tree.predicate.ComparisonPredicate;
+
+import jakarta.transaction.Status;
 
 /**
  * SingleEntityQueryRendererDelegate replaces named parameters with the corresponding values when the query is converted,

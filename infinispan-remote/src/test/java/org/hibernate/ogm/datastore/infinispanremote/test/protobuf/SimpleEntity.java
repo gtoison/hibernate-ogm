@@ -6,9 +6,9 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.test.protobuf;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * @author Fabio Massimo Ercoli

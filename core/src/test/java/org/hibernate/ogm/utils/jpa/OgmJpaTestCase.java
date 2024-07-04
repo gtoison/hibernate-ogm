@@ -9,11 +9,6 @@ package org.hibernate.ogm.utils.jpa;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.transaction.TransactionManager;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
 import org.hibernate.ogm.utils.TestEntities;
@@ -21,6 +16,11 @@ import org.hibernate.ogm.utils.TestEntityManagerFactory;
 import org.hibernate.ogm.utils.TestEntityManagerFactoryConfiguration;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.junit.runner.RunWith;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.transaction.TransactionManager;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

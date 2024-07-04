@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
@@ -23,10 +22,11 @@ import org.hibernate.Transaction;
 import org.hibernate.ogm.OgmSession;
 import org.hibernate.ogm.OgmSessionFactory;
 import org.hibernate.ogm.engine.spi.OgmSessionFactoryImplementor;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+
+import jakarta.persistence.EntityNotFoundException;
 
 /**
  * Base class for OGM tests. While tests also can directly make use of {@link OgmTestRunner}, this base class provides

@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.test.initialize;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 public class DisneyCharacter {

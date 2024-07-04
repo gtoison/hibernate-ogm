@@ -13,14 +13,15 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.hibernate.HibernateException;
-import org.hibernate.collection.internal.PersistentBag;
+import org.hibernate.collection.spi.PersistentBag;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.loader.CollectionAliases;
-import org.hibernate.loader.collection.CollectionInitializer;
 import org.hibernate.ogm.model.spi.AssociationOrderBy;
 import org.hibernate.ogm.persister.impl.OgmCollectionPersister;
 import org.hibernate.persister.collection.CollectionPersister;
+import org.hibernate.sql.results.graph.collection.CollectionInitializer;
+import org.hibernate.sql.results.jdbc.spi.RowProcessingState;
 import org.hibernate.type.Type;
 
 /**
@@ -33,7 +34,7 @@ public class OgmBasicCollectionLoader extends OgmLoader implements CollectionIni
 	}
 
 	@Override
-	public void initialize(Serializable id, SharedSessionContractImplementor session)
+	public void initialize(Object id, SharedSessionContractImplementor session)
 			throws HibernateException {
 		loadCollection( session, id, getKeyType() );
 	}

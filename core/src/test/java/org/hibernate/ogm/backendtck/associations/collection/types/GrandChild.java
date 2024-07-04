@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.associations.collection.types;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

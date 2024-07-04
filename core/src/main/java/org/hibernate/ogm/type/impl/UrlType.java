@@ -13,7 +13,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.UrlTypeDescriptor;
+import org.hibernate.type.descriptor.java.UrlJavaType;
 
 /**
  * @author Nicolas Helleringer
@@ -23,7 +23,7 @@ public class UrlType extends AbstractGenericBasicType<URL> {
 	public static final UrlType INSTANCE = new UrlType();
 
 	public UrlType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, UrlTypeDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, UrlJavaType.INSTANCE );
 	}
 
 	@Override

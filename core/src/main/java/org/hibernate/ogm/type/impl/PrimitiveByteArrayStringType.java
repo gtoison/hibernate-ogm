@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.PrimitiveByteArrayTypeDescriptor;
+import org.hibernate.type.descriptor.java.PrimitiveByteArrayJavaType;
 
 /**
  * Persist a {@link byte[]} as a {@link String}.
@@ -21,7 +21,7 @@ public class PrimitiveByteArrayStringType extends AbstractGenericBasicType<byte[
 	public static final PrimitiveByteArrayStringType INSTANCE = new PrimitiveByteArrayStringType();
 
 	public PrimitiveByteArrayStringType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, PrimitiveByteArrayTypeDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, PrimitiveByteArrayJavaType.INSTANCE );
 	}
 
 	@Override

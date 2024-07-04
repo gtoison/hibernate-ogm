@@ -6,23 +6,23 @@
  */
 package org.hibernate.ogm.backendtck.id;
 
-import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.UUID;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 
 /**
  * Test that @Inheritance(strategy = TABLE_PER_CLASS) with generated id work correct
@@ -142,7 +142,7 @@ public class TableIdGeneratorInheritanceTest extends OgmJpaTestCase {
 
 	@Entity
 	@Table(name = "VEHICLE")
-	@Inheritance(strategy = TABLE_PER_CLASS)
+	@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 	private abstract static class Vehicle {
 
 		protected UUID id;

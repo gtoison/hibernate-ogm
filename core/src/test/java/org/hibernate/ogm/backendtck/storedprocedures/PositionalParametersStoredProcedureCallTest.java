@@ -17,12 +17,6 @@ import static org.hibernate.ogm.utils.GridDialectType.NEO4J_REMOTE;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Parameter;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceException;
-import javax.persistence.StoredProcedureQuery;
-
 import org.hibernate.HibernateException;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestForIssue;
@@ -32,6 +26,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.StoredProcedureQuery;
 
 /**
  * Testing call of stored procedures that supports indexed parameters

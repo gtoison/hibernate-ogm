@@ -6,19 +6,23 @@
  */
 package org.hibernate.ogm.dialect.impl;
 
-import javax.persistence.GenerationType;
+import java.lang.invoke.MethodHandles;
 
-import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
-import org.hibernate.hql.spi.id.MultiTableBulkIdStrategy;
-import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.ogm.dialect.identity.spi.IdentityColumnAwareGridDialect;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.id.impl.OgmIdentityColumnSupport;
-import org.hibernate.ogm.id.impl.OgmIdentityGenerator;
-import org.hibernate.ogm.id.impl.OgmSequenceGenerator;
-import org.hibernate.ogm.id.impl.OgmTableGenerator;
+import org.hibernate.ogm.query.impl.FullTextSearchQueryTranslator;
+import org.hibernate.ogm.query.impl.OgmQueryTranslator;
+import org.hibernate.ogm.query.spi.QueryParserService;
+import org.hibernate.ogm.util.impl.Log;
+import org.hibernate.ogm.util.impl.LoggerFactory;
+import org.hibernate.sql.ast.SqlAstTranslator;
+import org.hibernate.sql.ast.SqlAstTranslatorFactory;
+import org.hibernate.sql.ast.spi.StandardSqlAstTranslatorFactory;
+import org.hibernate.sql.ast.tree.Statement;
+import org.hibernate.sql.exec.spi.JdbcOperation;
 
 /**
  * A pseudo {@link Dialect} implementation which exposes the current {@link GridDialect}.
@@ -28,15 +32,12 @@ import org.hibernate.ogm.id.impl.OgmTableGenerator;
  */
 public class OgmDialect extends Dialect {
 
+	private static final Log LOG = LoggerFactory.make( MethodHandles.lookup() );
+
 	private final GridDialect gridDialect;
 
 	public OgmDialect(GridDialect gridDialect) {
 		this.gridDialect = gridDialect;
-	}
-
-	@Override
-	public MultiTableBulkIdStrategy getDefaultMultiTableBulkIdStrategy() {
-		return new NoOpMultiTableBulkIdStrategy();
 	}
 
 	/**
@@ -55,27 +56,25 @@ public class OgmDialect extends Dialect {
 	public IdentityColumnSupport getIdentityColumnSupport() {
 		return new OgmIdentityColumnSupport( gridDialect );
 	}
-
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Overridden in OGM in order to make things work when {@code USE_NEW_ID_GENERATOR_MAPPINGS} is set to
-	 * {@code false}. If so, and if additionally the generation type is {@link GenerationType#AUTO}, the ORM engine
-	 * will invoke this method to obtain the "native" identifier generator. Depending on the store's capabilities,
-	 * OGM's identity, sequence or table generator will be returned.
-	 *
-	 * @see AvailableSettings#USE_NEW_ID_GENERATOR_MAPPINGS
-	 */
+	
 	@Override
-	public Class<? extends IdentifierGenerator> getNativeIdentifierGeneratorClass() {
-		if ( GridDialects.hasFacet( gridDialect, IdentityColumnAwareGridDialect.class ) ) {
-			return OgmIdentityGenerator.class;
-		}
-		else if ( gridDialect.supportsSequences() ) {
-			return OgmSequenceGenerator.class;
-		}
-		else {
-			return OgmTableGenerator.class;
-		}
+	public SqlAstTranslatorFactory getSqlAstTranslatorFactory() {
+		return new StandardSqlAstTranslatorFactory() {
+			@Override
+			protected <T extends JdbcOperation> SqlAstTranslator<T> buildTranslator(SessionFactoryImplementor sessionFactory, Statement statement) {
+				QueryParserService queryParser = sessionFactory.getServiceRegistry().getService( QueryParserService.class );
+				if ( queryParser != null ) {
+					return new OgmQueryTranslator( factory, queryParser, statement );
+				}
+				else {
+					try {
+						return new FullTextSearchQueryTranslator( factory, queryIdentifier, queryString, filters );
+					}
+					catch (Exception e) {
+						throw LOG.cannotLoadLuceneParserBackend( e );
+					}
+				}
+			}
+		};
 	}
 }

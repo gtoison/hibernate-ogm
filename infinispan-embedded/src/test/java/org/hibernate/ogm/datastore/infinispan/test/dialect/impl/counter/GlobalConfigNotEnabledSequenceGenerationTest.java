@@ -6,20 +6,19 @@
  */
 package org.hibernate.ogm.datastore.infinispan.test.dialect.impl.counter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.hibernate.HibernateException;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.utils.TestForIssue;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 
 /**
  * If the global state config is missing or disabled a validation error is issued.

@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.ClassTypeDescriptor;
+import org.hibernate.type.descriptor.java.ClassJavaType;
 
 /**
  * @author Emmanuel Bernard
@@ -18,7 +18,7 @@ public class ClassType extends AbstractGenericBasicType<Class> {
 	public static final ClassType INSTANCE = new ClassType();
 
 	public ClassType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, ClassTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, ClassJavaType.INSTANCE );
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import java.util.UUID;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.UUIDTypeDescriptor;
+import org.hibernate.type.descriptor.java.UUIDJavaType;
 
 /**
  * Type descriptor for translating a UUID Java type into its string representation
@@ -31,7 +31,7 @@ public class UUIDType extends AbstractGenericBasicType<UUID> {
 	public static final UUIDType INSTANCE = new UUIDType();
 
 	public UUIDType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, UUIDTypeDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, UUIDJavaType.INSTANCE );
 	}
 
 	@Override

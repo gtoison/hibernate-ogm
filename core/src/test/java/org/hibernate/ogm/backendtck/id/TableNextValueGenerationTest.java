@@ -10,19 +10,19 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Arrays;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-
 import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.ogm.dialect.spi.NextValueRequest;
 import org.hibernate.ogm.id.impl.OgmTableGenerator;
 import org.hibernate.ogm.model.key.spi.IdSourceKey;
 import org.hibernate.ogm.model.key.spi.IdSourceKeyMetadata;
 import org.junit.Test;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.TableGenerator;
 
 /**
  * Test that the generation of sequences using the table strategy is thread safe.

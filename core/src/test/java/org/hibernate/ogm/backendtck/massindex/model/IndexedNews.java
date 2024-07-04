@@ -8,17 +8,17 @@ package org.hibernate.ogm.backendtck.massindex.model;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToMany;
-
 import org.hibernate.ogm.backendtck.id.NewsID;
-import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

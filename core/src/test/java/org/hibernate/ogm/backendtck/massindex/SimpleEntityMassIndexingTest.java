@@ -25,7 +25,7 @@ import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.junit.Test;
 

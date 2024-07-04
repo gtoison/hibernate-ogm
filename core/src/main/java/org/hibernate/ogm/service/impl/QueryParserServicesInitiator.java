@@ -7,9 +7,7 @@
 package org.hibernate.ogm.service.impl;
 
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
-import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.config.spi.ConfigurationService;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.cfg.impl.InternalProperties;
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
@@ -17,6 +15,7 @@ import org.hibernate.ogm.query.spi.QueryParserService;
 import org.hibernate.ogm.util.configurationreader.spi.ConfigurationPropertyReader;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceInitiator;
+import org.hibernate.service.spi.SessionFactoryServiceInitiatorContext;
 
 /**
  * Initiator which contributes a {@link QueryParserService} implementation.
@@ -35,9 +34,11 @@ class QueryParserServicesInitiator implements SessionFactoryServiceInitiator<Que
 	public Class<QueryParserService> getServiceInitiated() {
 		return QueryParserService.class;
 	}
-
+	
 	@Override
-	public QueryParserService initiateService(SessionFactoryImplementor sessionFactory, SessionFactoryOptions sessionFactoryOptions, ServiceRegistryImplementor registry) {
+	public QueryParserService initiateService(SessionFactoryServiceInitiatorContext context) {
+		ServiceRegistryImplementor registry = context.getServiceRegistry();
+		
 		ConfigurationPropertyReader propertyReader = new ConfigurationPropertyReader(
 				registry.getService( ConfigurationService.class ).getSettings(),
 				registry.getService( ClassLoaderService.class )

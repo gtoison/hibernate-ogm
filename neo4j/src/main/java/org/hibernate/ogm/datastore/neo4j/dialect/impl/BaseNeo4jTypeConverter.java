@@ -11,14 +11,14 @@ import java.util.Map;
 
 import org.hibernate.ogm.type.impl.LocalDateAsStringType;
 import org.hibernate.ogm.type.impl.LocalDateTimeAsStringType;
+import org.hibernate.ogm.type.impl.LocalDateTimeType;
+import org.hibernate.ogm.type.impl.LocalDateType;
 import org.hibernate.ogm.type.impl.LocalTimeAsStringType;
+import org.hibernate.ogm.type.impl.LocalTimeType;
 import org.hibernate.ogm.type.impl.StringCalendarDateType;
 import org.hibernate.ogm.type.impl.StringDateTypeDescriptor;
 import org.hibernate.ogm.type.impl.StringTimestampTypeDescriptor;
 import org.hibernate.ogm.type.spi.GridType;
-import org.hibernate.type.LocalDateTimeType;
-import org.hibernate.type.LocalDateType;
-import org.hibernate.type.LocalTimeType;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 

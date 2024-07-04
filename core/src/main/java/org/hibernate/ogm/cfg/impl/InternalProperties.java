@@ -8,7 +8,6 @@ package org.hibernate.ogm.cfg.impl;
 
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
 import org.hibernate.ogm.options.spi.OptionsService.OptionsServiceContext;
-import org.hibernate.ogm.query.spi.QueryParserService;
 
 /**
  * Constants used within OGM, not intended for public use.

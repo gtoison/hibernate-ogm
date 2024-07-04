@@ -11,9 +11,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import org.hibernate.ogm.backendtck.jpa.Poem;
 import org.hibernate.ogm.utils.PackagingRule;
 import org.hibernate.ogm.utils.TestForIssue;
@@ -23,6 +20,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * Test the execution of native queries on MongoDB using the {@link EntityManager}

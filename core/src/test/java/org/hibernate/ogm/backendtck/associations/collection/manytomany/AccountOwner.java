@@ -9,12 +9,12 @@ package org.hibernate.ogm.backendtck.associations.collection.manytomany;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-
 import org.hibernate.annotations.Cascade;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

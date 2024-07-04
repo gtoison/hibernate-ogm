@@ -12,7 +12,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.BigIntegerTypeDescriptor;
+import org.hibernate.type.descriptor.java.BigIntegerJavaType;
 
 /**
  * Type descriptor for translating a BigInteger Java type into its string representation
@@ -31,7 +31,7 @@ public class BigIntegerType extends AbstractGenericBasicType<BigInteger> {
 	public static final BigIntegerType INSTANCE = new BigIntegerType();
 
 	public BigIntegerType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, BigIntegerTypeDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, BigIntegerJavaType.INSTANCE );
 	}
 
 	@Override

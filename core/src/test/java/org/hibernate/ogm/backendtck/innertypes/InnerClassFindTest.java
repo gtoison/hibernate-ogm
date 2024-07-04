@@ -7,11 +7,13 @@
 package org.hibernate.ogm.backendtck.innertypes;
 
 import static org.fest.assertions.Assertions.assertThat;
-import javax.persistence.EntityManager;
+
 import org.hibernate.ogm.backendtck.innertypes.CommunityMember.Employee;
 import org.hibernate.ogm.utils.TestForIssue;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Verifies the dialect is able to store an entity which is represented as an inner type in Java.

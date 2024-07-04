@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.id.objectid;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-
 import org.bson.types.ObjectId;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 /**
  * @author Gunnar Morling

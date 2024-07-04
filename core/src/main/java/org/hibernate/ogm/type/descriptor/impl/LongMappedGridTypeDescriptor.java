@@ -8,7 +8,7 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 
 /**
  * Maps a field to a {@link Long} value.
@@ -24,7 +24,7 @@ public class LongMappedGridTypeDescriptor implements GridTypeDescriptor {
 	public static final LongMappedGridTypeDescriptor INSTANCE = new LongMappedGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(final BasicJavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 			@Override
 			protected void doBind(Tuple resultset, X value, String[] names, WrapperOptions options) {
@@ -34,7 +34,7 @@ public class LongMappedGridTypeDescriptor implements GridTypeDescriptor {
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
 		return new BasicGridExtractor<X>( javaTypeDescriptor, true );
 	}
 }

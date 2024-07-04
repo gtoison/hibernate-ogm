@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.associations.collection.types;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Gunnar Morling

@@ -6,8 +6,6 @@
  */
 package org.hibernate.ogm.model.impl;
 
-import java.io.Serializable;
-
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
@@ -26,7 +24,7 @@ public final class EntityKeyBuilder {
 	//static method because the builder pattern version was showing up during profiling
 	public static EntityKey fromPersister(
 			final OgmEntityPersister persister,
-			final Serializable id,
+			final Object id,
 			SharedSessionContractImplementor session) {
 		return fromData(
 				persister.getEntityKeyMetadata(),
@@ -39,7 +37,7 @@ public final class EntityKeyBuilder {
 	public static EntityKey fromData(
 			EntityKeyMetadata entityKeyMetadata,
 			GridType identifierGridType,
-			final Serializable id,
+			final Object id,
 			SharedSessionContractImplementor session) {
 		Object[] values = LogicalPhysicalConverterHelper.getColumnsValuesFromObjectValue(
 				id,

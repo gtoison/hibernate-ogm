@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.associations.compositeid;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 
 /**
  * @author Gunnar Morling

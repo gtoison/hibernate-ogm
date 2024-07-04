@@ -6,16 +6,17 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.options.readconcern;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.hibernate.ogm.datastore.mongodb.options.ReadConcern;
 import org.hibernate.ogm.datastore.mongodb.options.ReadConcernType;
 import org.hibernate.search.annotations.Indexed;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Gunnar Morling

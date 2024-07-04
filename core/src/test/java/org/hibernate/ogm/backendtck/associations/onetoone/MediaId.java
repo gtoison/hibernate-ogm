@@ -7,7 +7,8 @@
 package org.hibernate.ogm.backendtck.associations.onetoone;
 
 import java.io.Serializable;
-import javax.persistence.Embeddable;
+
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Mark Paluch

@@ -19,17 +19,17 @@ import org.hibernate.dialect.pagination.LimitHelper;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.PersistenceContext;
-import org.hibernate.engine.spi.QueryParameters;
-import org.hibernate.engine.spi.RowSelection;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.internal.util.collections.ArrayHelper;
+import org.hibernate.loader.ast.spi.AfterLoadAction;
+import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 import org.hibernate.loader.entity.EntityJoinWalker;
 import org.hibernate.loader.entity.EntityLoader;
-import org.hibernate.loader.entity.UniqueEntityLoader;
-import org.hibernate.loader.spi.AfterLoadAction;
+import org.hibernate.ogm.dialect.query.spi.QueryParameters;
+import org.hibernate.ogm.dialect.query.spi.RowSelection;
 import org.hibernate.ogm.loader.impl.OgmLoadingContext;
 import org.hibernate.ogm.loader.impl.TupleBasedEntityLoader;
 import org.hibernate.persister.entity.OuterJoinLoadable;
@@ -42,14 +42,14 @@ import org.jboss.logging.Logger;
  * @author Steve Ebersole
  * @author Emmanuel Bernard emmanuel@hibernate.org
  */
-class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuilder {
+class DynamicBatchingEntityLoaderBuilder<T> extends BatchingEntityLoaderBuilder<T> {
 	public static final DynamicBatchingEntityLoaderBuilder INSTANCE = new DynamicBatchingEntityLoaderBuilder();
 
 	private static final Logger log = Logger.getLogger( DynamicBatchingEntityLoaderBuilder.class );
 
 
 	@Override
-	protected UniqueEntityLoader buildBatchingLoader(
+	protected SingleIdEntityLoader<T> buildBatchingLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockMode lockMode,
@@ -60,7 +60,7 @@ class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuilder {
 	}
 
 	@Override
-	protected UniqueEntityLoader buildBatchingLoader(
+	protected SingleIdEntityLoader<T> buildBatchingLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockOptions lockOptions,
@@ -76,10 +76,10 @@ class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuilder {
 				innerEntityLoaderBuilder );
 	}
 
-	public static class DynamicBatchingEntityLoader extends BatchingEntityLoader implements TupleBasedEntityLoader {
+	public static class DynamicBatchingEntityLoader<T> extends BatchingEntityLoader<T> implements TupleBasedEntityLoader<T> {
 		private final int maxBatchSize;
-		private final TupleBasedEntityLoader singleKeyLoader;
-		private final BatchableEntityLoader dynamicLoader;
+		private final TupleBasedEntityLoader<T> singleKeyLoader;
+		private final BatchableEntityLoader<T> dynamicLoader;
 
 		public DynamicBatchingEntityLoader(
 				OuterJoinLoadable persister,
@@ -108,14 +108,14 @@ class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuilder {
 		}
 
 		@Override
-		public Object load(Serializable id, Object optionalObject, SharedSessionContractImplementor session, LockOptions lockOptions) {
+		public T load(Object id, Object entityInstance, LockOptions lockOptions, Boolean readOnly, SharedSessionContractImplementor session) {
 			final Serializable[] batch = session.getPersistenceContext()
 					.getBatchFetchQueue()
 					.getEntityBatch( persister(), id, maxBatchSize, persister().getEntityMode() );
 
 			final int numberOfIds = ArrayHelper.countNonNull( batch );
 			if ( numberOfIds <= 1 ) {
-				return singleKeyLoader.load( id, optionalObject, session );
+				return singleKeyLoader.load( id, entityInstance, lockOptions, readOnly, session );
 			}
 
 			final Serializable[] idsToLoad = new Serializable[numberOfIds];
@@ -125,7 +125,7 @@ class DynamicBatchingEntityLoaderBuilder extends BatchingEntityLoaderBuilder {
 		}
 
 		@Override
-		public List<Object> loadEntitiesFromTuples(SharedSessionContractImplementor session, LockOptions lockOptions, OgmLoadingContext ogmContext) {
+		public List<T> loadEntitiesFromTuples(SharedSessionContractImplementor session, LockOptions lockOptions, OgmLoadingContext ogmContext) {
 			return singleKeyLoader.loadEntitiesFromTuples( session, lockOptions, ogmContext );
 		}
 	}

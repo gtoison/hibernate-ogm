@@ -37,7 +37,7 @@ public class SingleTableOgmEntityPersister extends OgmEntityPersister {
 	private static EntityDiscriminator resolveDiscriminator(final PersistentClass persistentClass, final SessionFactoryImplementor factory) {
 		if ( persistentClass.isPolymorphic() ) {
 			Value discrimValue = persistentClass.getDiscriminator();
-			Selectable selectable = discrimValue.getColumnIterator().next();
+			Selectable selectable = discrimValue.getColumns().get(0);
 			if ( discrimValue.hasFormula() ) {
 				throw new UnsupportedOperationException( "OGM doesn't support discriminator formulas" );
 			}
@@ -49,10 +49,4 @@ public class SingleTableOgmEntityPersister extends OgmEntityPersister {
 			return NotNeededDiscriminator.INSTANCE;
 		}
 	}
-
-	@Override
-	protected String filterFragment(String alias, Set<String> treatAsDeclarations) {
-		return null;
-	}
-
 }

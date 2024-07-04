@@ -9,8 +9,6 @@ package org.hibernate.ogm.boot.impl;
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.spi.MetadataBuilderInitializer;
-import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.ogm.boot.model.naming.impl.OgmImplicitNamingStrategy;
 import org.hibernate.ogm.service.impl.OgmConfigurationService;
 
@@ -30,13 +28,5 @@ public class OgmMetadataBuilderInitializer implements MetadataBuilderInitializer
 		}
 
 		metadataBuilder.applyImplicitNamingStrategy( new OgmImplicitNamingStrategy() );
-
-		boolean isUseNewGeneratorMappingsConfigured = serviceRegistry.getService( ConfigurationService.class )
-				.getSettings()
-				.containsKey( AvailableSettings.USE_NEW_ID_GENERATOR_MAPPINGS );
-
-		if ( !isUseNewGeneratorMappingsConfigured ) {
-			metadataBuilder.enableNewIdentifierGeneratorSupport( true );
-		}
 	}
 }

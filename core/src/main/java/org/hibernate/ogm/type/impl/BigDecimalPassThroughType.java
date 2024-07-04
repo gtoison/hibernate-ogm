@@ -12,7 +12,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.BigDecimalTypeDescriptor;
+import org.hibernate.type.descriptor.java.BigDecimalJavaType;
 
 /**
  * Type descriptor that will pass the {@link BigDecimal} to the dialect without conversion.
@@ -27,7 +27,7 @@ public class BigDecimalPassThroughType extends AbstractGenericBasicType<BigDecim
 	public static final BigDecimalPassThroughType INSTANCE = new BigDecimalPassThroughType();
 
 	public BigDecimalPassThroughType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, BigDecimalTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, BigDecimalJavaType.INSTANCE );
 	}
 
 	@Override

@@ -16,8 +16,6 @@ import javax.transaction.Status;
 
 import org.hibernate.HibernateException;
 import org.hibernate.TransactionException;
-import org.hibernate.engine.transaction.spi.IsolationDelegate;
-import org.hibernate.engine.transaction.spi.TransactionObserver;
 import org.hibernate.jdbc.WorkExecutor;
 import org.hibernate.jdbc.WorkExecutorVisitable;
 import org.hibernate.jpa.spi.JpaCompliance;
@@ -25,10 +23,12 @@ import org.hibernate.ogm.datastore.neo4j.embedded.impl.EmbeddedNeo4jDatastorePro
 import org.hibernate.ogm.datastore.neo4j.logging.impl.Log;
 import org.hibernate.ogm.datastore.neo4j.logging.impl.LoggerFactory;
 import org.hibernate.resource.transaction.internal.SynchronizationRegistryStandardImpl;
+import org.hibernate.resource.transaction.spi.IsolationDelegate;
 import org.hibernate.resource.transaction.spi.SynchronizationRegistry;
 import org.hibernate.resource.transaction.spi.TransactionCoordinator;
 import org.hibernate.resource.transaction.spi.TransactionCoordinatorBuilder;
 import org.hibernate.resource.transaction.spi.TransactionCoordinatorOwner;
+import org.hibernate.resource.transaction.spi.TransactionObserver;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;

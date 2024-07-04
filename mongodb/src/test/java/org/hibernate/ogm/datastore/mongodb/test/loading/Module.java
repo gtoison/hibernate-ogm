@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.loading;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 import org.hibernate.annotations.GenericGenerator;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 /**
  * @author Guillaume Scheibel &lt;guillaume.scheibel@gmail.com&gt;

@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.hibernate.LockOptions;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.loader.entity.UniqueEntityLoader;
+import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 
 /**
  * "Loads" entities from given tuple representations.
@@ -21,7 +21,7 @@ import org.hibernate.loader.entity.UniqueEntityLoader;
  *
  * @author Gunnar Morling
  */
-public interface TupleBasedEntityLoader extends UniqueEntityLoader {
+public interface TupleBasedEntityLoader<T> extends SingleIdEntityLoader<T> {
 
 	/**
 	 * Load a list of entities using the information in the context
@@ -31,5 +31,5 @@ public interface TupleBasedEntityLoader extends UniqueEntityLoader {
 	 * @param ogmContext The context with the information to load the entities
 	 * @return the list of entities corresponding to the given context
 	 */
-	List<Object> loadEntitiesFromTuples(SharedSessionContractImplementor session, LockOptions lockOptions, OgmLoadingContext ogmContext);
+	List<T> loadEntitiesFromTuples(SharedSessionContractImplementor session, LockOptions lockOptions, OgmLoadingContext ogmContext);
 }

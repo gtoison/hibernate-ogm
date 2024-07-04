@@ -18,7 +18,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.QueryException;
 import org.hibernate.Session;
-import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.engine.spi.TypedValue;
@@ -28,12 +27,13 @@ import org.hibernate.hql.lucene.LuceneProcessingChain;
 import org.hibernate.hql.lucene.LuceneQueryParsingResult;
 import org.hibernate.hql.spi.QueryTranslator;
 import org.hibernate.internal.util.collections.BoundedConcurrentHashMap;
+import org.hibernate.ogm.dialect.query.spi.QueryParameters;
 import org.hibernate.ogm.service.impl.SessionFactoryEntityNamesResolver;
 import org.hibernate.query.spi.ScrollableResultsImplementor;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
 import org.hibernate.search.engine.ProjectionConstants;
+import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.spi.SearchIntegrator;
 
 /**

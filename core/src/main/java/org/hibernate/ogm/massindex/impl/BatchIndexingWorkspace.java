@@ -6,10 +6,12 @@
  */
 package org.hibernate.ogm.massindex.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.concurrent.CountDownLatch;
 
 import org.hibernate.CacheMode;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.ogm.compensation.ErrorHandler;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
@@ -18,11 +20,9 @@ import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.search.backend.spi.BatchBackend;
 import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
 import org.hibernate.search.engine.integration.impl.ExtendedSearchIntegrator;
-import org.hibernate.search.exception.ErrorHandler;
+import org.hibernate.search.engine.logging.impl.Log;
 import org.hibernate.search.spi.IndexedTypeIdentifier;
 import org.hibernate.search.spi.SearchIntegrator;
-import org.hibernate.search.util.logging.impl.Log;
-import java.lang.invoke.MethodHandles;
 
 /**
  * This runnable will prepare a pipeline for batch indexing

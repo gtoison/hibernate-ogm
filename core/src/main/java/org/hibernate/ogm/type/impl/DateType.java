@@ -11,7 +11,7 @@ import java.util.Date;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.JdbcDateTypeDescriptor;
+import org.hibernate.type.descriptor.java.JdbcDateJavaType;
 
 /**
  * Represents a date
@@ -23,7 +23,7 @@ public class DateType extends AbstractGenericBasicType<Date> {
 	public static DateType INSTANCE = new DateType();
 
 	public DateType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, JdbcDateTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, JdbcDateJavaType.INSTANCE );
 	}
 
 	@Override

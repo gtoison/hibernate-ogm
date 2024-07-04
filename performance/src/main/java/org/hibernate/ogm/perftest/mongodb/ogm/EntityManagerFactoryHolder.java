@@ -8,10 +8,6 @@ package org.hibernate.ogm.perftest.mongodb.ogm;
 
 import java.util.Random;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.TransactionManager;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
@@ -23,6 +19,10 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 import com.mongodb.MongoException;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.transaction.TransactionManager;
 
 /**
  * Context object controlling the {@link EntityManagerFactory} lifecycle and making it available to MongoDB-based

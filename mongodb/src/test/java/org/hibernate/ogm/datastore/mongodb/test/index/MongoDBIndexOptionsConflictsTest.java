@@ -10,23 +10,22 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.hibernate.ogm.utils.TestHelper.inTransaction;
 import static org.junit.Assert.fail;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.ogm.options.shared.IndexOption;
 import org.hibernate.ogm.options.shared.IndexOptions;
 import org.hibernate.ogm.sessionfactory.SessionFactoryBuilder;
 import org.hibernate.ogm.utils.TestForIssue;
-
 import org.junit.After;
 import org.junit.Test;
 
 import com.mongodb.MongoCommandException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * Tests what happens when an index and a constraint or different indexes are defined on the same column set.

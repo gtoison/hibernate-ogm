@@ -8,9 +8,6 @@ package org.hibernate.ogm.test.util.impl;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.ogm.dialect.spi.TupleContext;
@@ -22,6 +19,9 @@ import org.hibernate.ogm.utils.OgmTestCase;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Test the {@link TupleContextHelper} utility class.

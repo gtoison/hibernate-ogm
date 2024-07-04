@@ -11,21 +11,22 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ogm.OgmSession;
+import org.hibernate.ogm.datastore.mongodb.type.GeoCollection;
 import org.hibernate.ogm.datastore.mongodb.type.GeoLineString;
 import org.hibernate.ogm.datastore.mongodb.type.GeoMultiLineString;
 import org.hibernate.ogm.datastore.mongodb.type.GeoMultiPoint;
 import org.hibernate.ogm.datastore.mongodb.type.GeoMultiPolygon;
 import org.hibernate.ogm.datastore.mongodb.type.GeoPoint;
 import org.hibernate.ogm.datastore.mongodb.type.GeoPolygon;
-import org.hibernate.ogm.datastore.mongodb.type.GeoCollection;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.Query;
 
 /**
  * Test the GeoJSON objects support for MongoDB.
@@ -110,7 +111,7 @@ public class MongoDBGeoObjectTest extends OgmTestCase {
 		Query query = session
 				.createNativeQuery( "{ " + field + ": { $geoWithin: { $geometry: " + BOUNDING_BOX.toBsonDocument() + " } } }" )
 				.addEntity( GeoObject.class );
-		List<GeoObject> result = query.list();
+		List<GeoObject> result = query.getResultList();
 
 		assertThat( result ).hasSize( 1 );
 

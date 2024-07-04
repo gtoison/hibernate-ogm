@@ -6,12 +6,14 @@
  */
 package org.hibernate.ogm.persister.impl;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.cache.spi.access.EntityDataAccess;
 import org.hibernate.cache.spi.access.NaturalIdDataAccess;
 import org.hibernate.mapping.PersistentClass;
+import org.hibernate.metamodel.mapping.TableDetails;
 import org.hibernate.persister.spi.PersisterCreationContext;
 
 /**
@@ -29,10 +31,4 @@ public class UnionSubclassOgmEntityPersister extends OgmEntityPersister {
 		super( persistentClass, cacheAccessStrategy, naturalIdRegionAccessStrategy, creationContext,
 				new TablePerClassDiscriminator( persistentClass ) );
 	}
-
-	@Override
-	protected String filterFragment(String alias, Set<String> treatAsDeclarations) {
-		return null;
-	}
-
 }

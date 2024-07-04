@@ -8,7 +8,7 @@ package org.hibernate.ogm.perftest.model;
 
 import java.util.Date;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Gunnar Morling

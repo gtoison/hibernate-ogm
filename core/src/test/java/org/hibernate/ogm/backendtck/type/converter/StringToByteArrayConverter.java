@@ -8,7 +8,7 @@ package org.hibernate.ogm.backendtck.type.converter;
 
 import java.nio.charset.StandardCharsets;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 /**
  * @author Gunnar Morling

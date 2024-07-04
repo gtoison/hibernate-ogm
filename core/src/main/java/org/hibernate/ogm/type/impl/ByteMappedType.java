@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.ByteMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.ByteTypeDescriptor;
+import org.hibernate.type.descriptor.java.ByteJavaType;
 
 /**
  * Convert a value to {@link Byte} before persisting it.
@@ -20,7 +20,7 @@ public class ByteMappedType extends AbstractGenericBasicType<Byte> {
 	public static final ByteMappedType INSTANCE = new ByteMappedType();
 
 	public ByteMappedType() {
-		super( ByteMappedGridTypeDescriptor.INSTANCE, ByteTypeDescriptor.INSTANCE );
+		super( ByteMappedGridTypeDescriptor.INSTANCE, ByteJavaType.INSTANCE );
 	}
 
 	@Override

@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.optimisticlocking;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Gunnar Morling

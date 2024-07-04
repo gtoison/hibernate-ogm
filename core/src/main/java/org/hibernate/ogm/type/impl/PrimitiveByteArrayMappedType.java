@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.ByteArrayMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.PrimitiveByteArrayTypeDescriptor;
+import org.hibernate.type.descriptor.java.PrimitiveByteArrayJavaType;
 
 /**
  * Persist a value by wrapping and unwrapping in an array of bytes.
@@ -20,7 +20,7 @@ public class PrimitiveByteArrayMappedType extends AbstractGenericBasicType<byte[
 	public static final PrimitiveByteArrayMappedType INSTANCE = new PrimitiveByteArrayMappedType();
 
 	public PrimitiveByteArrayMappedType() {
-		super( ByteArrayMappedGridTypeDescriptor.INSTANCE, PrimitiveByteArrayTypeDescriptor.INSTANCE );
+		super( ByteArrayMappedGridTypeDescriptor.INSTANCE, PrimitiveByteArrayJavaType.INSTANCE );
 	}
 
 	@Override

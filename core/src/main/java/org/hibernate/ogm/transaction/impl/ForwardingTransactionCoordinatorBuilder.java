@@ -6,8 +6,6 @@
  */
 package org.hibernate.ogm.transaction.impl;
 
-import org.hibernate.ConnectionAcquisitionMode;
-import org.hibernate.ConnectionReleaseMode;
 import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 import org.hibernate.resource.transaction.spi.TransactionCoordinator;
 import org.hibernate.resource.transaction.spi.TransactionCoordinatorBuilder;
@@ -34,18 +32,6 @@ public class ForwardingTransactionCoordinatorBuilder implements TransactionCoord
 	@Override
 	public boolean isJta() {
 		return delegate.isJta();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public ConnectionReleaseMode getDefaultConnectionReleaseMode() {
-		return delegate.getDefaultConnectionReleaseMode();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public ConnectionAcquisitionMode getDefaultConnectionAcquisitionMode() {
-		return delegate.getDefaultConnectionAcquisitionMode();
 	}
 
 	@Override

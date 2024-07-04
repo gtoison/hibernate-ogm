@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.dialectinvocations;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Gunnar Morling

@@ -9,15 +9,15 @@ package org.hibernate.ogm.utils;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
+import java.util.ServiceLoader;
+import java.util.function.Consumer;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -43,11 +43,11 @@ import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.options.navigation.GlobalContext;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
-import java.util.ServiceLoader;
-import java.util.function.Consumer;
 
 import com.arjuna.ats.arjuna.coordinator.TxControl;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

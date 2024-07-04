@@ -10,7 +10,7 @@ import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.loader.entity.UniqueEntityLoader;
+import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 import org.hibernate.ogm.loader.impl.TupleBasedEntityLoader;
 import org.hibernate.persister.entity.OuterJoinLoadable;
 
@@ -26,7 +26,7 @@ import org.hibernate.persister.entity.OuterJoinLoadable;
  *
  * @see org.hibernate.loader.BatchFetchStyle
  */
-public abstract class BatchingEntityLoaderBuilder {
+public abstract class BatchingEntityLoaderBuilder<T> {
 	// FIXME: Transform this method into a service initiator and have BatchingEntityLoader be a Service when migrating back to ORM
 	public static BatchingEntityLoaderBuilder getBuilder(SessionFactoryImplementor factory) {
 		// Today, the MultigetGridDialect interface does not offer support for prepared statement / fixed size abtch queries
@@ -86,7 +86,7 @@ public abstract class BatchingEntityLoaderBuilder {
 	 *
 	 * @return The loader.
 	 */
-	public UniqueEntityLoader buildLoader(
+	public SingleIdEntityLoader<T> buildLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockMode lockMode,
@@ -100,7 +100,7 @@ public abstract class BatchingEntityLoaderBuilder {
 		return buildBatchingLoader( persister, batchSize, lockMode, factory, influencers, innerEntityLoaderBuilder );
 	}
 
-	public UniqueEntityLoader buildLoader(
+	public SingleIdEntityLoader<T> buildLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockMode lockMode,
@@ -109,7 +109,7 @@ public abstract class BatchingEntityLoaderBuilder {
 		return buildLoader( persister, batchSize, lockMode, factory, influencers, null );
 	}
 
-	protected UniqueEntityLoader buildNonBatchingLoader(
+	protected SingleIdEntityLoader<T> buildNonBatchingLoader(
 			OuterJoinLoadable persister,
 			LockMode lockMode,
 			SessionFactoryImplementor factory,
@@ -118,7 +118,7 @@ public abstract class BatchingEntityLoaderBuilder {
 		return innerEntityLoaderBuilder.buildLoader( persister, 1, lockMode, factory, influencers );
 	}
 
-	protected abstract UniqueEntityLoader buildBatchingLoader(
+	protected abstract SingleIdEntityLoader<T> buildBatchingLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockMode lockMode,
@@ -138,7 +138,7 @@ public abstract class BatchingEntityLoaderBuilder {
 	 *
 	 * @return The loader.
 	 */
-	public UniqueEntityLoader buildLoader(
+	public SingleIdEntityLoader<T> buildLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockOptions lockOptions,
@@ -152,7 +152,7 @@ public abstract class BatchingEntityLoaderBuilder {
 		return buildBatchingLoader( persister, batchSize, lockOptions, factory, influencers, innerEntityLoaderBuilder );
 	}
 
-	protected UniqueEntityLoader buildNonBatchingLoader(
+	protected SingleIdEntityLoader<T> buildNonBatchingLoader(
 			OuterJoinLoadable persister,
 			LockOptions lockOptions,
 			SessionFactoryImplementor factory,
@@ -161,7 +161,7 @@ public abstract class BatchingEntityLoaderBuilder {
 		return innerEntityLoaderBuilder.buildLoader( persister, 1, lockOptions, factory, influencers );
 	}
 
-	protected abstract UniqueEntityLoader buildBatchingLoader(
+	protected abstract SingleIdEntityLoader<T> buildBatchingLoader(
 			OuterJoinLoadable persister,
 			int batchSize,
 			LockOptions lockOptions,

@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.inheritance.singletable;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 @Entity
 public class SimpleNode extends Node {

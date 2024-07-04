@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.callbacks;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author David Williams

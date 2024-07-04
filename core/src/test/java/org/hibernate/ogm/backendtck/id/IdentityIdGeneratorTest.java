@@ -9,8 +9,6 @@ package org.hibernate.ogm.backendtck.id;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.HibernateException;
 import org.hibernate.ogm.utils.GridDialectType;
 import org.hibernate.ogm.utils.SkipByGridDialect;
@@ -20,6 +18,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Nabeel Ali Memon &lt;nabeel@nabeelalimemon.com&gt;

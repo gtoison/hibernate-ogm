@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
-import org.hibernate.search.annotations.Indexed;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 @Indexed

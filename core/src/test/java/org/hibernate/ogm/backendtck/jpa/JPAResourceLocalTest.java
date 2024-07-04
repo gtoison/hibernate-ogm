@@ -10,11 +10,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.hibernate.ogm.utils.TestHelper.dropSchemaAndDatabase;
 import static org.hibernate.ogm.utils.TestHelper.getNumberOfEntities;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-
 import org.hibernate.ogm.utils.PackagingRule;
 import org.hibernate.ogm.utils.RequiresTransactionalCapabilitiesRule;
 import org.hibernate.ogm.utils.SkippableTestRunner;
@@ -22,6 +17,11 @@ import org.hibernate.ogm.utils.TestHelper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

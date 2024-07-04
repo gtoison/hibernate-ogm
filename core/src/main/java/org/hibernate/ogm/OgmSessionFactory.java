@@ -8,14 +8,15 @@ package org.hibernate.ogm;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionBuilder;
-import org.hibernate.SessionFactory;
+import org.hibernate.engine.spi.SessionBuilderImplementor;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 
 /**
  * Provides OGM-specific functionality on the session factory level.
  *
  * @author Gunnar Morling
  */
-public interface OgmSessionFactory extends SessionFactory {
+public interface OgmSessionFactory extends SessionFactoryImplementor {
 
 	/**
 	 * A {@link SessionBuilder} which creates {@link OgmSession}s.
@@ -23,14 +24,14 @@ public interface OgmSessionFactory extends SessionFactory {
 	 * @author Gunnar Morling
 	 *
 	 */
-	public interface OgmSessionBuilder<T extends OgmSessionBuilder> extends SessionBuilder<T> {
+	public interface OgmSessionBuilder extends SessionBuilder {
 
 		@Override
 		OgmSession openSession();
 	}
 
 	@Override
-	OgmSessionBuilder withOptions();
+	SessionBuilderImplementor withOptions();
 
 	/**
 	 * Opens a new session based on the configured NoSQL datastore.

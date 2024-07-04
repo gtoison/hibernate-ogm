@@ -9,13 +9,13 @@ package org.hibernate.ogm.backendtck.id;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 
 /**
  * Tests that the insertion of a record with an already existing primary key is prevented.

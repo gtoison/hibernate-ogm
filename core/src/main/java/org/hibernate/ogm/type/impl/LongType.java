@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.LongTypeDescriptor;
+import org.hibernate.type.descriptor.java.LongJavaType;
 
 /**
  * Represents a Long type
@@ -20,7 +20,7 @@ public class LongType extends AbstractGenericBasicType<Long> {
 	public static final LongType INSTANCE = new LongType();
 
 	public LongType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, LongTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, LongJavaType.INSTANCE );
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class EnumType extends GridTypeDelegatingToCoreType {
 	public Object nullSafeGet(Tuple rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException {
 		if ( names.length > 1 ) {
-			throw new NotYetImplementedException( "Multi column property not implemented yet" );
+			throw new UnsupportedOperationException( "Multi column property not implemented yet" );
 		}
 		return nullSafeGet( rs, names[0], session, owner );
 	}
@@ -105,7 +105,7 @@ public class EnumType extends GridTypeDelegatingToCoreType {
 	public void nullSafeSet(Tuple resultset, Object value, String[] names, boolean[] settable, SharedSessionContractImplementor session)
 			throws HibernateException {
 		if ( settable.length > 1 ) {
-			throw new NotYetImplementedException( "Multi column property not implemented yet" );
+			throw new UnsupportedOperationException( "Multi column property not implemented yet" );
 		}
 		if ( settable[0] ) {
 			nullSafeSet( resultset, value, names, session );
@@ -116,7 +116,7 @@ public class EnumType extends GridTypeDelegatingToCoreType {
 	public void nullSafeSet(Tuple resultset, Object value, String[] names, SharedSessionContractImplementor session)
 			throws HibernateException {
 		if ( names.length > 1 ) {
-			throw new NotYetImplementedException( "Multi column property not implemented yet" );
+			throw new UnsupportedOperationException( "Multi column property not implemented yet" );
 		}
 		if ( value == null ) {
 			log.tracef( "binding [null] to parameter [$s]", names[0] );

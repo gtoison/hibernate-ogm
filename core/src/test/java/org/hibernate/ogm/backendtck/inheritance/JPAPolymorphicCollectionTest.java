@@ -6,9 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.inheritance;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hibernate.ogm.utils.TestHelper.dropSchemaAndDatabase;
 
 import org.hibernate.ogm.backendtck.simpleentity.Hero;
 import org.hibernate.ogm.backendtck.simpleentity.SuperHero;
@@ -19,8 +18,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static org.hibernate.ogm.utils.TestHelper.dropSchemaAndDatabase;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
  * @author Jonathan Wood <jonathanshawwood@gmail.com>

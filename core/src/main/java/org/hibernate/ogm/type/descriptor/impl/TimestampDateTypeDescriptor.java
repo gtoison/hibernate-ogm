@@ -9,20 +9,20 @@ package org.hibernate.ogm.type.descriptor.impl;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.hibernate.type.descriptor.java.DateTypeDescriptor;
+import org.hibernate.type.descriptor.java.DateJavaType;
 
 /**
  * Converts a {@link Date} into a {@link String} representing a timestamp.
  *
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;
  */
-public class TimestampDateTypeDescriptor extends DateTypeDescriptor {
+public class TimestampDateTypeDescriptor extends DateJavaType {
 
 	public static final TimestampDateTypeDescriptor INSTANCE = new TimestampDateTypeDescriptor();
-
+	
 	@Override
-	public Date fromString(String string) {
-		return CalendarTimeZoneDateTimeTypeDescriptor.INSTANCE.fromString( string ).getTime();
+	public Date fromString(CharSequence string) {
+		return CalendarTimeZoneDateTimeTypeDescriptor.INSTANCE.fromString( string.toString() ).getTime();
 	}
 
 	@Override

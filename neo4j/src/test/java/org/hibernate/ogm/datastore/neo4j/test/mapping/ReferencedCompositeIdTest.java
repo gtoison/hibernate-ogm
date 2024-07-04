@@ -9,8 +9,6 @@ package org.hibernate.ogm.datastore.neo4j.test.mapping;
 import static org.hibernate.ogm.datastore.neo4j.dialect.impl.NodeLabel.ENTITY;
 import static org.hibernate.ogm.datastore.neo4j.test.dsl.GraphAssertions.node;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.backendtck.associations.compositeid.Director;
 import org.hibernate.ogm.backendtck.associations.compositeid.Tournament;
 import org.hibernate.ogm.backendtck.associations.compositeid.TournamentId;
@@ -18,6 +16,8 @@ import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.RelationshipsChainForGraphAssertions;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Tests for the mapping of associations with composite ids.

@@ -12,11 +12,11 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author David Williams

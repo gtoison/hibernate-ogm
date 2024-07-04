@@ -8,7 +8,7 @@ package org.hibernate.ogm.backendtck.associations.compositeid;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * Identifies a tournament.

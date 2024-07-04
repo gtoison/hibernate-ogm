@@ -11,7 +11,7 @@ import java.util.Date;
 
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
-import org.hibernate.type.descriptor.java.JdbcTimestampTypeDescriptor;
+import org.hibernate.type.descriptor.java.JdbcTimestampJavaType;
 
 /**
  * Persists a {@link Timestamp} as a {@link Date}.
@@ -28,7 +28,7 @@ public class TimestampAsDateType extends AbstractGenericBasicType<Date> {
 	public static final TimestampAsDateType INSTANCE = new TimestampAsDateType();
 
 	public TimestampAsDateType() {
-		super( TimestampGridTypeDescriptor.INSTANCE, JdbcTimestampTypeDescriptor.INSTANCE );
+		super( TimestampGridTypeDescriptor.INSTANCE, JdbcTimestampJavaType.INSTANCE );
 	}
 
 	@Override

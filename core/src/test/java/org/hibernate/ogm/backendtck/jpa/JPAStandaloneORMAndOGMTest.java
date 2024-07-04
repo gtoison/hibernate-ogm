@@ -6,13 +6,13 @@
  */
 package org.hibernate.ogm.backendtck.jpa;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.hibernate.ogm.utils.PackagingRule;
 import org.hibernate.ogm.utils.TestHelper;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

@@ -11,10 +11,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ogm.OgmSession;
@@ -31,6 +27,10 @@ import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Tests for dialects implementing the {@link MultigetGridDialect} interface when the id of the entity is mapped on a

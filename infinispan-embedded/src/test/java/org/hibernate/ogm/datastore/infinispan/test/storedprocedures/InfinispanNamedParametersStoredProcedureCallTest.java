@@ -12,11 +12,6 @@ import static org.hibernate.ogm.backendtck.storedprocedures.Car.RESULT_SET_PROC_
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceException;
-import javax.persistence.StoredProcedureQuery;
-
 import org.hibernate.ogm.backendtck.storedprocedures.Car;
 import org.hibernate.ogm.utils.TestForIssue;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
@@ -25,6 +20,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.StoredProcedureQuery;
 
 /**
  * Testing call of stored procedures

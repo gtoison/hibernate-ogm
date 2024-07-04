@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.PrimitiveByteArrayTypeDescriptor;
+import org.hibernate.type.descriptor.java.PrimitiveByteArrayJavaType;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -18,7 +18,7 @@ public class PrimitiveByteArrayType extends AbstractGenericBasicType<byte[]> {
 	public static PrimitiveByteArrayType INSTANCE = new PrimitiveByteArrayType();
 
 	public PrimitiveByteArrayType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, PrimitiveByteArrayTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, PrimitiveByteArrayJavaType.INSTANCE );
 	}
 
 	@Override

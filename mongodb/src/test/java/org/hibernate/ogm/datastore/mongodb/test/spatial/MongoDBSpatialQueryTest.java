@@ -10,7 +10,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ogm.OgmSession;
@@ -19,6 +18,8 @@ import org.hibernate.ogm.utils.OgmTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.Query;
 
 /**
  * Demonstrate the spatial support for MongoDB.
@@ -69,14 +70,14 @@ public class MongoDBSpatialQueryTest extends OgmTestCase {
 			Query query = session
 					.createNativeQuery( "{ location: { $near: { $geometry: { type: 'Point', coordinates: [4.8520035, 45.7498209] }, $maxDistance: 500 } } }" )
 					.addEntity( Restaurant.class );
-			List<Restaurant> result = query.list();
+			List<Restaurant> result = query.getResultList();
 
 			assertThat( result ).onProperty( "id" ).containsExactly( 2L );
 
 			query = session
 					.createNativeQuery( "{ location: { $near: { $geometry: { type: 'Point', coordinates: [4.8520035, 45.7498209] }, $maxDistance: 2000 } } }" )
 					.addEntity( Restaurant.class );
-			result = query.list();
+			result = query.getResultList();
 
 			assertThat( result ).onProperty( "id" ).containsExactly( 2L, 3L );
 

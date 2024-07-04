@@ -6,14 +6,14 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.index;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.Table;
-
 import org.hibernate.ogm.datastore.mongodb.type.GeoPoint;
 import org.hibernate.ogm.options.shared.IndexOption;
 import org.hibernate.ogm.options.shared.IndexOptions;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = Restaurant.COLLECTION_NAME, indexes = {

@@ -10,9 +10,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.ogm.datastore.infinispan.InfinispanProperties;
 import org.hibernate.ogm.datastore.infinispan.impl.InfinispanEmbeddedDatastoreProvider;
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
@@ -21,6 +18,9 @@ import org.hibernate.ogm.utils.TestForIssue;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.transaction.TransactionMode;
 import org.junit.Test;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Verify that a cache which is configured as non-transactional is indeed not transactional at boot time. The reason for

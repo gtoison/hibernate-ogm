@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.backendtck.id.embeddable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.backendtck.batchfetching;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 import org.hibernate.annotations.BatchSize;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 /**
  * @author Emmanuel Bernard emmanuel@hibernate.org

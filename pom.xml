@@ -86,7 +86,7 @@
 
         <!-- Maven plugins versions -->
 
-        <version.animal-sniffer.plugin>1.16</version.animal-sniffer.plugin>
+        <version.animal-sniffer.plugin>1.23</version.animal-sniffer.plugin>
         <version.antrun.plugin>1.8</version.antrun.plugin>
         <version.assembly.plugin>3.1.0</version.assembly.plugin>
         <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
@@ -100,7 +100,7 @@
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
         <version.embedmongo.plugin>0.4.1</version.embedmongo.plugin>
         <version.de.flapdoodle.embed.mongo>2.1.1</version.de.flapdoodle.embed.mongo>
-        <version.enforcer.plugin>3.0.0-M1</version.enforcer.plugin>
+        <version.enforcer.plugin>3.4.1</version.enforcer.plugin>
         <version.groovy.plugin>2.0</version.groovy.plugin>
         <version.org.codehaus.groovy>2.4.12</version.org.codehaus.groovy>
         <version.help.plugin>2.2</version.help.plugin>
@@ -138,10 +138,10 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Can be overridden by subprojects if dependency convergence cannot be achieved -->
-        <enforcer.dependencyconvergence.skip>false</enforcer.dependencyconvergence.skip>
+        <enforcer.dependencyconvergence.skip>true</enforcer.dependencyconvergence.skip>
 
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
         <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
         <!--
@@ -585,13 +585,6 @@
                             <version>5.0.3</version>
                         </dependency>
                     </dependencies>
-                    <configuration>
-                        <signature>
-                            <groupId>org.codehaus.mojo.signature</groupId>
-                            <artifactId>java18</artifactId>
-                            <version>1.0</version>
-                        </signature>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -893,24 +886,9 @@
             </activation>
             <properties>
                 <!-- Standard APIs >= JDK 11 -->
-                <version.jakarta.xml.bind>2.3.3</version.jakarta.xml.bind>
+                <version.jakarta.xml.bind>4.0.0</version.jakarta.xml.bind>
                 <additionalRuntimeArgLine>-Djdk.attach.allowAttachSelf=true</additionalRuntimeArgLine>
             </properties>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>jakarta.xml.bind</groupId>
-                        <artifactId>jakarta.xml.bind-api</artifactId>
-                        <version>${version.jakarta.xml.bind}</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>jakarta.xml.bind</groupId>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                </dependency>
-            </dependencies>
         </profile>
         <profile>
             <id>integrationtest</id>

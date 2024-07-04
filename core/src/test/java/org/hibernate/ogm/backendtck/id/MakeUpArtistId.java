@@ -8,7 +8,7 @@ package org.hibernate.ogm.backendtck.id;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * Identifies a make-up artist.

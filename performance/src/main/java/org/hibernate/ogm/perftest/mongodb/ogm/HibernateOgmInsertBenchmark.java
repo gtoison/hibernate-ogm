@@ -8,8 +8,6 @@ package org.hibernate.ogm.perftest.mongodb.ogm;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.perftest.model.Author;
 import org.hibernate.ogm.perftest.model.AuthorWithSequence;
 import org.hibernate.ogm.perftest.model.ResearchPaper;
@@ -17,6 +15,8 @@ import org.hibernate.ogm.perftest.model.Scientist;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Threads;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * A JMH benchmark measuring performance of insert operations using Hibernate OGM.

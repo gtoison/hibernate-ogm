@@ -12,9 +12,6 @@ import static org.hibernate.ogm.datastore.neo4j.test.query.nativequery.OscarWild
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
 import org.hibernate.ogm.backendtck.jpa.Poem;
 import org.hibernate.ogm.datastore.impl.DatastoreProviderType;
 import org.hibernate.ogm.utils.PackagingRule;
@@ -25,6 +22,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 
 /**
  * Test the execution of native queries on Neo4j using the {@link EntityManager}

@@ -6,8 +6,6 @@
  */
 package org.hibernate.ogm.compensation.impl;
 
-import org.hibernate.ConnectionAcquisitionMode;
-import org.hibernate.ConnectionReleaseMode;
 import org.hibernate.ogm.compensation.ErrorHandler;
 import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 import org.hibernate.resource.transaction.spi.TransactionCoordinator;
@@ -41,18 +39,6 @@ public class ErrorHandlerEnabledTransactionCoordinatorBuilder implements Transac
 	@Override
 	public boolean isJta() {
 		return delegate.isJta();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public ConnectionReleaseMode getDefaultConnectionReleaseMode() {
-		return delegate.getDefaultConnectionReleaseMode();
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public ConnectionAcquisitionMode getDefaultConnectionAcquisitionMode() {
-		return delegate.getDefaultConnectionAcquisitionMode();
 	}
 
 	@Override

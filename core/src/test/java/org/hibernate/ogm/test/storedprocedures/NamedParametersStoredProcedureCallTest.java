@@ -10,12 +10,12 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Properties;
 
-import javax.persistence.StoredProcedureQuery;
-
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.procedure.internal.NoSQLProcedureCallImpl;
 import org.junit.Test;
+
+import jakarta.persistence.StoredProcedureQuery;
 
 /**
  * This class is supposed to run the tests in {@link NamedParametersStoredProcedureCallTest} on a mock dialect to make

@@ -22,6 +22,7 @@ import org.hibernate.id.IntegralDataTypeHolder;
 import org.hibernate.id.enhanced.AccessCallback;
 import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.OptimizerFactory;
+import org.hibernate.id.enhanced.StandardOptimizerDescriptor;
 import org.hibernate.id.enhanced.TableGenerator;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.jdbc.AbstractReturningWork;
@@ -68,15 +69,14 @@ public abstract class OgmGeneratorBase implements PersistentNoSqlIdentifierGener
 
 		// if the increment size is greater than one, we prefer pooled optimization; but we
 		// need to see if the user prefers POOL or POOL_LO...
-		String defaultPooledOptimizerStrategy = ConfigurationHelper.getBoolean(
-				Environment.PREFER_POOLED_VALUES_LO, params, false
-		)
-				? OptimizerFactory.POOL_LO
-				: OptimizerFactory.POOL;
-		final String defaultOptimizerStrategy = incrementSize <= 1 ? OptimizerFactory.NONE : defaultPooledOptimizerStrategy;
+		String defaultPooledOptimizerStrategy = ConfigurationHelper.getString(
+				Environment.PREFERRED_POOLED_OPTIMIZER, params
+		);
+		
+		final String defaultOptimizerStrategy = incrementSize <= 1 ? StandardOptimizerDescriptor.NONE.getExternalName() : defaultPooledOptimizerStrategy;
 		final String optimizationStrategy = ConfigurationHelper.getString( OPT_PARAM, params, defaultOptimizerStrategy );
 		optimizer = OptimizerFactory.buildOptimizer(
-				optimizationStrategy,
+				StandardOptimizerDescriptor.fromExternalName(optimizationStrategy),
 				identifierType.getReturnedClass(),
 				incrementSize,
 				ConfigurationHelper.getInt( INITIAL_PARAM, params, -1 )

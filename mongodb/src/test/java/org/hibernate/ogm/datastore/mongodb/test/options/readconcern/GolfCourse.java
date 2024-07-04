@@ -9,8 +9,8 @@ package org.hibernate.ogm.datastore.mongodb.test.options.readconcern;
 import org.hibernate.ogm.datastore.mongodb.options.ReadConcern;
 import org.hibernate.ogm.datastore.mongodb.options.ReadConcernType;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

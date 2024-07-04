@@ -11,8 +11,8 @@ import java.lang.reflect.Method;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.search.engine.environment.classpath.spi.ClassLoaderHelper;
 import org.hibernate.search.engine.service.spi.ServiceManager;
-import org.hibernate.search.util.impl.ClassLoaderHelper;
 
 /**
  * @author Emmanuel Bernard

@@ -6,12 +6,6 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.index;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Transaction;
 import org.hibernate.annotations.NaturalId;
@@ -22,6 +16,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 /**
  * Test that unique constraints are created on MongoDB for:

@@ -9,11 +9,11 @@ package org.hibernate.ogm.backendtck.queries.projection;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 import org.hibernate.ogm.utils.TestForIssue;
-
 import org.junit.Test;
+
+import jakarta.persistence.PersistenceException;
 
 /**
  * Base test for use of a projection:

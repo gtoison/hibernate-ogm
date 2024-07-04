@@ -6,8 +6,6 @@
  */
 package org.hibernate.ogm.transaction.emulated.impl;
 
-import org.hibernate.ConnectionAcquisitionMode;
-import org.hibernate.ConnectionReleaseMode;
 import org.hibernate.ogm.transaction.impl.ForwardingTransactionCoordinatorOwner;
 import org.hibernate.resource.jdbc.spi.PhysicalConnectionHandlingMode;
 import org.hibernate.resource.transaction.backend.jdbc.spi.JdbcResourceTransaction;
@@ -40,16 +38,6 @@ public class EmulatedLocalTransactionCoordinatorBuilder implements TransactionCo
 	@Override
 	public boolean isJta() {
 		return false;
-	}
-
-	@Override
-	public ConnectionReleaseMode getDefaultConnectionReleaseMode() {
-		return ConnectionReleaseMode.AFTER_TRANSACTION;
-	}
-
-	@Override
-	public ConnectionAcquisitionMode getDefaultConnectionAcquisitionMode() {
-		return ConnectionAcquisitionMode.IMMEDIATELY;
 	}
 
 	/**

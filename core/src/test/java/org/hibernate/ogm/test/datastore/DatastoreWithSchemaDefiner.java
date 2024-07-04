@@ -8,12 +8,12 @@ package org.hibernate.ogm.test.datastore;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.hibernate.ogm.utils.PackagingRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
  * Test that DatastoreProvider implementing StartStoppable are properly receiving events.

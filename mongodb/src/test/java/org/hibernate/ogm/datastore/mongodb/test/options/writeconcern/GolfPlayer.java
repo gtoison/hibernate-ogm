@@ -10,14 +10,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
 import org.hibernate.ogm.datastore.mongodb.options.AssociationDocumentStorage;
 import org.hibernate.ogm.datastore.mongodb.options.AssociationDocumentStorageType;
 import org.hibernate.ogm.datastore.mongodb.options.WriteConcern;
 import org.hibernate.ogm.datastore.mongodb.options.WriteConcernType;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Gunnar Morling

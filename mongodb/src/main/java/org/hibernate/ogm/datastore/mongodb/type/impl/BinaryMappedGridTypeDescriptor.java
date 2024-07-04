@@ -8,13 +8,13 @@ package org.hibernate.ogm.datastore.mongodb.type.impl;
 
 import org.bson.BsonBinary;
 import org.bson.types.Binary;
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.type.descriptor.impl.BasicGridBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * A {@link GridTypeDescriptor} which stores/retrieves values from the grid unwrapping/wrapping them as {@link Binary}, delegating to a

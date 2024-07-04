@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.backendtck.queries.Ending;
 import org.hibernate.ogm.backendtck.queries.OptionalStoryBranch;
 import org.hibernate.ogm.backendtck.queries.StoryBranch;
@@ -24,6 +22,8 @@ import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.RelationshipsChainForGraphAssertions;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Tests the mapping of embeddable collections in Neo4j

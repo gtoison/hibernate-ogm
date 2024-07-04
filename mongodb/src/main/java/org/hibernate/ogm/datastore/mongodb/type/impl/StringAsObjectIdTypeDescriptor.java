@@ -7,14 +7,14 @@
 package org.hibernate.ogm.datastore.mongodb.type.impl;
 import org.bson.types.ObjectId;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
+import org.hibernate.type.descriptor.java.AbstractClassJavaType;
 
 /**
  * Descriptor for persisting {@code String}s as {@link ObjectId}s in the datastore.
  *
  * @author Gunnar Morling
  */
-public class StringAsObjectIdTypeDescriptor extends AbstractTypeDescriptor<String> {
+public class StringAsObjectIdTypeDescriptor extends AbstractClassJavaType<String> {
 
 	public static final StringAsObjectIdTypeDescriptor INSTANCE = new StringAsObjectIdTypeDescriptor();
 
@@ -27,8 +27,8 @@ public class StringAsObjectIdTypeDescriptor extends AbstractTypeDescriptor<Strin
 		return value == null ? null : value;
 	}
 	@Override
-	public String fromString(String string) {
-		return string;
+	public String fromString(CharSequence value) {
+		return value == null ? null : value.toString();
 	}
 
 	@Override

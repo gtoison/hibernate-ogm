@@ -6,17 +6,16 @@
  */
 package org.hibernate.ogm.dialect.impl;
 
-import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 
 import org.hibernate.LockMode;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.dialect.lock.LockingStrategy;
 import org.hibernate.dialect.lock.LockingStrategyException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.event.spi.EventSource;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 
 /**
  * A {@link LockingStrategy} which always raises an exception upon lock retrieval.
@@ -37,11 +36,10 @@ public class ExceptionThrowingLockingStrategy implements LockingStrategy {
 		this.gridDialectClass = gridDialect.getClass();
 		this.lockMode = lockMode;
 	}
-
+	
 	@Override
-	public void lock(Serializable id, Object version, Object object, int timeout, SharedSessionContractImplementor session)
+	public void lock(Object id, Object version, Object object, int timeout, EventSource session)
 			throws StaleObjectStateException, LockingStrategyException {
-
 		throw LOG.unsupportedLockMode( gridDialectClass, lockMode );
 	}
 }

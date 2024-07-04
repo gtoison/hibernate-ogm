@@ -8,14 +8,15 @@ package org.hibernate.ogm.backendtck.queries;
 
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Gunnar Morling
@@ -27,10 +28,10 @@ public class Address {
 	@Id
 	private Long id;
 
-	@Field(store = Store.YES)
+	@GenericField
 	private String street;
 
-	@Field
+	@GenericField
 	private String city;
 
 	@ContainedIn

@@ -12,8 +12,6 @@ import static org.hibernate.ogm.datastore.neo4j.test.dsl.GraphAssertions.node;
 
 import java.util.Arrays;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.backendtck.embeddable.Order;
 import org.hibernate.ogm.backendtck.embeddable.PhoneNumber;
 import org.hibernate.ogm.backendtck.embeddable.ShippingAddress;
@@ -21,6 +19,8 @@ import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.RelationshipsChainForGraphAssertions;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Davide D'Alto

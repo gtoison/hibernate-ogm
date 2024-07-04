@@ -9,12 +9,14 @@ package org.hibernate.ogm.options.navigation.impl;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
-import static org.hibernate.bytecode.internal.bytebuddy.ByteBuddyState.resolveClassLoadingStrategy;
+import static org.hibernate.internal.CoreLogging.messageLogger;
 
 import java.lang.annotation.ElementType;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 
+import org.hibernate.HibernateException;
+import org.hibernate.bytecode.internal.bytebuddy.ByteBuddyState;
 import org.hibernate.ogm.options.navigation.EntityContext;
 import org.hibernate.ogm.options.navigation.GlobalContext;
 import org.hibernate.ogm.options.navigation.PropertyContext;
@@ -27,6 +29,7 @@ import org.hibernate.ogm.util.impl.ReflectionHelper;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.matcher.ElementMatcher;
 
@@ -41,6 +44,8 @@ import net.bytebuddy.matcher.ElementMatcher;
  * @author Fabio Massimo Ercoli
  */
 public class ConfigurationContextImpl implements ConfigurationContext {
+
+	private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
@@ -130,7 +135,6 @@ public class ConfigurationContextImpl implements ConfigurationContext {
 
 	private <E extends EntityContext<?, ?>> E createEntityMappingContext(Class<? extends E> entityContextImplType,
 			Class<? extends PropertyContext<?, ?>> propertyContextImplType) {
-
 		// ByteBuddyState#resolveClassLoadingStrategy static method is an Hibernate ORM internal,
 		// please remove its use here as soon the issue HHH-13014 has been closed.
 		// url https://hibernate.atlassian.net/browse/HHH-13014.
@@ -174,6 +178,15 @@ public class ConfigurationContextImpl implements ConfigurationContext {
 
 	private ElementMatcher.Junction<MethodDescription> filterPropertyMethod() {
 		return named( PROPERTY_METHOD_NAME ).and( takesArguments( String.class, ElementType.class ) );
+	}
+
+	private static ClassLoadingStrategy<ClassLoader> resolveClassLoadingStrategy(Class<?> originalClass) {
+		try {
+			return ClassLoadingStrategy.UsingLookup.of( MethodHandles.privateLookupIn( originalClass, LOOKUP ) );
+		}
+		catch (Throwable e) {
+			throw new HibernateException( messageLogger( ByteBuddyState.class ).bytecodeEnhancementFailedUnableToGetPrivateLookupFor( originalClass.getName() ), e );
+		}
 	}
 
 	public final class EntityOrPropertyMethodInterceptor {

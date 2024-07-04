@@ -6,20 +6,19 @@
  */
 package org.hibernate.ogm.backendtck.inheritance.singletable.family;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 
 @Entity
 @DiscriminatorValue("CHILD")
 @Indexed
 class Child extends Person {
 
-	@Field(analyze = Analyze.NO)
+	@GenericField
 	private String favouriteToy;
 
 	@OneToOne

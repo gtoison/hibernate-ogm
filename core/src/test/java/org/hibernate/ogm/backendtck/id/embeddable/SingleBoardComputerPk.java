@@ -8,11 +8,10 @@ package org.hibernate.ogm.backendtck.id.embeddable;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
-
-import org.apache.lucene.document.Document;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.hibernate.search.bridge.TwoWayFieldBridge;
+
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Gunnar Morling

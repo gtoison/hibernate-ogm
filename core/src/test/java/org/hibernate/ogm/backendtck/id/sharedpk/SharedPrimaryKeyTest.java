@@ -8,14 +8,13 @@ package org.hibernate.ogm.backendtck.id.sharedpk;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PrimaryKeyJoinColumn;
-
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 
 /**
  * Test for sharing the PK between two entities via {@link PrimaryKeyJoinColumn}.

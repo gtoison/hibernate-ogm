@@ -17,13 +17,13 @@ import org.hibernate.engine.query.spi.sql.NativeSQLQueryReturn;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.loader.custom.CustomQuery;
 import org.hibernate.loader.custom.Return;
-import org.hibernate.loader.custom.RootReturn;
 import org.hibernate.loader.custom.sql.SQLQueryReturnProcessor;
 import org.hibernate.ogm.model.spi.EntityMetadataInformation;
 import org.hibernate.ogm.persister.impl.OgmEntityPersister;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.param.ParameterBinder;
+import org.hibernate.query.NativeQuery.RootReturn;
 
 /**
  * Extension point allowing any NoSQL native query with named and positional parameters

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.event.service.spi.DuplicationStrategy;
+import org.hibernate.event.spi.PersistContext;
 import org.hibernate.event.spi.PersistEvent;
 import org.hibernate.event.spi.PersistEventListener;
 import org.hibernate.ogm.util.impl.EffectivelyFinal;
@@ -44,9 +45,9 @@ public class EventContextManagingPersistEventListener implements PersistEventLis
 			stateManager.onEventFinished();
 		}
 	}
-
+	
 	@Override
-	public void onPersist(PersistEvent event, Map createdAlready) throws HibernateException {
+	public void onPersist(PersistEvent event, PersistContext createdAlready) throws HibernateException {
 		stateManager.onEventBegin( event.getSession() );
 
 		try {

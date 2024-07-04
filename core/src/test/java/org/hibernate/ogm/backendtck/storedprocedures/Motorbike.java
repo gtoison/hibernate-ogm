@@ -8,8 +8,8 @@ package org.hibernate.ogm.backendtck.storedprocedures;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * This class is only use to test that an exception is thrown when calling a stored procedure that returns multiple

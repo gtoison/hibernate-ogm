@@ -9,10 +9,6 @@ package org.hibernate.ogm.datastore.infinispanremote.test.initialize;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.ogm.cfg.OgmProperties;
@@ -25,6 +21,10 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Hibernate OGM should throw an exception when the cache does not exist and we don't want to create it.

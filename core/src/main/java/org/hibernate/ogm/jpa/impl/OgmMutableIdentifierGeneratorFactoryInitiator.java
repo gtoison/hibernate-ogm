@@ -9,7 +9,7 @@ package org.hibernate.ogm.jpa.impl;
 import java.util.Map;
 
 import org.hibernate.boot.registry.StandardServiceInitiator;
-import org.hibernate.id.factory.spi.MutableIdentifierGeneratorFactory;
+import org.hibernate.id.factory.IdentifierGeneratorFactory;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 
 /**
@@ -17,17 +17,17 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
  *
  * @author Gunnar Morling
  */
-public class OgmMutableIdentifierGeneratorFactoryInitiator implements StandardServiceInitiator<MutableIdentifierGeneratorFactory> {
+public class OgmMutableIdentifierGeneratorFactoryInitiator implements StandardServiceInitiator<IdentifierGeneratorFactory> {
 
 	public static final OgmMutableIdentifierGeneratorFactoryInitiator INSTANCE = new OgmMutableIdentifierGeneratorFactoryInitiator();
 
 	@Override
-	public Class<MutableIdentifierGeneratorFactory> getServiceInitiated() {
-		return MutableIdentifierGeneratorFactory.class;
+	public Class<IdentifierGeneratorFactory> getServiceInitiated() {
+		return IdentifierGeneratorFactory.class;
 	}
 
 	@Override
-	public MutableIdentifierGeneratorFactory initiateService(Map configurationValues, ServiceRegistryImplementor registry) {
-		return new OgmMutableIdentifierGeneratorFactory();
+	public IdentifierGeneratorFactory initiateService(Map configurationValues, ServiceRegistryImplementor registry) {
+		return new OgmMutableIdentifierGeneratorFactory( registry );
 	}
 }

@@ -10,13 +10,13 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
 import org.hibernate.ogm.utils.TestForIssue;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 @TestForIssue(jiraKey = "OGM-1294")
 public class PolymorphicAssociationTest extends OgmJpaTestCase {

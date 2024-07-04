@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.test.initialize;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Davide D'Alto

@@ -6,25 +6,16 @@
  */
 package org.hibernate.ogm.boot;
 
-import java.util.Map;
-
-import org.hibernate.ConnectionReleaseMode;
 import org.hibernate.CustomEntityDirtinessStrategy;
-import org.hibernate.EntityMode;
 import org.hibernate.EntityNameResolver;
 import org.hibernate.Interceptor;
-import org.hibernate.MultiTenancyStrategy;
-import org.hibernate.NullPrecedence;
 import org.hibernate.SessionFactoryObserver;
 import org.hibernate.boot.SessionFactoryBuilder;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-import org.hibernate.dialect.function.SQLFunction;
-import org.hibernate.hql.spi.id.MultiTableBulkIdStrategy;
 import org.hibernate.loader.BatchFetchStyle;
 import org.hibernate.ogm.OgmSessionFactory;
 import org.hibernate.proxy.EntityNotFoundDelegate;
-import org.hibernate.tuple.entity.EntityTuplizer;
-import org.hibernate.tuple.entity.EntityTuplizerFactory;
+import org.hibernate.query.NullPrecedence;
 
 /**
  * A {@link SessionFactoryBuilder} which creates {@link OgmSessionFactory} instances.
@@ -73,25 +64,10 @@ public interface OgmSessionFactoryBuilder extends SessionFactoryBuilder {
 	OgmSessionFactoryBuilder applyIdentifierRollbackSupport(boolean enabled);
 
 	@Override
-	@Deprecated
-	OgmSessionFactoryBuilder applyDefaultEntityMode(EntityMode entityMode);
-
-	@Override
 	OgmSessionFactoryBuilder applyNullabilityChecking(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilder applyLazyInitializationOutsideTransaction(boolean enabled);
-
-	@Override
-	OgmSessionFactoryBuilder applyEntityTuplizerFactory(EntityTuplizerFactory entityTuplizerFactory);
-
-	@Override
-	OgmSessionFactoryBuilder applyEntityTuplizer(
-			EntityMode entityMode,
-			Class<? extends EntityTuplizer> tuplizerClass);
-
-	@Override
-	OgmSessionFactoryBuilder applyMultiTableBulkIdStrategy(MultiTableBulkIdStrategy strategy);
 
 	@Override
 	OgmSessionFactoryBuilder applyBatchFetchStyle(BatchFetchStyle style);
@@ -112,21 +88,11 @@ public interface OgmSessionFactoryBuilder extends SessionFactoryBuilder {
 	OgmSessionFactoryBuilder applyOrderingOfUpdates(boolean enabled);
 
 	@Override
-	OgmSessionFactoryBuilder applyMultiTenancyStrategy(MultiTenancyStrategy strategy);
-
-	@Override
-	OgmSessionFactoryBuilder applyCurrentTenantIdentifierResolver(CurrentTenantIdentifierResolver resolver);
+	OgmSessionFactoryBuilder applyCurrentTenantIdentifierResolver(CurrentTenantIdentifierResolver<?> resolver);
 
 	@Override
 	@Deprecated
 	OgmSessionFactoryBuilder applyJtaTrackingByThread(boolean enabled);
-
-	@Override
-	@Deprecated
-	OgmSessionFactoryBuilder applyQuerySubstitutions(Map substitutions);
-
-	@Override
-	OgmSessionFactoryBuilder applyStrictJpaQueryLanguageCompliance(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilder applyNamedQueryCheckingOnStartup(boolean enabled);
@@ -162,22 +128,13 @@ public interface OgmSessionFactoryBuilder extends SessionFactoryBuilder {
 	OgmSessionFactoryBuilder applyScrollableResultsSupport(boolean enabled);
 
 	@Override
-	OgmSessionFactoryBuilder applyResultSetsWrapping(boolean enabled);
-
-	@Override
 	OgmSessionFactoryBuilder applyGetGeneratedKeysSupport(boolean enabled);
 
 	@Override
 	OgmSessionFactoryBuilder applyJdbcFetchSize(int size);
 
 	@Override
-	OgmSessionFactoryBuilder applyConnectionReleaseMode(ConnectionReleaseMode connectionReleaseMode);
-
-	@Override
 	OgmSessionFactoryBuilder applySqlComments(boolean enabled);
-
-	@Override
-	OgmSessionFactoryBuilder applySqlFunction(String registrationName, SQLFunction sqlFunction);
 
 	@Override
 	OgmSessionFactory build();

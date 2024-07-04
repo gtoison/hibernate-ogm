@@ -8,9 +8,9 @@ package org.hibernate.ogm.datastore.mongodb.test.query.nativequery;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = MarkTwainPoem.TABLE_NAME)

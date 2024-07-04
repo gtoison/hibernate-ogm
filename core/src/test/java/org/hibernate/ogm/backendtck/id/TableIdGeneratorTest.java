@@ -6,16 +6,16 @@
  */
 package org.hibernate.ogm.backendtck.id;
 
-import javax.persistence.EntityManager;
+import static org.fest.assertions.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.DoubleTypeDescriptor;
+import org.hibernate.type.descriptor.java.DoubleJavaType;
 
 /**
  * Represents a Double type
@@ -20,7 +20,7 @@ public class DoubleType  extends AbstractGenericBasicType<Double> {
 	public static final DoubleType INSTANCE = new DoubleType();
 
 	public DoubleType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, DoubleTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, DoubleJavaType.INSTANCE );
 	}
 
 	@Override

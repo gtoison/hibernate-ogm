@@ -11,7 +11,6 @@ import static org.hibernate.ogm.utils.TestHelper.getNumberOfAssociations;
 import static org.hibernate.ogm.utils.TestHelper.getNumberOfEntities;
 
 import org.hibernate.ogm.utils.OgmTestCase;
-
 import org.junit.After;
 import org.junit.Test;
 

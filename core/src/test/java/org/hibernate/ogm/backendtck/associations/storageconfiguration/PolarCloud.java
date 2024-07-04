@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.associations.storageconfiguration;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 /**
  * @author Gunnar Morling

@@ -8,18 +8,19 @@ package org.hibernate.ogm.backendtck.queries;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Gunnar Morling
@@ -31,7 +32,7 @@ public class Author {
 	@Id
 	private Long id;
 
-	@Field(store = Store.YES, analyze = Analyze.NO, indexNullAs = "NULL_VALUE")
+	@GenericField
 	private String name;
 
 	@ContainedIn

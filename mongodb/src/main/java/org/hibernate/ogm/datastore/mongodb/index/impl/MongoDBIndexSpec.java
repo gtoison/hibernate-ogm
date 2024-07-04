@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.datastore.mongodb.index.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class MongoDBIndexSpec {
 		this.options = prepareOptions( this.indexType, options, uniqueKey.getName(), true );
 		this.collection = uniqueKey.getTable().getName();
 		this.indexName = uniqueKey.getName();
-		this.addIndexKeys( uniqueKey.getColumnIterator(), uniqueKey.getColumnOrderMap() );
+		this.addIndexKeys( uniqueKey.getColumns(), uniqueKey.getColumnOrderMap() );
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class MongoDBIndexSpec {
 		this.collection = index.getTable().getName();
 		this.indexName = index.getName();
 		// TODO OGM-1080: the columnOrderMap is not accessible for an Index
-		this.addIndexKeys( index.getColumnIterator(), Collections.<Column, String>emptyMap() );
+		this.addIndexKeys( index.getColumns(), Collections.<Column, String>emptyMap() );
 	}
 
 	private static MongoDBIndexType determineIndexType(Document options) {
@@ -157,9 +158,8 @@ public class MongoDBIndexSpec {
 		return indexType;
 	}
 
-	private void addIndexKeys(Iterator<Column> columnIterator, Map<Column, String> columnOrderMap) {
-		while ( columnIterator.hasNext() ) {
-			Column column = columnIterator.next();
+	private void addIndexKeys(Collection<Column> columns, Map<Column, String> columnOrderMap) {
+		for ( Column column : columns ) {
 			Object mongoDBOrder;
 			if ( MongoDBIndexType.NORMAL.equals( indexType ) ) {
 				String order = columnOrderMap.get( column ) != null ? columnOrderMap.get( column ) : "asc";

@@ -8,15 +8,14 @@ package org.hibernate.ogm.datastore.mongodb.test.id.objectid;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Tests for using object ids with MongoDB.

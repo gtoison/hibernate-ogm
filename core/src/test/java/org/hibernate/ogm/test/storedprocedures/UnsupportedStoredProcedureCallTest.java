@@ -8,16 +8,16 @@ package org.hibernate.ogm.test.storedprocedures;
 
 import java.util.Properties;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.StoredProcedureQuery;
-
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.StoredProcedureQuery;
 
 /**
  * Test the error thrown when stored procedures are used with a dialect that does not support them

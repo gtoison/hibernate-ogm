@@ -26,7 +26,6 @@ import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SessionHelper.ProjectionResult;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestSessionFactory;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

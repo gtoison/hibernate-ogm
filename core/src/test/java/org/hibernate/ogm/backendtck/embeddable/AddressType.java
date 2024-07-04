@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.embeddable;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * The type of an address.

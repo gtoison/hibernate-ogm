@@ -148,6 +148,7 @@
             <artifactId>byteman-install</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.infinispan.server</groupId>
             <artifactId>infinispan-server-build</artifactId>
@@ -161,6 +162,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        -->
         <dependency>
             <groupId>org.infinispan</groupId>
             <artifactId>infinispan-tasks-api</artifactId>

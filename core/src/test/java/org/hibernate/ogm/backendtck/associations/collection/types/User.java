@@ -11,18 +11,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.OneToMany;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.ogm.datastore.document.options.MapStorage;
 import org.hibernate.ogm.datastore.document.options.MapStorageType;
+
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.MapKeyColumn;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

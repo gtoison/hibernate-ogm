@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.inheritance;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 @Entity
 class Employee extends CommunityMember {

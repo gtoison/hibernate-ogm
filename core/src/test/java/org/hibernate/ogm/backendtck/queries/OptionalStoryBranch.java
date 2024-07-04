@@ -6,12 +6,12 @@
  */
 package org.hibernate.ogm.backendtck.queries;
 
-import javax.persistence.Embeddable;
-
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class OptionalStoryBranch {

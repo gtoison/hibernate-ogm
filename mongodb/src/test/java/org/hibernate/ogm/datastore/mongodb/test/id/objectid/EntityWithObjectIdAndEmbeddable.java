@@ -6,14 +6,14 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.id.objectid;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import org.bson.types.ObjectId;
 import org.hibernate.ogm.backendtck.queries.StoryBranch;
+
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 /**
  * @author Davide D'Alto

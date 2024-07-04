@@ -20,6 +20,7 @@ import org.hibernate.ogm.dialect.query.spi.QueryableGridDialect;
 import org.hibernate.ogm.hibernatecore.impl.BackendCustomLoader;
 import org.hibernate.ogm.loader.nativeloader.impl.BackendCustomQuery;
 import org.hibernate.query.internal.ParameterMetadataImpl;
+import org.hibernate.query.sql.spi.ParameterRecognizer;
 
 /**
  * Interprets given native NoSQL queries.
@@ -35,6 +36,11 @@ public class NativeNoSqlQueryInterpreter implements NativeQueryInterpreter {
 	public NativeNoSqlQueryInterpreter(QueryableGridDialect<?> gridDialect) {
 		this.gridDialect = gridDialect;
 		this.builder = gridDialect.getParameterMetadataBuilder();
+	}
+	
+	@Override
+	public void recognizeParameters(String nativeQuery, ParameterRecognizer recognizer) {
+		TODO.x();
 	}
 
 	@Override

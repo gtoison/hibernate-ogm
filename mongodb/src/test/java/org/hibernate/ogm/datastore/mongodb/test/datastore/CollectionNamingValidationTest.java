@@ -8,11 +8,6 @@ package org.hibernate.ogm.datastore.mongodb.test.datastore;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.MappingException;
 import org.hibernate.internal.util.StringHelper;
 import org.hibernate.ogm.OgmSessionFactory;
@@ -20,6 +15,11 @@ import org.hibernate.ogm.utils.TestForIssue;
 import org.hibernate.ogm.utils.TestHelper;
 import org.junit.Assert;
 import org.junit.Test;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Makes sure generated collection names are validated according to

@@ -12,7 +12,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.BigDecimalTypeDescriptor;
+import org.hibernate.type.descriptor.java.BigDecimalJavaType;
 
 /**
  * Type descriptor for translating a BigDecimal Java type into its string representation
@@ -31,7 +31,7 @@ public class BigDecimalType extends AbstractGenericBasicType<BigDecimal> {
 	public static final BigDecimalType INSTANCE = new BigDecimalType();
 
 	public BigDecimalType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, BigDecimalTypeDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, BigDecimalJavaType.INSTANCE );
 	}
 
 	@Override

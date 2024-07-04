@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.test.transaction;
 
-import javax.persistence.PersistenceException;
-
 import org.hibernate.ogm.backendtck.optimisticlocking.OptimisticLockingTest;
 import org.hibernate.ogm.datastore.infinispanremote.utils.InfinispanRemoteServerRunner;
 import org.junit.runner.RunWith;
+
+import jakarta.persistence.PersistenceException;
 
 /**
  * This test replaces the TCK base test {@link OptimisticLockingTest} for the current dialect.

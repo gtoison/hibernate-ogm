@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.embeddable;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 
 /**
  * @author Gunnar Morling

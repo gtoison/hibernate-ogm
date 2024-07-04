@@ -9,6 +9,7 @@ package org.hibernate.ogm.datastore.mongodb.type.impl;
 import java.util.function.Function;
 
 import org.bson.Document;
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.datastore.mongodb.type.AbstractGeoJsonObject;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.type.descriptor.impl.BasicGridBinder;
@@ -16,7 +17,6 @@ import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * Base grid type descriptor for GeoJSON objects.

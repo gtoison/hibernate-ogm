@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.embeddable;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Table;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Table;
 
 /**
  * Identify an issue on JIRA.

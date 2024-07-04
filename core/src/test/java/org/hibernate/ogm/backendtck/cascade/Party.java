@@ -7,8 +7,9 @@
 package org.hibernate.ogm.backendtck.cascade;
 
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Fabio Massimo Ercoli

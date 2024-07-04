@@ -11,7 +11,7 @@ import java.util.Calendar;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.CalendarTypeDescriptor;
+import org.hibernate.type.descriptor.java.CalendarJavaType;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -20,7 +20,7 @@ public class CalendarType extends AbstractGenericBasicType<Calendar> {
 	public static final CalendarType INSTANCE = new CalendarType();
 
 	public CalendarType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, CalendarTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, CalendarJavaType.INSTANCE );
 	}
 
 	@Override

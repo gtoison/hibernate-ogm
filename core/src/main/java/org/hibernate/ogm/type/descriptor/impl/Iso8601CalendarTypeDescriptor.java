@@ -8,9 +8,9 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import java.util.Calendar;
 
-import javax.xml.bind.DatatypeConverter;
+import org.hibernate.type.descriptor.java.CalendarDateJavaType;
 
-import org.hibernate.type.descriptor.java.CalendarDateTypeDescriptor;
+import jakarta.xml.bind.DatatypeConverter;
 
 /**
  * Converts {@link Calendar}s into ISO8601-compliant strings and vice versa. The strings either contain date or time
@@ -21,7 +21,7 @@ import org.hibernate.type.descriptor.java.CalendarDateTypeDescriptor;
  *
  * @author Gunnar Morling
  */
-public class Iso8601CalendarTypeDescriptor extends CalendarDateTypeDescriptor {
+public class Iso8601CalendarTypeDescriptor extends CalendarDateJavaType {
 
 	/**
 	 * Creates/parses ISO8601 strings containing date information only.
@@ -45,7 +45,7 @@ public class Iso8601CalendarTypeDescriptor extends CalendarDateTypeDescriptor {
 	}
 
 	@Override
-	public Calendar fromString(String string) {
+	public Calendar fromString(CharSequence string) {
 		return type.fromString( string );
 	}
 
@@ -71,8 +71,8 @@ public class Iso8601CalendarTypeDescriptor extends CalendarDateTypeDescriptor {
 		DATE {
 
 			@Override
-			public Calendar fromString(String string) {
-				return DatatypeConverter.parseDate( string );
+			public Calendar fromString(CharSequence string) {
+				return DatatypeConverter.parseDate( string.toString() );
 			}
 
 			@Override
@@ -84,8 +84,8 @@ public class Iso8601CalendarTypeDescriptor extends CalendarDateTypeDescriptor {
 		TIME {
 
 			@Override
-			public Calendar fromString(String string) {
-				return DatatypeConverter.parseTime( string );
+			public Calendar fromString(CharSequence string) {
+				return DatatypeConverter.parseTime( string.toString() );
 			}
 
 			@Override
@@ -97,8 +97,8 @@ public class Iso8601CalendarTypeDescriptor extends CalendarDateTypeDescriptor {
 		DATE_TIME {
 
 			@Override
-			public Calendar fromString(String string) {
-				return DatatypeConverter.parseDateTime( string );
+			public Calendar fromString(CharSequence string) {
+				return DatatypeConverter.parseDateTime( string.toString() );
 			}
 
 			@Override
@@ -107,7 +107,7 @@ public class Iso8601CalendarTypeDescriptor extends CalendarDateTypeDescriptor {
 			}
 		};
 
-		public abstract Calendar fromString(String string);
+		public abstract Calendar fromString(CharSequence string);
 
 		public abstract String toString(Calendar value);
 	}

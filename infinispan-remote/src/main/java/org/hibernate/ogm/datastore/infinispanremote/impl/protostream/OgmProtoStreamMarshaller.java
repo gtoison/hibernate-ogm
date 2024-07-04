@@ -10,10 +10,10 @@ import java.io.IOException;
 
 import org.hibernate.ogm.datastore.infinispanremote.impl.protostream.multimessage.MultiMessage;
 import org.hibernate.ogm.datastore.infinispanremote.impl.protostream.multimessage.MultiMessageExtension;
-
-import org.infinispan.client.hotrod.marshall.ProtoStreamMarshaller;
 import org.infinispan.commons.io.ByteBuffer;
 import org.infinispan.commons.io.ByteBufferImpl;
+import org.infinispan.commons.marshall.ImmutableProtoStreamMarshaller;
+import org.infinispan.protostream.ImmutableSerializationContext;
 
 /**
  * The original ProtoStreamMarshaller expects 1:1 mapping between a Java class
@@ -26,18 +26,19 @@ import org.infinispan.commons.io.ByteBufferImpl;
  * @see MultiMessageExtension
  * @see MultiMessage
  */
-public final class OgmProtoStreamMarshaller extends ProtoStreamMarshaller {
+public final class OgmProtoStreamMarshaller extends ImmutableProtoStreamMarshaller {
 
-	public OgmProtoStreamMarshaller() {
+	public OgmProtoStreamMarshaller( ImmutableSerializationContext serializationContext ) {
+		super( serializationContext );
 	}
 
 	@Override
-	protected ByteBuffer objectToBuffer(Object o, int estimatedSize) throws IOException, InterruptedException {
+	protected ByteBuffer objectToBuffer(Object o, int estimatedSize) throws IOException {
 		if ( !( o instanceof MultiMessage ) ) {
 			return super.objectToBuffer( o, estimatedSize );
 		}
 
 		byte[] bytes = MultiMessageExtension.toWrappedByteArray( getSerializationContext(), (MultiMessage) o );
-		return new ByteBufferImpl( bytes, 0, bytes.length );
+		return ByteBufferImpl.create( bytes, 0, bytes.length );
 	}
 }

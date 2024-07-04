@@ -12,8 +12,6 @@ import static org.hibernate.ogm.utils.GridDialectType.MONGODB;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.apache.lucene.search.Query;
 import org.hibernate.ogm.backendtck.id.NewsID;
 import org.hibernate.ogm.backendtck.massindex.model.IndexedLabel;
@@ -23,9 +21,11 @@ import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

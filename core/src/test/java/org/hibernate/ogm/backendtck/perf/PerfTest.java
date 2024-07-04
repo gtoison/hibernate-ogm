@@ -11,10 +11,10 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.Date;
 import java.util.Random;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.utils.jpa.SingleJpaTestCase;
 import org.junit.Ignore;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Fire up jconsole and make sure the end of the populating phase does not go over the amount of RAM you

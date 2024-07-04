@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.backendtck.callbacks;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.PrePersist;
-
 import org.hibernate.ogm.backendtck.callbacks.PrePersistableBus.PrePersistableBusEventListener;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.PrePersist;
 
 @Entity
 @EntityListeners(PrePersistableBusEventListener.class)

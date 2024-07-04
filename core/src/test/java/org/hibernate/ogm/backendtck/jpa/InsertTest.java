@@ -9,15 +9,14 @@ package org.hibernate.ogm.backendtck.jpa;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.TestForIssue;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.junit.Test;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author The Viet Nguyen
@@ -57,7 +56,7 @@ public class InsertTest extends OgmTestCase {
 		@Id
 		private String id;
 
-		@Field(analyze = Analyze.NO)
+		@GenericField
 		private String name;
 
 		public Subject() {

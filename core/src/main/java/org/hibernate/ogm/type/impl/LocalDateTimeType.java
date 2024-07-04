@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.LocalDateTimeJavaDescriptor;
+import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
 
 /**
  * @author Fabio Massimo Ercoli
@@ -20,7 +20,7 @@ public class LocalDateTimeType extends AbstractGenericBasicType<LocalDateTime> {
 	public static final LocalDateTimeType INSTANCE = new LocalDateTimeType();
 
 	public LocalDateTimeType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, LocalDateTimeJavaDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, LocalDateTimeJavaType.INSTANCE );
 	}
 
 	@Override

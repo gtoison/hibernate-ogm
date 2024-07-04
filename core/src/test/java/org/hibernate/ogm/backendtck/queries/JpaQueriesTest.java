@@ -10,14 +10,14 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.datastore.neo4j.test.query.nativequery;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

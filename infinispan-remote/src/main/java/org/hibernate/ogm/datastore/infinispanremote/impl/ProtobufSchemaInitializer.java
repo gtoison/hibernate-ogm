@@ -97,9 +97,7 @@ public class ProtobufSchemaInitializer extends BaseSchemaDefiner {
 				td.markAsPrimaryKey( name );
 			}
 		}
-		Iterator<Column> columnIterator = table.getColumnIterator();
-		while ( columnIterator.hasNext() ) {
-			Column column = columnIterator.next();
+		for ( Column column : table.getColumns() ) {
 			if ( !hasPrimaryKey ) {
 				td.markAsPrimaryKey( column.getName() );
 			}

@@ -6,11 +6,13 @@
  */
 package org.hibernate.ogm.type.descriptor.impl;
 
+import java.lang.invoke.MethodHandles;
+
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 
 /**
  * A {@link GridValueExtractor} which either retrieves values from given tuples as is or concerts them by delegating to
@@ -23,10 +25,10 @@ public final class BasicGridExtractor<J> implements GridValueExtractor<J> {
 
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
-	private final JavaTypeDescriptor<J> javaTypeDescriptor;
+	private final BasicJavaType<J> javaTypeDescriptor;
 	private final boolean wrap;
 
-	public BasicGridExtractor(JavaTypeDescriptor<J> javaTypeDescriptor, boolean wrap) {
+	public BasicGridExtractor(BasicJavaType<J> javaTypeDescriptor, boolean wrap) {
 		this.javaTypeDescriptor = javaTypeDescriptor;
 		this.wrap = wrap;
 	}

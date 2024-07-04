@@ -10,7 +10,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.WrappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.CharacterTypeDescriptor;
+import org.hibernate.type.descriptor.java.CharacterJavaType;
 
 /**
  * Represents a Character type
@@ -21,7 +21,7 @@ public class CharacterType extends AbstractGenericBasicType<Character> {
 	public static CharacterType INSTANCE = new CharacterType();
 
 	public CharacterType() {
-		super( WrappedGridTypeDescriptor.INSTANCE, CharacterTypeDescriptor.INSTANCE );
+		super( WrappedGridTypeDescriptor.INSTANCE, CharacterJavaType.INSTANCE );
 	}
 
 	@Override

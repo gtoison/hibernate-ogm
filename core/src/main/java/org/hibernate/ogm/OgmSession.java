@@ -6,14 +6,14 @@
  */
 package org.hibernate.ogm;
 
-import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionImplementor;
 
 /**
  * Session-level functionality specific to Hibernate OGM.
  *
  * @author Gunnar Morling
  */
-public interface OgmSession extends Session {
+public interface OgmSession extends SessionImplementor {
 
 	@Override
 	OgmSessionFactory getSessionFactory();

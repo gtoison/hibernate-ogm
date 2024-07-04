@@ -6,10 +6,10 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.test.configuration;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.ogm.datastore.infinispanremote.options.cache.CacheConfiguration;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Used a NOT existing cache configuration

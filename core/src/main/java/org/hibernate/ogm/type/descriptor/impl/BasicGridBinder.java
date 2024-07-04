@@ -6,18 +6,19 @@
  */
 package org.hibernate.ogm.type.descriptor.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.TimeZone;
 
 import org.hibernate.engine.jdbc.LobCreator;
 import org.hibernate.engine.jdbc.NonContextualLobCreator;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
-import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 
 /**
  * @author Emmanuel Bernard
@@ -40,21 +41,30 @@ public abstract class BasicGridBinder<X> implements GridValueBinder<X> {
 		}
 
 		@Override
-		public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-			//OGM dialect don't remap types yet
-			return sqlTypeDescriptor;
-		}
-
-		@Override
 		public TimeZone getJdbcTimeZone() {
 			return UTC_TIMEZONE;
 		}
+
+		@Override
+		public SharedSessionContractImplementor getSession() {
+			return null;
+		}
+
+		@Override
+		public SessionFactoryImplementor getSessionFactory() {
+			return null;
+		}
+
+		@Override
+		public int getPreferredSqlTypeCodeForBoolean() {
+			return 0;
+		}
 	};
 
-	private final JavaTypeDescriptor<X> javaDescriptor;
+	private final BasicJavaType<X> javaDescriptor;
 	private final GridTypeDescriptor gridDescriptor;
 
-	public BasicGridBinder(JavaTypeDescriptor<X> javaDescriptor, GridTypeDescriptor gridDescriptor) {
+	public BasicGridBinder(BasicJavaType<X> javaDescriptor, GridTypeDescriptor gridDescriptor) {
 		this.javaDescriptor = javaDescriptor;
 		this.gridDescriptor = gridDescriptor;
 	}

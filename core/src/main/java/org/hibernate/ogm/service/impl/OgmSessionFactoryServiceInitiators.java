@@ -24,7 +24,7 @@ import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 public class OgmSessionFactoryServiceInitiators {
 
 	public static List<SessionFactoryServiceInitiator<?>> LIST = Collections.unmodifiableList( Arrays.<SessionFactoryServiceInitiator<?>>asList(
-			QueryParserServicesInitiator.INSTANCE,
+			// TODO QueryParserServicesInitiator.INSTANCE,
 			SchemaDefinerInitiator.INSTANCE,
 			NativeNoSqlQueryInterpreterInitiator.INSTANCE,
 			TypeTranslatorInitiator.INSTANCE

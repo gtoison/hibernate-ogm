@@ -8,7 +8,8 @@ package org.hibernate.ogm.datastore.infinispanremote.test.query.nativequery;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Embeddable;
+
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Fabio Massimo Ercoli

@@ -13,12 +13,6 @@ import java.util.Map;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.StringRefAddr;
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceException;
-import javax.persistence.SynchronizationType;
-import javax.persistence.criteria.CriteriaBuilder;
 
 import org.hibernate.AssertionFailure;
 import org.hibernate.HibernateException;
@@ -30,8 +24,8 @@ import org.hibernate.engine.jndi.spi.JndiService;
 import org.hibernate.engine.spi.SessionFactoryDelegatingImpl;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.spi.EventSource;
-import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.id.UUIDGenerator;
+import org.hibernate.graph.spi.RootGraphImplementor;
+import org.hibernate.id.uuid.LocalObjectUuidHelper;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionFactoryRegistry;
 import org.hibernate.internal.SessionFactoryRegistry.ObjectFactoryImpl;
@@ -40,6 +34,13 @@ import org.hibernate.ogm.OgmSessionFactory;
 import org.hibernate.ogm.engine.spi.OgmSessionBuilderImplementor;
 import org.hibernate.ogm.engine.spi.OgmSessionFactoryImplementor;
 import org.hibernate.ogm.exception.NotSupportedException;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.SynchronizationType;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -47,15 +48,13 @@ import org.hibernate.ogm.exception.NotSupportedException;
  */
 public class OgmSessionFactoryImpl extends SessionFactoryDelegatingImpl implements OgmSessionFactoryImplementor {
 
-	private static final IdentifierGenerator UUID_GENERATOR = UUIDGenerator.buildSessionFactoryUniqueIdentifierGenerator();
-
 	private final String uuid;
 
 	public OgmSessionFactoryImpl(SessionFactoryImplementor delegate) {
 		super( delegate );
 
 		try {
-			uuid = (String) UUID_GENERATOR.generate( null, null );
+			uuid = LocalObjectUuidHelper.generateLocalObjectUuid();
 		}
 		catch (Exception e) {
 			throw new AssertionFailure( "Could not generate UUID" );
@@ -93,7 +92,7 @@ public class OgmSessionFactoryImpl extends SessionFactoryDelegatingImpl implemen
 	}
 
 	@Override
-	public CriteriaBuilder getCriteriaBuilder() {
+	public HibernateCriteriaBuilder getCriteriaBuilder() {
 		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
 	}
 
@@ -152,7 +151,7 @@ public class OgmSessionFactoryImpl extends SessionFactoryDelegatingImpl implemen
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public EntityGraph findEntityGraphByName(String name) {
+	public RootGraphImplementor<?> findEntityGraphByName(String name) {
 		throw new IllegalStateException( "Hibernate OGM does not support entity graphs" );
 	}
 

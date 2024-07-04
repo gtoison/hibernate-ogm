@@ -8,15 +8,16 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.PersistenceException;
-
-import org.hibernate.metamodel.model.convert.spi.JpaAttributeConverter;
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
+import org.hibernate.type.descriptor.java.BasicJavaType;
+
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.PersistenceException;
 
 /**
  * Modeled after {@link org.hibernate.type.descriptor.converter.AttributeConverterSqlTypeDescriptorAdapter}
@@ -29,12 +30,12 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 
 	private final JpaAttributeConverter converter;
 	private final GridTypeToGridTypeDescriptorAdapter delegate;
-	private final JavaTypeDescriptor intermediateJavaTypeDescriptor;
+	private final BasicJavaType<?> intermediateJavaTypeDescriptor;
 
 	public AttributeConverterGridTypeDescriptorAdaptor(
 			JpaAttributeConverter converter,
 			GridType delegate,
-			JavaTypeDescriptor intermediateJavaTypeDescriptor) {
+			BasicJavaType<?> intermediateJavaTypeDescriptor) {
 		this.converter = converter;
 		// take the intermediary type gridType and transform it into a GridTypeDescriptor
 		this.delegate =  new GridTypeToGridTypeDescriptorAdapter( delegate );
@@ -47,7 +48,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <X> GridValueBinder<X> getBinder(JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
 		// Get the binder for the intermediate type representation
 		final GridValueBinder realBinder = delegate.getBinder( intermediateJavaTypeDescriptor );
 
@@ -77,7 +78,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
 		// Get the extractor for the intermediate type representation
 		final GridValueExtractor realExtractor = delegate.getExtractor( intermediateJavaTypeDescriptor );
 
@@ -119,7 +120,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 		}
 
 		@Override
-		public <X> GridValueBinder<X> getBinder(JavaTypeDescriptor<X> javaTypeDescriptor) {
+		public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
 			return new GridValueBinder<X>() {
 				@Override
 				public void bind(Tuple resultset, X value, String[] names) {
@@ -131,7 +132,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 		}
 
 		@Override
-		public <X> GridValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+		public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
 			return new GridValueExtractor<X>() {
 				@Override
 				@SuppressWarnings( "unchecked" )

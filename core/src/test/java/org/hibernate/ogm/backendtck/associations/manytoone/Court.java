@@ -10,9 +10,10 @@ package org.hibernate.ogm.backendtck.associations.manytoone;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

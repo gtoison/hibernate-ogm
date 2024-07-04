@@ -74,6 +74,7 @@ public class OgmSequenceGenerator extends OgmGeneratorBase implements Exportable
 	private IdSourceKeyMetadata generatorKeyMetadata;
 
 	private IdSourceKeyAndKeyMetadataProvider delegate;
+	private SequenceStyleGenerator generator;
 
 	public OgmSequenceGenerator() {
 	}
@@ -92,6 +93,9 @@ public class OgmSequenceGenerator extends OgmGeneratorBase implements Exportable
 		);
 		generatorKeyMetadata = DefaultIdSourceKeyMetadata.forSequence( sequenceName );
 		delegate = getDelegate( serviceRegistry );
+		
+		generator = new SequenceStyleGenerator();
+		generator.configure(type, params, serviceRegistry);
 	}
 
 	@Override

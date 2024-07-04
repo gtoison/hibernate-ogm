@@ -9,14 +9,14 @@ package org.hibernate.ogm.backendtck.callbacks;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.PostLoad;
-import javax.persistence.Transient;
-
 import org.hibernate.ogm.backendtck.callbacks.Zoo.ZooEventListener;
+
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Id;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.Transient;
 
 /**
  * @author David Williams

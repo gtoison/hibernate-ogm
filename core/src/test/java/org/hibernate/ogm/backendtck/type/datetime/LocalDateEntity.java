@@ -8,8 +8,9 @@ package org.hibernate.ogm.backendtck.type.datetime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Owns {@link LocalDate} and {@link LocalDateTime} fields

@@ -9,6 +9,7 @@ package org.hibernate.ogm.persister.impl;
 import static org.hibernate.ogm.util.impl.CollectionHelper.newHashMap;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,18 +35,17 @@ import org.hibernate.engine.OptimisticLockStyle;
 import org.hibernate.engine.internal.Versioning;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcServices;
-import org.hibernate.engine.spi.CascadingActions;
 import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.internal.DynamicFilterAliasGenerator;
 import org.hibernate.internal.FilterAliasGenerator;
-import org.hibernate.loader.entity.CascadeEntityLoader;
+import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 import org.hibernate.loader.entity.UniqueEntityLoader;
-import org.hibernate.mapping.Column;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Table;
+import org.hibernate.metamodel.mapping.TableDetails;
 import org.hibernate.ogm.compensation.impl.InvocationCollectingGridDialect;
 import org.hibernate.ogm.dialect.batch.spi.GroupingByEntityDialect;
 import org.hibernate.ogm.dialect.identity.spi.IdentityColumnAwareGridDialect;
@@ -88,7 +88,6 @@ import org.hibernate.ogm.util.impl.ArrayHelper;
 import org.hibernate.ogm.util.impl.AssociationPersister;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.util.impl.TransactionContextHelper;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.persister.entity.EntityPersister;
@@ -103,6 +102,7 @@ import org.hibernate.tuple.NonIdentifierAttribute;
 import org.hibernate.tuple.ValueGeneration;
 import org.hibernate.tuple.entity.EntityMetamodel;
 import org.hibernate.type.AssociationType;
+import org.hibernate.type.BasicType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.EntityType;
@@ -275,9 +275,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		}
 
 		HashSet<String> subclassTables = new HashSet<String>();
-		Iterator<Table> tableIter = persistentClass.getSubclassTableClosureIterator();
-		while ( tableIter.hasNext() ) {
-			Table table = tableIter.next();
+		for ( Table table : persistentClass.getSubclassTableClosure() ) {
 			subclassTables.add( jdbcEnvironment.getQualifiedObjectNameFormatter().format( table.getQualifiedTableName(), dialect ) );
 		}
 		subclassSpaces = ArrayHelper.toStringArray( subclassTables );
@@ -290,18 +288,14 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 				tableNames.add( tableName );
 				keyColumns.add( getIdentifierColumnNames() );
 			}
-			@SuppressWarnings( "unchecked" )
-			Iterator<Table> iter = persistentClass.getSubclassTableClosureIterator();
-			while ( iter.hasNext() ) {
-				Table table = iter.next();
+			for ( Table table : persistentClass.getSubclassTableClosure() ) {
 				if ( !table.isAbstractUnionTable() ) {
 					String tableName = jdbcEnvironment.getQualifiedObjectNameFormatter().format( table.getQualifiedTableName(), dialect );
 					tableNames.add( tableName );
 					String[] key = new String[idColumnSpan];
 
-					Iterator<Column> citer = table.getPrimaryKey().getColumnIterator();
 					for ( int k = 0; k < idColumnSpan; k++ ) {
-						key[k] = citer.next().getQuotedName( dialect );
+						key[k] = table.getPrimaryKey().getColumn(k).getQuotedName( dialect );
 					}
 					keyColumns.add( key );
 				}
@@ -583,11 +577,6 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	protected void createUniqueKeyLoaders() throws MappingException {
-		// Avoid the execution of super.createUniqueLoaders()
-	}
-
-	@Override
 	protected void doPostInstantiate() {
 		inverseOneToOneAssociationKeyMetadata = Collections.unmodifiableMap( initInverseOneToOneAssociationKeyMetadata() );
 		tupleTypeContext = createTupleTypeContext();
@@ -642,7 +631,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	 * This snapshot is meant to be used when updating data.
 	 */
 	@Override
-	public Object[] getDatabaseSnapshot(Serializable id, SharedSessionContractImplementor session)
+	public Object[] getDatabaseSnapshot(Object id, SharedSessionContractImplementor session)
 			throws HibernateException {
 
 		if ( log.isTraceEnabled() ) {
@@ -672,7 +661,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	public Object initializeLazyProperty(String fieldName, Object entity, SharedSessionContractImplementor session)
 			throws HibernateException {
 
-		final Serializable id = session.getContextEntityIdentifier( entity );
+		final Object id = session.getContextEntityIdentifier( entity );
 
 		final EntityEntry entry = session.getPersistenceContext().getEntry( entity );
 		if ( entry == null ) {
@@ -703,23 +692,11 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 
 	}
 
-	//FIXME cache should use Core Types or Grid Types?
-	//Make superclasses method protected??
-	private Object initializeLazyPropertiesFromCache(
-			final String fieldName,
-			final Object entity,
-			final SharedSessionContractImplementor session,
-			final EntityEntry entry,
-			final CacheEntry cacheEntry
-	) {
-		throw new NotSupportedException( "OGM-9", "Lazy properties not supported in OGM" );
-	}
-
 	private Object initializeLazyPropertiesFromDatastore(
 			final String fieldName,
 			final Object entity,
 			final SharedSessionContractImplementor session,
-			final Serializable id,
+			final Object id,
 			final EntityEntry entry) {
 		throw new NotSupportedException( "OGM-9", "Lazy properties not supported in OGM" );
 	}
@@ -728,7 +705,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	 * Retrieve the version number
 	 */
 	@Override
-	public Object getCurrentVersion(Serializable id, SharedSessionContractImplementor session) throws HibernateException {
+	public Object getCurrentVersion(Object id, SharedSessionContractImplementor session) throws HibernateException {
 
 		if ( log.isTraceEnabled() ) {
 			log.trace( "Getting version: " + MessageHelper.infoString( this, id, getFactory() ) );
@@ -744,7 +721,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public Object forceVersionIncrement(Serializable id, Object currentVersion, SharedSessionContractImplementor session) {
+	public Object forceVersionIncrement(Object id, Object currentVersion, SharedSessionContractImplementor session) {
 		if ( !isVersioned() ) {
 			throw new AssertionFailure( "cannot force version increment on non-versioned entity" );
 		}
@@ -859,71 +836,8 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		return gridUniqueKeyType;
 	}
 
-	@Override
-	protected void createLoaders() {
-		Map<Object, Object> loaders = getLoaders();
-		loaders.put( LockMode.NONE, createEntityLoader( LockMode.NONE ) );
-
-		UniqueEntityLoader readLoader = createEntityLoader( LockMode.READ );
-		loaders.put( LockMode.READ, readLoader );
-
-		//TODO: inexact, what we really need to know is: are any outer joins used?
-		boolean disableForUpdate = getSubclassTableSpan() > 1 &&
-				hasSubclasses() &&
-				!getFactory().getServiceRegistry().getService( JdbcServices.class ).getDialect().supportsOuterJoinForUpdate();
-
-		loaders.put(
-				LockMode.UPGRADE,
-				disableForUpdate ?
-						readLoader :
-						createEntityLoader( LockMode.UPGRADE )
-			);
-		loaders.put(
-				LockMode.UPGRADE_NOWAIT,
-				disableForUpdate ?
-						readLoader :
-						createEntityLoader( LockMode.UPGRADE_NOWAIT )
-			);
-		loaders.put(
-				LockMode.FORCE,
-				disableForUpdate ?
-						readLoader :
-						createEntityLoader( LockMode.FORCE )
-			);
-		loaders.put(
-				LockMode.PESSIMISTIC_READ,
-				disableForUpdate ?
-						readLoader :
-						createEntityLoader( LockMode.PESSIMISTIC_READ )
-			);
-		loaders.put(
-				LockMode.PESSIMISTIC_WRITE,
-				disableForUpdate ?
-						readLoader :
-						createEntityLoader( LockMode.PESSIMISTIC_WRITE )
-			);
-		loaders.put(
-				LockMode.PESSIMISTIC_FORCE_INCREMENT,
-				disableForUpdate ?
-						readLoader :
-						createEntityLoader( LockMode.PESSIMISTIC_FORCE_INCREMENT )
-			);
-		loaders.put( LockMode.OPTIMISTIC, createEntityLoader( LockMode.OPTIMISTIC ) );
-		loaders.put( LockMode.OPTIMISTIC_FORCE_INCREMENT, createEntityLoader( LockMode.OPTIMISTIC_FORCE_INCREMENT ) );
-
-		loaders.put(
-				"merge",
-				new CascadeEntityLoader( this, CascadingActions.MERGE, getFactory() )
-			);
-		loaders.put(
-				"refresh",
-				new CascadeEntityLoader( this, CascadingActions.REFRESH, getFactory() )
-			);
-	}
-
 	// TODO copied from AbtractEntityPersister: change the visibility
-	@Override
-	public UniqueEntityLoader getAppropriateLoader(LockOptions lockOptions, SharedSessionContractImplementor session) {
+	public SingleIdEntityLoader<?> getAppropriateLoader(LockOptions lockOptions, SharedSessionContractImplementor session) {
 //		if ( queryLoader != null ) {
 //			// if the user specified a custom query loader we need to that
 //			// regardless of any other consideration
@@ -955,29 +869,14 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 //			return ( UniqueEntityLoader ) getLoaders().get( lockOptions.getLockMode() );
 //		}
 		// Today OGM cannot really react to all the use cases commented
-		return (UniqueEntityLoader) getLoaders().get( lockOptions.getLockMode() );
+		return buildSingleIdEntityLoader();
 	}
 
 	@Override
-	protected UniqueEntityLoader createEntityLoader(LockMode lockMode, LoadQueryInfluencers loadQueryInfluencers)
-			throws MappingException {
-		//FIXME add support to lock mode and loadQueryInfluencers
-
-		return BatchingEntityLoaderBuilder.getBuilder( getFactory() )
-				.buildLoader( this, batchSize, lockMode, getFactory(), loadQueryInfluencers, new OgmBatchableEntityLoaderBuilder() );
-	}
-
-	@Override
-	protected UniqueEntityLoader createEntityLoader(LockOptions lockOptions, LoadQueryInfluencers loadQueryInfluencers)
-			throws MappingException {
+	protected SingleIdEntityLoader<?> buildSingleIdEntityLoader() {
 		//FIXME add support to lock mode and loadQueryInfluencers
 		return BatchingEntityLoaderBuilder.getBuilder( getFactory() )
-				.buildLoader( this, batchSize, lockOptions, getFactory(), loadQueryInfluencers, new OgmBatchableEntityLoaderBuilder() );
-	}
-
-	@Override
-	protected UniqueEntityLoader createEntityLoader(LockMode lockMode) throws MappingException {
-		return createEntityLoader( lockMode, LoadQueryInfluencers.NONE );
+				.buildLoader( this, batchSize, LockMode.X, getFactory(), new LoadQueryInfluencers( getFactory() ), new OgmBatchableEntityLoaderBuilder() );
 	}
 
 	//TODO verify what to do with #check: Expectation seems to be very JDBC centric
@@ -999,7 +898,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	 */
 	public Object[] hydrate(
 			final Tuple resultset,
-			final Serializable id,
+			final Object id,
 			final Object object,
 			final Loadable rootLoadable,
 			//We probably don't need suffixedColumns, use column names instead
@@ -1098,21 +997,6 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		return getPropertyColumnNames( i );
 	}
 
-	@Override
-	protected boolean useInsertSelectIdentity() {
-		return false;
-	}
-
-	@Override
-	protected Serializable insert(
-			final Object[] fields,
-			final boolean[] notNull,
-			String sql,
-			final Object object,
-			final SharedSessionContractImplementor session) throws HibernateException {
-		throw new HibernateException( "Cannot use a database generator with OGM" );
-	}
-
 
 	@Override
 	protected LockingStrategy generateLocker(LockMode lockMode) {
@@ -1125,7 +1009,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	 */
 	@Override
 	public void update(
-			final Serializable id,
+			final Object id,
 			final Object[] fields,
 			final int[] dirtyFields,
 			final boolean hasDirtyCollection,
@@ -1292,14 +1176,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		}
 	}
 
-	//Copied from AbstractEntityPersister
-	private boolean isAllOrDirtyOptLocking() {
-		EntityMetamodel entityMetamodel = getEntityMetamodel();
-		return entityMetamodel.getOptimisticLockStyle() == OptimisticLockStyle.DIRTY
-				|| entityMetamodel.getOptimisticLockStyle() == OptimisticLockStyle.ALL;
-	}
-
-	public void checkVersionAndRaiseSOSE(Serializable id, Object oldVersion, SharedSessionContractImplementor session, Tuple resultset) {
+	public void checkVersionAndRaiseSOSE(Object id, Object oldVersion, SharedSessionContractImplementor session, Tuple resultset) {
 		// The tuple has been deleted
 		if ( resultset == null ) {
 			raiseStaleObjectStateException( id );
@@ -1321,7 +1198,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 			final Object[] fields,
 			boolean[] includeProperties,
 			int tableIndex,
-			Serializable id,
+			Object id,
 			SharedSessionContractImplementor session) {
 
 		if ( log.isTraceEnabled() ) {
@@ -1349,7 +1226,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	private void removeFromInverseAssociations(
 			Tuple resultset,
 			int tableIndex,
-			Serializable id,
+			Object id,
 			SharedSessionContractImplementor session) {
 		new EntityAssociationUpdater( this )
 				.id( id )
@@ -1366,7 +1243,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	private void addToInverseAssociations(
 			Tuple resultset,
 			int tableIndex,
-			Serializable id,
+			Object id,
 			SharedSessionContractImplementor session) {
 		new EntityAssociationUpdater( this )
 				.id( id )
@@ -1407,7 +1284,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public void insert(Serializable id, Object[] fields, Object object, SharedSessionContractImplementor session)
+	public void insert(Object id, Object[] fields, Object object, SharedSessionContractImplementor session)
 			throws HibernateException {
 
 		// TODO: Atm. the table span is always 1, i.e. mappings to several tables (@SecondaryTable) are not supported
@@ -1483,14 +1360,14 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	protected String getDiscriminatorAlias() {
+	public String getDiscriminatorAlias() {
 		return discriminator.getAlias();
 	}
 
 	private Tuple createNewResultSetIfNull(
 			EntityKey key,
 			Tuple resultset,
-			Serializable id,
+			Object id,
 			SharedSessionContractImplementor session) {
 		if ( resultset == null ) {
 			resultset = gridDialect.createTuple( key, getTupleContext( session ) );
@@ -1500,7 +1377,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public void delete(Serializable id, Object version, Object object, SharedSessionContractImplementor session)
+	public void delete(Object id, Object version, Object object, SharedSessionContractImplementor session)
 			throws HibernateException {
 		final int span = getTableSpan();
 		if ( span > 1 ) {
@@ -1580,7 +1457,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		}
 	}
 
-	private void removeNavigationInformation(Serializable id, Object entity, SharedSessionContractImplementor session) {
+	private void removeNavigationInformation(Object id, Object entity, SharedSessionContractImplementor session) {
 		for ( int propertyIndex = 0; propertyIndex < getEntityMetamodel().getPropertySpan(); propertyIndex++ ) {
 			if ( propertyMightHaveNavigationalInformation[propertyIndex] ) {
 				CollectionType collectionType = (CollectionType) getPropertyTypes()[propertyIndex];
@@ -1605,7 +1482,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		}
 	}
 
-	private Object[] getLoadedState(Serializable id, SharedSessionContractImplementor session) {
+	private Object[] getLoadedState(Object id, SharedSessionContractImplementor session) {
 		org.hibernate.engine.spi.EntityKey key = session.generateEntityKey( id, this );
 
 		Object entity = session.getPersistenceContext().getEntity( key );
@@ -1624,7 +1501,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	 * <b>Note:</b> Naturally, that approach is not completely fail-safe, it only minimizes the time window for
 	 * undiscovered concurrent updates.
 	 */
-	private void checkOptimisticLockingState(Serializable id, EntityKey key, Object object, Object[] loadedState, Object version,
+	private void checkOptimisticLockingState(Object id, EntityKey key, Object object, Object[] loadedState, Object version,
 			SharedSessionContractImplementor session, Tuple resultset) {
 		int tableSpan = getTableSpan();
 		EntityMetamodel entityMetamodel = getEntityMetamodel();
@@ -1659,16 +1536,6 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		else if ( entityMetamodel.isVersioned() ) {
 			checkVersionAndRaiseSOSE( id, version, session, resultset );
 		}
-	}
-
-	@Override
-	protected int[] getSubclassColumnTableNumberClosure() {
-		return new int[ getSubclassColumnClosure().length ];
-	}
-
-	@Override
-	protected int[] getSubclassFormulaTableNumberClosure() {
-		return new int[ getSubclassFormulaClosure().length ];
 	}
 
 	@Override
@@ -1716,33 +1583,28 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	protected int getTableSpan() {
+	public int getTableSpan() {
 		return TABLE_SPAN;
 	}
 
 	@Override
-	protected boolean isTableCascadeDeleteEnabled(int j) {
+	public boolean isTableCascadeDeleteEnabled(int j) {
 		return false;
 	}
 
 	@Override
-	protected String getTableName(int j) {
+	public String getTableName(int j) {
 		return tableName;
 	}
 
 	@Override
-	protected String[] getKeyColumns(int j) {
+	public String[] getKeyColumns(int j) {
 		return getIdentifierColumnNames();
 	}
 
 	@Override
-	protected boolean isPropertyOfTable(int property, int j) {
+	public boolean isPropertyOfTable(int property, int j) {
 		return true;
-	}
-
-	@Override
-	protected int[] getPropertyTableNumbersInSelect() {
-		return new int[ getPropertySpan() ];
 	}
 
 	@Override
@@ -1762,14 +1624,6 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 //		return hasWhere() ?
 //			" and " + getSQLWhereString(alias) :
 //			"";
-	}
-
-	/**
-	 * Overridden in order to make it visible to other classes in this package.
-	 */
-	@Override
-	protected boolean[][] getPropertyColumnInsertable() {
-		return super.getPropertyColumnInsertable();
 	}
 
 	protected GridType[] getGridPropertyTypes() {
@@ -1805,7 +1659,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public Type getDiscriminatorType() {
+	public BasicType<?> getDiscriminatorType() {
 		return discriminator.getType();
 	}
 
@@ -1820,7 +1674,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public Serializable[] getPropertySpaces() {
+	public String[] getPropertySpaces() {
 		return spaces;
 	}
 
@@ -1848,7 +1702,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public void processInsertGeneratedProperties(Serializable id, Object entity, Object[] state, SharedSessionContractImplementor session) {
+	public void processInsertGeneratedProperties(Object id, Object entity, Object[] state, SharedSessionContractImplementor session) {
 		if ( !hasInsertGeneratedProperties() ) {
 			throw new AssertionFailure( "no insert-generated properties" );
 		}
@@ -1856,11 +1710,26 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 	@Override
-	public void processUpdateGeneratedProperties(Serializable id, Object entity, Object[] state, SharedSessionContractImplementor session) {
+	public void processUpdateGeneratedProperties(Object id, Object entity, Object[] state, SharedSessionContractImplementor session) {
 		if ( !hasUpdateGeneratedProperties() ) {
 			throw new AssertionFailure( "no update-generated properties" );
 		}
 		processGeneratedProperties( id, entity, state, session, GenerationTiming.ALWAYS );
+	}
+	
+	@Override
+	protected boolean isIdentifierTable(String tableExpression) {
+		return tableExpression.equals( getRootTableName() );
+	}
+
+	@Override
+	public TableDetails getIdentifierTableDetails() {
+		return getTableMapping( 0 );
+	}
+
+	@Override
+	public boolean needsDiscriminator() {
+		return forceDiscriminator || isInherited();
 	}
 
 	public AssociationKeyMetadata getInverseOneToOneAssociationKeyMetadata(String propertyName) {
@@ -1871,7 +1740,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	 * Re-reads the given entity, refreshing any properties updated on the server-side during insert or update.
 	 */
 	private void processGeneratedProperties(
-			Serializable id,
+			Object id,
 			Object entity,
 			Object[] state,
 			SharedSessionContractImplementor session,
@@ -1922,7 +1791,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	}
 
 
-	private void raiseStaleObjectStateException(Serializable id) {
+	private void raiseStaleObjectStateException(Object id) {
 		SessionFactoryImplementor factory = getFactory();
 
 		if ( factory.getStatistics().isStatisticsEnabled() ) {

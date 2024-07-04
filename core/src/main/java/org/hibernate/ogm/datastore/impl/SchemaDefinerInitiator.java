@@ -6,16 +6,15 @@
  */
 package org.hibernate.ogm.datastore.impl;
 
-import org.hibernate.boot.spi.SessionFactoryOptions;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
+import java.lang.invoke.MethodHandles;
+
 import org.hibernate.ogm.datastore.spi.BaseSchemaDefiner;
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
 import org.hibernate.ogm.datastore.spi.SchemaDefiner;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
-import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceInitiator;
+import org.hibernate.service.spi.SessionFactoryServiceInitiatorContext;
 
 /**
  * Contributes the {@link SchemaDefiner} service as obtained via
@@ -33,10 +32,10 @@ public class SchemaDefinerInitiator implements SessionFactoryServiceInitiator<Sc
 	public Class<SchemaDefiner> getServiceInitiated() {
 		return SchemaDefiner.class;
 	}
-
+	
 	@Override
-	public SchemaDefiner initiateService(SessionFactoryImplementor sessionFactory, SessionFactoryOptions sessionFactoryOptions, ServiceRegistryImplementor registry) {
-		DatastoreProvider datastoreProvider = registry.getService( DatastoreProvider.class );
+	public SchemaDefiner initiateService(SessionFactoryServiceInitiatorContext context) {
+		DatastoreProvider datastoreProvider = context.getServiceRegistry().getService( DatastoreProvider.class );
 		Class<? extends SchemaDefiner> schemaInitializerType = datastoreProvider.getSchemaDefinerType();
 
 		if ( schemaInitializerType != null ) {

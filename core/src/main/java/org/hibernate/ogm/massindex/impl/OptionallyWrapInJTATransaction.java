@@ -6,9 +6,7 @@
  */
 package org.hibernate.ogm.massindex.impl;
 
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.TransactionManager;
+import java.lang.invoke.MethodHandles;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,7 +22,10 @@ import org.hibernate.ogm.util.impl.TransactionContextHelper;
 import org.hibernate.resource.transaction.spi.TransactionCoordinatorBuilder;
 import org.hibernate.search.exception.ErrorHandler;
 import org.hibernate.search.util.logging.impl.Log;
-import java.lang.invoke.MethodHandles;
+
+import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
+import jakarta.transaction.TransactionManager;
 
 /**
  * Wrap the subsequent Runnable in a JTA Transaction if necessary:

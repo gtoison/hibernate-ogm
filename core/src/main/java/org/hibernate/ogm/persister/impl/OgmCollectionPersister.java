@@ -494,7 +494,7 @@ public class OgmCollectionPersister extends AbstractCollectionPersister implemen
 	}
 
 	@Override
-	public int getSize(Serializable key, SharedSessionContractImplementor session) {
+	public int getSize(Object key, SharedSessionContractImplementor session) {
 		AssociationPersister associationPersister = getAssociationPersister( session.getPersistenceContext().getEntity( new org.hibernate.engine.spi.EntityKey( key, getOwnerEntityPersister() ) ), key, session );
 		final Association collectionMetadata = associationPersister.getAssociationOrNull();
 
@@ -507,7 +507,7 @@ public class OgmCollectionPersister extends AbstractCollectionPersister implemen
 	}
 
 	@Override
-	public void deleteRows(PersistentCollection collection, Serializable id, SharedSessionContractImplementor session)
+	public void deleteRows(PersistentCollection collection, Object id, SharedSessionContractImplementor session)
 			throws HibernateException {
 
 		if ( !isInverse && isRowDeleteEnabled() ) {
@@ -552,7 +552,7 @@ public class OgmCollectionPersister extends AbstractCollectionPersister implemen
 	}
 
 	@Override
-	public void insertRows(PersistentCollection collection, Serializable id, SharedSessionContractImplementor session)
+	public void insertRows(PersistentCollection collection, Object id, SharedSessionContractImplementor session)
 			throws HibernateException {
 
 		if ( !isInverse && isRowInsertEnabled() ) {
@@ -589,7 +589,7 @@ public class OgmCollectionPersister extends AbstractCollectionPersister implemen
 	}
 
 	@Override
-	public void recreate(PersistentCollection collection, Serializable id, SharedSessionContractImplementor session)
+	public void recreate(PersistentCollection collection, Object id, SharedSessionContractImplementor session)
 			throws HibernateException {
 
 		if ( !isInverse && isRowInsertEnabled() ) {
@@ -724,7 +724,7 @@ public class OgmCollectionPersister extends AbstractCollectionPersister implemen
 	}
 
 	@Override
-	public void remove(Serializable id, SharedSessionContractImplementor session) throws HibernateException {
+	public void remove(Object id, SharedSessionContractImplementor session) throws HibernateException {
 
 		if ( !isInverse && isRowDeleteEnabled() ) {
 
@@ -887,7 +887,7 @@ public class OgmCollectionPersister extends AbstractCollectionPersister implemen
 		return associationTypeContext;
 	}
 
-	private AssociationPersister getAssociationPersister(Object collectionOwner, Serializable id, SharedSessionContractImplementor session) {
+	private AssociationPersister getAssociationPersister(Object collectionOwner, Object id, SharedSessionContractImplementor session) {
 		return new AssociationPersister.Builder(
 				getOwnerEntityPersister().getMappedClass()
 			)

@@ -13,8 +13,6 @@ import static org.hibernate.ogm.datastore.neo4j.test.dsl.GraphAssertions.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.backendtck.id.Label;
 import org.hibernate.ogm.backendtck.id.News;
 import org.hibernate.ogm.backendtck.id.NewsID;
@@ -22,6 +20,8 @@ import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.RelationshipsChainForGraphAssertions;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Davide D'Alto

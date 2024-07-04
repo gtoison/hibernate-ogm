@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.LocalDateTimeJavaDescriptor;
+import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
 
 /**
  * For {@link LocalDateTime} objects use a String representation,
@@ -24,7 +24,7 @@ public class LocalDateTimeAsStringType extends AbstractGenericBasicType<LocalDat
 	public static final LocalDateTimeAsStringType INSTANCE = new LocalDateTimeAsStringType();
 
 	public LocalDateTimeAsStringType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, LocalDateTimeJavaDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, LocalDateTimeJavaType.INSTANCE );
 	}
 
 	@Override

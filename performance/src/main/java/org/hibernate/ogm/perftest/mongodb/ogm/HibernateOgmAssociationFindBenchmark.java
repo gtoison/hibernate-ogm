@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.perftest.model.FieldOfScience;
 import org.hibernate.ogm.perftest.model.ScientistWithSequence;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -20,6 +18,8 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * A JMH benchmark measuring performance of association get operations using Hibernate OGM.

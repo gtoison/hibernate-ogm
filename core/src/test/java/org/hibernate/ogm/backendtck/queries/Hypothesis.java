@@ -8,21 +8,17 @@ package org.hibernate.ogm.backendtck.queries;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.DateBridge;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.NumericField;
-import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.SortableField;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 
 /**
  * @author Emmanuel Bernard
@@ -38,7 +34,7 @@ public class Hypothesis {
 	private Author author;
 
 	@Id
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	public String getId() {
 		return id;
 	}
@@ -47,8 +43,7 @@ public class Hypothesis {
 		this.id = id;
 	}
 
-	@Field(analyze = Analyze.NO, store = Store.YES, indexNullAs = "#<NULL>#")
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	public String getDescription() {
 		return description;
 	}
@@ -58,9 +53,7 @@ public class Hypothesis {
 	}
 
 	@Column(name = "pos")
-	@Field(analyze = Analyze.NO)
-	@NumericField
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	public int getPosition() {
 		return position;
 	}
@@ -69,8 +62,7 @@ public class Hypothesis {
 		this.position = position;
 	}
 
-	@Field(analyze = Analyze.NO)
-	@DateBridge(resolution = Resolution.DAY)
+	@GenericField(sortable = Sortable.YES)
 	public Date getDate() {
 		return date;
 	}

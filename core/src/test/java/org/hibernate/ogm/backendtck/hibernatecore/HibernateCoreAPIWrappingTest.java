@@ -10,9 +10,6 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -25,6 +22,10 @@ import org.hibernate.ogm.utils.PackagingRule;
 import org.hibernate.ogm.utils.TestHelper;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

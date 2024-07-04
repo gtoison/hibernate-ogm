@@ -9,9 +9,9 @@ package org.hibernate.ogm.backendtck.associations.collection.manytomany;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 /**
  * @author Davide D'Alto

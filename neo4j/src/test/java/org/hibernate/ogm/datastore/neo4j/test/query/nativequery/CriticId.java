@@ -8,7 +8,7 @@ package org.hibernate.ogm.datastore.neo4j.test.query.nativequery;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * Identifies a critic.

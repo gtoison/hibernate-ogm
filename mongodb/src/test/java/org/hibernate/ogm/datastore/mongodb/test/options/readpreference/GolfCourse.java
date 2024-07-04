@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.options.readpreference;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

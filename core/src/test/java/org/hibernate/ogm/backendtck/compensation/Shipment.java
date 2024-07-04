@@ -6,11 +6,11 @@
  */
 package org.hibernate.ogm.backendtck.compensation;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
-import org.hibernate.search.annotations.Indexed;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 
 /**
  * @author Gunnar Morling

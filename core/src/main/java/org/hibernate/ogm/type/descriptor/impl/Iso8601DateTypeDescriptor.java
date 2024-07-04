@@ -10,9 +10,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import javax.xml.bind.DatatypeConverter;
+import org.hibernate.type.descriptor.java.DateJavaType;
 
-import org.hibernate.type.descriptor.java.DateTypeDescriptor;
+import jakarta.xml.bind.DatatypeConverter;
 
 /**
  * Converts {@link Date}s into ISO8601-compliant strings and vice versa. The strings either contain date or time
@@ -23,7 +23,7 @@ import org.hibernate.type.descriptor.java.DateTypeDescriptor;
  *
  * @author Gunnar Morling
  */
-public class Iso8601DateTypeDescriptor extends DateTypeDescriptor {
+public class Iso8601DateTypeDescriptor extends DateJavaType {
 
 	/**
 	 * Creates/parses ISO8601 strings containing date information only.
@@ -47,7 +47,7 @@ public class Iso8601DateTypeDescriptor extends DateTypeDescriptor {
 	}
 
 	@Override
-	public Date fromString(String string) {
+	public Date fromString(CharSequence string) {
 		return type.fromString( string );
 	}
 
@@ -61,8 +61,8 @@ public class Iso8601DateTypeDescriptor extends DateTypeDescriptor {
 		DATE {
 
 			@Override
-			public Date fromString(String string) {
-				return DatatypeConverter.parseDate( string ).getTime();
+			public Date fromString(CharSequence string) {
+				return DatatypeConverter.parseDate( string.toString() ).getTime();
 			}
 
 			@Override
@@ -76,8 +76,8 @@ public class Iso8601DateTypeDescriptor extends DateTypeDescriptor {
 		TIME {
 
 			@Override
-			public Date fromString(String string) {
-				return DatatypeConverter.parseTime( string ).getTime();
+			public Date fromString(CharSequence string) {
+				return DatatypeConverter.parseTime( string.toString() ).getTime();
 			}
 
 			@Override
@@ -91,8 +91,8 @@ public class Iso8601DateTypeDescriptor extends DateTypeDescriptor {
 		DATE_TIME {
 
 			@Override
-			public Date fromString(String string) {
-				return DatatypeConverter.parseDateTime( string ).getTime();
+			public Date fromString(CharSequence string) {
+				return DatatypeConverter.parseDateTime( string.toString() ).getTime();
 			}
 
 			@Override
@@ -103,7 +103,7 @@ public class Iso8601DateTypeDescriptor extends DateTypeDescriptor {
 			}
 		};
 
-		public abstract Date fromString(String string);
+		public abstract Date fromString(CharSequence string);
 
 		public abstract String toString(Date value);
 	}

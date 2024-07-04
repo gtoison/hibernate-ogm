@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.massindex.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -16,12 +17,10 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
-import org.hibernate.search.MassIndexer;
 import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
 import org.hibernate.search.batchindexing.impl.SimpleIndexingProgressMonitor;
-import org.hibernate.search.batchindexing.spi.MassIndexerWithTenant;
 import org.hibernate.search.engine.integration.impl.ExtendedSearchIntegrator;
+import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.spi.IndexedTypeSet;
 import org.hibernate.search.spi.SearchIntegrator;
 import org.hibernate.search.spi.impl.IndexedTypeSets;
@@ -33,7 +32,7 @@ import org.hibernate.search.util.jmx.impl.JMXRegistrar.IndexingProgressMonitor;
  * @see org.hibernate.search.batchindexing.spi.MassIndexerFactory
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;
  */
-public class OgmMassIndexer implements MassIndexerWithTenant {
+public class OgmMassIndexer implements MassIndexer {
 
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 

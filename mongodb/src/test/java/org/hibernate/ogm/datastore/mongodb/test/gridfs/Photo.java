@@ -8,11 +8,11 @@ package org.hibernate.ogm.datastore.mongodb.test.gridfs;
 
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.ogm.datastore.mongodb.options.GridFSBucket;
 import org.hibernate.ogm.datastore.mongodb.type.GridFS;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Sergey Chernolyas &amp;sergey_chernolyas@gmail.com&amp;

@@ -106,7 +106,7 @@ public class TransactionalRemoteCacheCounter {
 				continue;
 			}
 
-			Serializable loadedKey = ce.getLoadedKey();
+			Object loadedKey = ce.getLoadedKey();
 			Object[] columnValues = ( ownerIdentifyingColumnNames.length == 1 ) ? new Object[] { loadedKey } : (Object[]) loadedKey;
 			resultsCollector.add( new RowKey( ownerIdentifyingColumnNames, columnValues ) );
 		}
@@ -116,7 +116,7 @@ public class TransactionalRemoteCacheCounter {
 
 	private static ProtostreamId convertEntityKey(EntityKey entityKey, OgmSessionImpl ogmSession, ProtoStreamMappingAdapter mapper) {
 		MetamodelImplementor metamodel = ogmSession.getFactory().getMetamodel();
-		Serializable identifier = entityKey.getIdentifier();
+		Object identifier = entityKey.getIdentifier();
 		EntityPersister persister = metamodel.locateEntityPersister( entityKey.getEntityName() );
 		org.hibernate.ogm.model.key.spi.EntityKey ogmEntityKey = EntityKeyBuilder.fromPersister( (OgmEntityPersister) persister, identifier, ogmSession );
 		return mapper.createIdPayload( ogmEntityKey.getColumnNames(), ogmEntityKey.getColumnValues() );

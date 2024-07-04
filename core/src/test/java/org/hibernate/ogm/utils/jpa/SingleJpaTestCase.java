@@ -16,13 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.SharedCacheMode;
-import javax.persistence.ValidationMode;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-import javax.transaction.Status;
-import javax.transaction.TransactionManager;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
 import org.hibernate.ogm.jpa.HibernateOgmPersistence;
@@ -32,6 +25,13 @@ import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.SharedCacheMode;
+import jakarta.persistence.ValidationMode;
+import jakarta.persistence.spi.PersistenceUnitTransactionType;
+import jakarta.transaction.Status;
+import jakarta.transaction.TransactionManager;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

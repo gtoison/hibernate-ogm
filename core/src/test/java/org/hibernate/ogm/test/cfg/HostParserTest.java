@@ -6,16 +6,15 @@
  */
 package org.hibernate.ogm.test.cfg;
 
-import java.util.Iterator;
-
 import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 
-import org.junit.Test;
+import java.util.Iterator;
 
 import org.hibernate.HibernateException;
 import org.hibernate.ogm.cfg.impl.HostParser;
 import org.hibernate.ogm.cfg.spi.Hosts;
+import org.junit.Test;
 
 /**
  * @author Emmanuel Bernard emmanuel@hibernate.org

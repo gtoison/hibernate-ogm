@@ -9,11 +9,6 @@ package org.hibernate.ogm.perftest.mongodb.ogm;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.FlushMode;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.datastore.mongodb.impl.MongoDBDatastoreProvider;
@@ -28,6 +23,11 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 import com.mongodb.BasicDBObject;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 
 /**
  * A JMH benchmark measuring performance of find-by-id operations using Hibernate OGM.
@@ -157,7 +157,7 @@ public class HibernateOgmFindBenchmark {
 			nativeQuery.unwrap( NativeQuery.class ).addSynchronizedEntityClass( AuthorWithSequence.class );
 			nativeQuery.setMaxResults( 50 );
 
-			nativeQuery.unwrap( NativeQuery.class ).setFlushMode( FlushMode.MANUAL );
+			nativeQuery.unwrap( NativeQuery.class ).setFlushMode( FlushModeType.COMMIT );
 
 			@SuppressWarnings("unchecked")
 			List<AuthorWithSequence> authors = nativeQuery.getResultList();

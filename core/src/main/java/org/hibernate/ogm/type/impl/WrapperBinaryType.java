@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.ByteArrayTypeDescriptor;
+import org.hibernate.type.descriptor.java.ByteArrayJavaType;
 
 /**
  * A type mapping {@link java.sql.Types#VARBINARY VARBINARY} and {@link Byte Byte[]}
@@ -21,7 +21,7 @@ public class WrapperBinaryType extends AbstractGenericBasicType<Byte[]> {
 	public static final WrapperBinaryType INSTANCE = new WrapperBinaryType();
 
 	public WrapperBinaryType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, ByteArrayTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, ByteArrayJavaType.INSTANCE );
 	}
 
 	@Override

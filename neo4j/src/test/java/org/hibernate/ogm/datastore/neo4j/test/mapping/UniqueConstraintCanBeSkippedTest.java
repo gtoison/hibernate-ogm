@@ -8,16 +8,16 @@ package org.hibernate.ogm.datastore.neo4j.test.mapping;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-
 import org.hibernate.cfg.Environment;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
-import org.hibernate.tool.hbm2ddl.UniqueConstraintSchemaUpdateStrategy;
+import org.hibernate.tool.schema.UniqueConstraintSchemaUpdateStrategy;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
 
 /**
  * Test that the creation of unique constraints is skipped when

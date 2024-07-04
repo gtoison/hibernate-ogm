@@ -6,18 +6,16 @@
  */
 package org.hibernate.ogm.backendtck.queries;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.SortableField;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Sortable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
 
 /**
  * @author Emmanuel Bernard
@@ -44,9 +42,8 @@ public class Helicopter {
 		this.uuid = uuid;
 	}
 
-	@Field(analyze = Analyze.NO, store = Store.YES, indexNullAs = "#<NULL>#")
 	@Column(name = "helicopterName")
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	public String getName() {
 		return name;
 	}
@@ -55,8 +52,7 @@ public class Helicopter {
 		this.name = name;
 	}
 
-	@Field(analyze = Analyze.NO, store = Store.YES, indexNullAs = "#<NULL>#")
-	@SortableField
+	@GenericField(sortable = Sortable.YES)
 	public String getMake() {
 		return make;
 	}

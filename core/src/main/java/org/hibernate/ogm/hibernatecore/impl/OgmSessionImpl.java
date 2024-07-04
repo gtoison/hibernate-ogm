@@ -8,16 +8,9 @@ package org.hibernate.ogm.hibernatecore.impl;
 
 import java.lang.invoke.MethodHandles;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-
-import org.hibernate.Criteria;
 import org.hibernate.Filter;
 import org.hibernate.HibernateException;
 import org.hibernate.NaturalIdLoadAccess;
-import org.hibernate.ScrollMode;
 import org.hibernate.Session;
 import org.hibernate.SharedSessionBuilder;
 import org.hibernate.SimpleNaturalIdLoadAccess;
@@ -37,11 +30,12 @@ import org.hibernate.ogm.storedprocedure.impl.NoSQLProcedureCallMemento;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.procedure.ProcedureCall;
-import org.hibernate.procedure.ProcedureCallMemento;
 import org.hibernate.procedure.internal.NoSQLProcedureCallImpl;
-import org.hibernate.query.Query;
-import org.hibernate.query.spi.NamedQueryRepository;
-import org.hibernate.query.spi.ScrollableResultsImplementor;
+import org.hibernate.procedure.spi.NamedCallableQueryMemento;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 
 /**
  * An OGM specific session implementation which delegates most of the work to the underlying Hibernate ORM {@code Session},
@@ -72,44 +66,8 @@ public class OgmSessionImpl extends SessionDelegatorBaseImpl implements OgmSessi
 	}
 
 	@Override
-	public CriteriaBuilder getCriteriaBuilder() {
+	public HibernateCriteriaBuilder getCriteriaBuilder() {
 		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
-	}
-
-	@Override
-	public Criteria createCriteria(Class persistentClass) {
-		//TODO plug the Lucene engine
-		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
-	}
-
-	@Override
-	public Criteria createCriteria(Class persistentClass, String alias) {
-		//TODO plug the Lucene engine
-		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
-	}
-
-	@Override
-	public Criteria createCriteria(String entityName) {
-		//TODO plug the Lucene engine
-		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
-	}
-
-	@Override
-	public Criteria createCriteria(String entityName, String alias) {
-		//TODO plug the Lucene engine
-		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
-	}
-
-	@Override
-	public ScrollableResultsImplementor scroll(Criteria criteria, ScrollMode scrollMode) {
-		//TODO plug the Lucene engine
-		throw new NotSupportedException( "OGM-23", "Criteria queries are not supported yet" );
-	}
-
-	@Override
-	public Query createFilter(Object collection, String queryString) throws HibernateException {
-		//TODO plug the Lucene engine
-		throw new NotSupportedException( "OGM-24", "filters are not supported yet" );
 	}
 
 	@Override
@@ -129,7 +87,10 @@ public class OgmSessionImpl extends SessionDelegatorBaseImpl implements OgmSessi
 
 	@Override
 	public ProcedureCall getNamedProcedureCall(String name) {
-		final ProcedureCallMemento memento = factory.getNamedQueryRepository().getNamedProcedureCallMemento( name );
+		final NamedCallableQueryMemento memento = getFactory().getQueryEngine()
+				.getNamedObjectRepository()
+				.getCallableQueryMemento( name );
+		
 		if ( memento == null ) {
 			throw new IllegalArgumentException(
 					"Could not find named stored procedure call with that registration name : " + name
@@ -154,10 +115,11 @@ public class OgmSessionImpl extends SessionDelegatorBaseImpl implements OgmSessi
 	}
 
 	@Override
-	public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
+	public ProcedureCall createNamedStoredProcedureQuery(String name) {
 		checkOpen();
-		NamedQueryRepository namedQueryRepository = getSessionFactory().getNamedQueryRepository();
-		ProcedureCallMemento memento =  namedQueryRepository.getNamedProcedureCallMemento( name );
+		final NamedCallableQueryMemento memento = getFactory().getQueryEngine()
+				.getNamedObjectRepository()
+				.getCallableQueryMemento( name );
 
 		if ( memento == null ) {
 			throw new IllegalArgumentException( "No @NamedStoredProcedureQuery was found with that name : " + name );
@@ -168,19 +130,19 @@ public class OgmSessionImpl extends SessionDelegatorBaseImpl implements OgmSessi
 	}
 
 	@Override
-	public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
+	public ProcedureCall createStoredProcedureQuery(String procedureName) {
 		checkOpen();
 		return createStoredProcedureCall( procedureName );
 	}
 
 	@Override
-	public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+	public ProcedureCall createStoredProcedureQuery(String procedureName, Class... resultClasses) {
 		checkOpen();
 		return createStoredProcedureCall( procedureName, resultClasses );
 	}
 
 	@Override
-	public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+	public ProcedureCall createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
 		checkOpen();
 		return createStoredProcedureCall( procedureName, resultSetMappings );
 	}

@@ -11,14 +11,14 @@ import java.io.Serializable;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.impl.AbstractGenericBasicType;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 
 /**
  * @author Davide D'Alto
  */
 public class SerializableAsBinaryGridType<T extends Serializable> extends AbstractGenericBasicType<T> {
 
-	public SerializableAsBinaryGridType(JavaTypeDescriptor<T> javaTypeDescriptor) {
+	public SerializableAsBinaryGridType(BasicJavaType<T> javaTypeDescriptor) {
 		super( BinaryMappedGridTypeDescriptor.INSTANCE, javaTypeDescriptor );
 	}
 

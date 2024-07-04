@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.datastore.mongodb.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bson.Document;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.NamingHelper;
 import org.hibernate.boot.model.relational.Database;
@@ -33,7 +35,6 @@ import org.hibernate.ogm.datastore.mongodb.index.impl.MongoDBIndexSpec;
 import org.hibernate.ogm.datastore.mongodb.index.impl.MongoDBIndexType;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.Log;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.datastore.mongodb.type.GridFS;
 import org.hibernate.ogm.datastore.spi.BaseSchemaDefiner;
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
@@ -49,13 +50,12 @@ import org.hibernate.ogm.util.impl.Contracts;
 import org.hibernate.ogm.util.impl.StringHelper;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
-import org.hibernate.tool.hbm2ddl.UniqueConstraintSchemaUpdateStrategy;
+import org.hibernate.tool.schema.UniqueConstraintSchemaUpdateStrategy;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 
 /**
  * Performs sanity checks of the mapped objects.
@@ -196,9 +196,7 @@ public class MongoDBSchemaDefiner extends BaseSchemaDefiner {
 	@SuppressWarnings("unchecked")
 	private void validateIndexSpecsForUniqueColumns(Table table, IndexOptions indexOptions, Set<String> forIndexNotReferenced,
 			UniqueConstraintSchemaUpdateStrategy constraintMethod) {
-		Iterator<Column> columnIterator = table.getColumnIterator();
-		while ( columnIterator.hasNext() ) {
-			Column column = columnIterator.next();
+		for ( Column column : table.getColumns() ) {
 			if ( column.isUnique() ) {
 				String indexName = NamingHelper.INSTANCE.generateHashedConstraintName(
 						"UK_",
@@ -235,9 +233,7 @@ public class MongoDBSchemaDefiner extends BaseSchemaDefiner {
 	}
 
 	private void validateIndexSpecsForIndexes(Table table, IndexOptions indexOptions, Set<String> forIndexNotReferenced) {
-		Iterator<Index> indexes = table.getIndexIterator();
-		while ( indexes.hasNext() ) {
-			Index index = indexes.next();
+		for ( Index index : table.getIndexes().values() ) {
 			forIndexNotReferenced.remove( index.getName() );
 			MongoDBIndexSpec indexSpec = new MongoDBIndexSpec( index,
 					getIndexOptionDocument( table, indexOptions.getOptionForIndex( index.getName() ) ) );

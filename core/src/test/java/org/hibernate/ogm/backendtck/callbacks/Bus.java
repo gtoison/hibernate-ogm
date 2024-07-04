@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.callbacks;
 
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public class Bus {

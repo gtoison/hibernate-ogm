@@ -11,8 +11,6 @@ import static org.hibernate.ogm.datastore.neo4j.test.dsl.GraphAssertions.assertT
 
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
 import org.hibernate.ogm.datastore.neo4j.test.dsl.RelationshipsChainForGraphAssertions;
@@ -22,6 +20,8 @@ import org.hibernate.ogm.datastore.spi.DatastoreProvider;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Common methods to check the mapping of entities in Neo4j.

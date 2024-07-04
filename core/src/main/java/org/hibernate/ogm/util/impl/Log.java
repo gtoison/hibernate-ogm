@@ -11,12 +11,8 @@ import static org.jboss.logging.Logger.Level.ERROR;
 import static org.jboss.logging.Logger.Level.INFO;
 import static org.jboss.logging.Logger.Level.WARN;
 
-import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.util.Collection;
-
-import javax.persistence.PersistenceException;
-import javax.transaction.SystemException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
@@ -28,11 +24,14 @@ import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.options.spi.AnnotationConverter;
 import org.hibernate.service.spi.ServiceException;
 import org.jboss.logging.BasicLogger;
-import org.jboss.logging.annotations.Cause;
-import org.jboss.logging.annotations.FormatWith;
-import org.jboss.logging.annotations.LogMessage;
-import org.jboss.logging.annotations.Message;
-import org.jboss.logging.annotations.MessageLogger;
+import org.jboss.logging.Cause;
+import org.jboss.logging.FormatWith;
+import org.jboss.logging.LogMessage;
+import org.jboss.logging.Message;
+import org.jboss.logging.MessageLogger;
+
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.SystemException;
 
 /**
  * Log messages and exceptions used by Hibernate OGM core. Dialects may provide extensions of this interface with their
@@ -188,7 +187,7 @@ public interface Log extends BasicLogger {
 	HibernateException invalidConfigurationUrl(String propertyName, String url);
 
 	@Message(id = 56, value = "Unable to load record for retrieval of generated properties; Entity type: %1$s, id: %2$s")
-	HibernateException couldNotRetrieveEntityForRetrievalOfGeneratedProperties(String entityType, Serializable id);
+	HibernateException couldNotRetrieveEntityForRetrievalOfGeneratedProperties(String entityType, Object id);
 
 	@Message(id = 57, value = "'%s' must not be null")
 	IllegalArgumentException mustNotBeNull(String name);

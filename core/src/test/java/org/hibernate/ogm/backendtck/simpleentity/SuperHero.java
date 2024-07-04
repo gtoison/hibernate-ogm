@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.simpleentity;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 /**
  * @author Emmanuel Bernard

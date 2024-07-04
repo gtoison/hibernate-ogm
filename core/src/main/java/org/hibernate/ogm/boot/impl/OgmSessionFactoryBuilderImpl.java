@@ -39,20 +39,10 @@ public class OgmSessionFactoryBuilderImpl extends AbstractDelegatingSessionFacto
 	}
 
 	@Override
-	public <T extends SessionFactoryBuilder> T unwrap(Class<T> type) {
-		if ( type.isAssignableFrom( getClass() ) ) {
-			return type.cast( this );
-		}
-		else {
-			return delegate.unwrap( type );
-		}
-	}
-
-	@Override
 	public OgmSessionFactory build() {
 		OgmSessionFactoryOptions options = new OgmSessionFactoryOptions( delegate.buildSessionFactoryOptions() );
 
 		// not overrides bootstrapContext
-		return new OgmSessionFactoryImpl( new SessionFactoryImpl( null, metadata, options ) );
+		return new OgmSessionFactoryImpl( new SessionFactoryImpl( metadata, options ) );
 	}
 }

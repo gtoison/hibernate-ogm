@@ -11,9 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.LockOptions;
-import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 import org.hibernate.loader.entity.UniqueEntityLoader;
+import org.hibernate.ogm.dialect.query.spi.QueryParameters;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.Type;
 import org.jboss.logging.Logger;
@@ -37,7 +38,7 @@ import org.jboss.logging.Logger;
  * @see BatchingEntityLoaderBuilder
  * @see UniqueEntityLoader
  */
-public abstract class BatchingEntityLoader implements UniqueEntityLoader {
+public abstract class BatchingEntityLoader<T> implements SingleIdEntityLoader<T> {
 	private static final Logger log = Logger.getLogger( BatchingEntityLoader.class );
 
 	private final EntityPersister persister;
@@ -49,16 +50,15 @@ public abstract class BatchingEntityLoader implements UniqueEntityLoader {
 	public EntityPersister persister() {
 		return persister;
 	}
-
+	
 	@Override
-	@Deprecated
-	public Object load(Serializable id, Object optionalObject, SharedSessionContractImplementor session) {
-		return load( id, optionalObject, session, LockOptions.NONE );
+	public T load(Object pkValue, Object entityInstance, LockOptions lockOptions, SharedSessionContractImplementor session) {
+		return load( pkValue, entityInstance, lockOptions, session );
 	}
 
 	protected QueryParameters buildQueryParameters(
-			Serializable id,
-			Serializable[] ids,
+			Object id,
+			Object[] ids,
 			Object optionalObject,
 			LockOptions lockOptions) {
 		Type[] types = new Type[ids.length];
@@ -74,7 +74,7 @@ public abstract class BatchingEntityLoader implements UniqueEntityLoader {
 		return qp;
 	}
 
-	protected Object getObjectFromList(List results, Serializable id, SharedSessionContractImplementor session) {
+	protected Object getObjectFromList(List results, Object id, SharedSessionContractImplementor session) {
 		for ( Object obj : results ) {
 			final boolean equal = persister.getIdentifierType().isEqual(
 					id,
@@ -89,10 +89,10 @@ public abstract class BatchingEntityLoader implements UniqueEntityLoader {
 	}
 
 	protected Object doBatchLoad(
-			Serializable id,
+			Object id,
 			BatchableEntityLoader loaderToUse,
 			SharedSessionContractImplementor session,
-			Serializable[] ids,
+			Object[] ids,
 			Object optionalObject,
 			LockOptions lockOptions) {
 

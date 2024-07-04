@@ -13,14 +13,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.hibernate.HibernateException;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 public class PostUpdateTest extends OgmJpaTestCase {
 

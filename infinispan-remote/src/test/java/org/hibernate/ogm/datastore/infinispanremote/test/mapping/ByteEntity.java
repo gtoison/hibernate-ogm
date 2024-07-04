@@ -7,8 +7,9 @@
 package org.hibernate.ogm.datastore.infinispanremote.test.mapping;
 
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Owns a {@link Byte} field

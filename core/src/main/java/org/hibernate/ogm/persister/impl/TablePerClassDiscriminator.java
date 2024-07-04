@@ -7,13 +7,11 @@
 package org.hibernate.ogm.persister.impl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Subclass;
-import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
+import org.hibernate.type.BasicType;
 
 /**
  * The entity class is used as a discriminator.
@@ -37,10 +35,7 @@ public class TablePerClassDiscriminator implements EntityDiscriminator {
 		subclassesByDiscriminator.put( persistentClass.getSubclassId(), persistentClass.getEntityName() );
 
 		if ( persistentClass.isPolymorphic() ) {
-			@SuppressWarnings("unchecked")
-			Iterator<Subclass> iter = persistentClass.getSubclassIterator();
-			while ( iter.hasNext() ) {
-				Subclass sc = iter.next();
+			for ( Subclass sc : persistentClass.getSubclasses() ) {
 				subclassesByDiscriminator.put( sc.getSubclassId(), sc.getEntityName() );
 			}
 		}
@@ -78,8 +73,8 @@ public class TablePerClassDiscriminator implements EntityDiscriminator {
 	}
 
 	@Override
-	public Type getType() {
-		return StandardBasicTypes.INTEGER;
+	public BasicType<?> getType() {
+		return null;
 	}
 
 	@Override

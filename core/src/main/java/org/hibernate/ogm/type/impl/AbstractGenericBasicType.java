@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -22,9 +23,8 @@ import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.type.ForeignKeyDirection;
-import org.hibernate.type.StringRepresentableType;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 import org.hibernate.type.descriptor.java.MutabilityPlan;
 
 /**
@@ -34,18 +34,17 @@ import org.hibernate.type.descriptor.java.MutabilityPlan;
  * @author Emmanuel Bernard
  */
 public abstract class AbstractGenericBasicType<T>
-		implements  GridType, //BasicType,
-				StringRepresentableType<T> {
+		implements GridType {
 
 	private static final boolean[] TRUE = { true };
 	private static final boolean[] FALSE = { false };
 
 	private final GridTypeDescriptor gridTypeDescriptor;
-	private final JavaTypeDescriptor<T> javaTypeDescriptor;
+	private final BasicJavaType<T> javaTypeDescriptor;
 	private final GridValueExtractor<T> typeExtractor;
 	private final GridValueBinder<T> typeBinder;
 
-	public AbstractGenericBasicType(GridTypeDescriptor gridTypeDescriptor, JavaTypeDescriptor<T> javaTypeDescriptor) {
+	public AbstractGenericBasicType(GridTypeDescriptor gridTypeDescriptor, BasicJavaType<T> javaTypeDescriptor) {
 		this.gridTypeDescriptor = gridTypeDescriptor;
 		this.javaTypeDescriptor = javaTypeDescriptor;
 		this.typeExtractor = gridTypeDescriptor.getExtractor( javaTypeDescriptor );
@@ -56,12 +55,10 @@ public abstract class AbstractGenericBasicType<T>
 		return javaTypeDescriptor.fromString( string );
 	}
 
-	@Override
 	public String toString(T value) {
 		return javaTypeDescriptor.toString( value );
 	}
 
-	@Override
 	public T fromStringValue(String xml) throws HibernateException {
 		return fromString( xml );
 	}
@@ -100,7 +97,7 @@ public abstract class AbstractGenericBasicType<T>
 
 	// final implementations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	public final JavaTypeDescriptor<T> getJavaTypeDescriptor() {
+	public final BasicJavaType<T> getJavaTypeDescriptor() {
 		return javaTypeDescriptor;
 	}
 
@@ -242,7 +239,7 @@ public abstract class AbstractGenericBasicType<T>
 	public final void nullSafeSet(Tuple st, Object value, String[] names, boolean[] settable, SharedSessionContractImplementor session)
 			throws HibernateException {
 		if ( settable.length > 1 ) {
-			throw new NotYetImplementedException( "Multi column property not implemented yet" );
+			throw new UnsupportedOperationException( "Multi column property not implemented yet" );
 		}
 		if ( settable[0] ) {
 			nullSafeSet( st, value, names, session );
@@ -284,12 +281,12 @@ public abstract class AbstractGenericBasicType<T>
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	public final Serializable disassemble(Object value, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return getMutabilityPlan().disassemble( (T) value );
+		return getMutabilityPlan().disassemble( (T) value, session );
 	}
 
 	@Override
 	public final Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return getMutabilityPlan().assemble( cached );
+		return getMutabilityPlan().assemble( cached, session );
 	}
 
 	@Override

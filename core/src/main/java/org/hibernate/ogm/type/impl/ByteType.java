@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.ByteTypeDescriptor;
+import org.hibernate.type.descriptor.java.ByteJavaType;
 
 /**
  * @author Nicolas Helleringer
@@ -19,7 +19,7 @@ public class ByteType extends AbstractGenericBasicType<Byte> {
 	public static final ByteType INSTANCE = new ByteType();
 
 	public ByteType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, ByteTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, ByteJavaType.INSTANCE );
 	}
 
 	@Override

@@ -8,11 +8,6 @@ package org.hibernate.ogm.backendtck.jpa;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-
 import org.hibernate.ogm.hibernatecore.impl.OgmSessionFactoryImpl;
 import org.hibernate.ogm.hibernatecore.impl.OgmSessionImpl;
 import org.hibernate.ogm.utils.PackagingRule;
@@ -21,6 +16,11 @@ import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

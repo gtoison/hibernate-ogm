@@ -20,8 +20,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
-import javax.persistence.OptimisticLockException;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ogm.cfg.OgmProperties;
@@ -41,6 +39,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
+import jakarta.persistence.OptimisticLockException;
 
 /**
  * Test for detecting concurrent updates by dialects which support atomic find/update semantics or have their own

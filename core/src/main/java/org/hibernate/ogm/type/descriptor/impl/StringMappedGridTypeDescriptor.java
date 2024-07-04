@@ -8,7 +8,7 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 
 /**
  * Map field to string value and persist it to the grid
@@ -19,7 +19,7 @@ public class StringMappedGridTypeDescriptor implements GridTypeDescriptor {
 	public static final StringMappedGridTypeDescriptor INSTANCE = new StringMappedGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(final BasicJavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 			@Override
 			protected void doBind(Tuple resultset, X value, String[] names, WrapperOptions options) {
@@ -29,7 +29,7 @@ public class StringMappedGridTypeDescriptor implements GridTypeDescriptor {
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
 		return new StringMappedGridExtractor<X>( javaTypeDescriptor, this );
 	}
 }

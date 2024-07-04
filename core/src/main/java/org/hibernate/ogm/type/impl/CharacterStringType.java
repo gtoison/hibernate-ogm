@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.StringMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.CharacterTypeDescriptor;
+import org.hibernate.type.descriptor.java.CharacterJavaType;
 
 /**
  * Persist a {@link Character} as a {@link String}.
@@ -25,7 +25,7 @@ public class CharacterStringType extends AbstractGenericBasicType<Character>  {
 	public static final CharacterStringType INSTANCE = new CharacterStringType();
 
 	public CharacterStringType() {
-		super( StringMappedGridTypeDescriptor.INSTANCE, CharacterTypeDescriptor.INSTANCE );
+		super( StringMappedGridTypeDescriptor.INSTANCE, CharacterJavaType.INSTANCE );
 	}
 
 	@Override

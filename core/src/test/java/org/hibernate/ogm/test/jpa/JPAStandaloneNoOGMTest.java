@@ -8,13 +8,13 @@ package org.hibernate.ogm.test.jpa;
 
 import static org.fest.assertions.Fail.fail;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-
 import org.hibernate.ogm.utils.PackagingRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

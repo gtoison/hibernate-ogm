@@ -8,7 +8,7 @@ package org.hibernate.ogm.datastore.infinispanremote.impl.protobuf;
 
 import java.net.URL;
 
-import org.hibernate.type.descriptor.java.UrlTypeDescriptor;
+import org.hibernate.type.descriptor.java.UrlJavaType;
 import org.infinispan.protostream.MessageMarshaller.ProtoStreamReader;
 import org.infinispan.protostream.MessageMarshaller.ProtoStreamWriter;
 
@@ -16,11 +16,11 @@ public final class UrlProtofieldAccessor extends BaseProtofieldAccessor<URL> imp
 
 	public UrlProtofieldAccessor(final int tag, String name, boolean nullable, final String columnName) {
 		super( tag, name, nullable, columnName,
-			(ProtoStreamWriter outProtobuf, URL value) -> outProtobuf.writeString( name, UrlTypeDescriptor.INSTANCE.toString( value ) ),
+			(ProtoStreamWriter outProtobuf, URL value) -> outProtobuf.writeString( name, UrlJavaType.INSTANCE.toString( value ) ),
 			(ProtoStreamReader reader) -> {
 				String readString = reader.readString( name );
 				if ( readString != null ) {
-					return UrlTypeDescriptor.INSTANCE.fromString( readString );
+					return UrlJavaType.INSTANCE.fromString( readString );
 				}
 				return null;
 			}

@@ -6,6 +6,11 @@
  */
 package org.hibernate.ogm.test.type;
 
+import java.lang.invoke.MethodHandles;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
@@ -17,14 +22,9 @@ import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.ogm.type.impl.AbstractGenericBasicType;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 import org.hibernate.type.descriptor.java.JdbcDateTypeDescriptor;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Convert date into yyMMdd
@@ -55,7 +55,7 @@ public class CustomDateType extends AbstractGenericBasicType<Date> {
 		public static CustomDateTypeDescriptor INSTANCE = new CustomDateTypeDescriptor();
 
 		@Override
-		public <Date> GridValueBinder<Date> getBinder(final JavaTypeDescriptor<Date> javaTypeDescriptor) {
+		public <Date> GridValueBinder<Date> getBinder(final BasicJavaType<Date> javaTypeDescriptor) {
 			return new BasicGridBinder<Date>( javaTypeDescriptor, this ) {
 
 				@Override
@@ -67,7 +67,7 @@ public class CustomDateType extends AbstractGenericBasicType<Date> {
 		}
 
 		@Override
-		public <X> GridValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+		public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
 			return new GridValueExtractor<X>() {
 				@Override
 				public X extract(Tuple resultset, String name) {

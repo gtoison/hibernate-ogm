@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.backendtck.type.converter;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 /**
  * @author Gunnar Morling

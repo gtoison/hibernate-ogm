@@ -9,9 +9,10 @@ package org.hibernate.ogm.type.impl;
 import java.io.Serializable;
 
 import org.hibernate.MappingException;
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.ByteArrayMappedGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 
 /**
  * Wrap/Unwrap the serialiable type into a byte array using the chosen {@link JavaTypeDescriptor}
@@ -20,7 +21,7 @@ import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
  */
 public class SerializableAsByteArrayType<T extends Serializable> extends AbstractGenericBasicType<T> {
 
-	public SerializableAsByteArrayType(JavaTypeDescriptor<T> javaTypeDescriptor) {
+	public SerializableAsByteArrayType(BasicJavaType<T> javaTypeDescriptor) {
 		super( ByteArrayMappedGridTypeDescriptor.INSTANCE, javaTypeDescriptor );
 	}
 

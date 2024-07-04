@@ -6,23 +6,21 @@
  */
 package org.hibernate.ogm.backendtck.queries;
 
-import javax.persistence.Embeddable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Store;
+import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Ending {
 
 	// Analyze.NO for filtering in query
 	// Store.YES for projection in query
-	@Field(store = Store.YES, analyze = Analyze.NO)
+	@GenericField
 	private String text;
 
 	// Analyze.NO for filtering in query
 	// Store.YES for projection in query
-	@Field(store = Store.YES, analyze = Analyze.NO)
+	@GenericField
 	private Integer score;
 
 	public Ending() {

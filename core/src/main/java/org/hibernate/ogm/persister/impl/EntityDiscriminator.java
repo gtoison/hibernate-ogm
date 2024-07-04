@@ -6,6 +6,10 @@
  */
 package org.hibernate.ogm.persister.impl;
 
+import org.hibernate.MappingException;
+import org.hibernate.mapping.PersistentClass;
+import org.hibernate.persister.entity.DiscriminatorHelper;
+import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
 
 /**
@@ -23,7 +27,7 @@ interface EntityDiscriminator {
 
 	String getAlias();
 
-	Type getType();
+	BasicType<?> getType();
 
 	Object getValue();
 
@@ -37,4 +41,16 @@ interface EntityDiscriminator {
 
 	boolean isNeeded();
 
+	/**
+	 * @see DiscriminatorHelper
+	 */
+	default BasicType<?> getDiscriminatorType(PersistentClass persistentClass) {
+		Type discriminatorType = persistentClass.getDiscriminator().getType();
+		if ( discriminatorType instanceof BasicType ) {
+			return (BasicType<?>) discriminatorType;
+		}
+		else {
+			throw new MappingException( "Illegal discriminator type: " + discriminatorType.getName() );
+		}
+	}
 }

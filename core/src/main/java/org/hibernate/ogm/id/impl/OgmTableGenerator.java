@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.id.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Properties;
 
 import org.hibernate.MappingException;
@@ -29,11 +30,10 @@ import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.type.spi.TypeTranslator;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
-import org.hibernate.type.LongType;
 import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.java.LongJavaType;
 
 /**
  * A table-based id generator. Inspired by ORM's {@link TableGenerator}. Refer to its JavaDoc for some design
@@ -290,7 +290,7 @@ public class OgmTableGenerator extends OgmGeneratorBase implements Configurable 
 	private void defineGridTypes(SharedSessionContractImplementor session) {
 		if ( identifierValueGridType == null ) {
 			ServiceRegistryImplementor registry = session.getFactory().getServiceRegistry();
-			identifierValueGridType = registry.getService( TypeTranslator.class ).getType( LongType.INSTANCE );
+			identifierValueGridType = registry.getService( TypeTranslator.class ).getType( LongJavaType.INSTANCE );
 		}
 	}
 }

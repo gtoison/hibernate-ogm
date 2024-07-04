@@ -35,9 +35,8 @@ import org.hibernate.ogm.datastore.neo4j.logging.impl.LoggerFactory;
 import org.hibernate.ogm.datastore.spi.BaseSchemaDefiner;
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
 import org.hibernate.ogm.model.key.spi.IdSourceKeyMetadata;
-import org.hibernate.ogm.util.impl.CollectionHelper;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
-import org.hibernate.tool.hbm2ddl.UniqueConstraintSchemaUpdateStrategy;
+import org.hibernate.tool.schema.UniqueConstraintSchemaUpdateStrategy;
 import org.jboss.logging.Logger.Level;
 import org.neo4j.graphdb.Label;
 
@@ -101,10 +100,7 @@ public abstract class BaseNeo4jSchemaDefiner extends BaseSchemaDefiner {
 					Label label = label( table.getName() );
 					PrimaryKey primaryKey = table.getPrimaryKey();
 					addConstraint( constraints, table, label, primaryKey );
-					@SuppressWarnings("unchecked")
-					Iterator<Column> columnIterator = table.getColumnIterator();
-					while ( columnIterator.hasNext() ) {
-						Column column = columnIterator.next();
+					for ( Column column : table.getColumns() ) {
 						if ( column.isUnique() ) {
 							constraints.add( new UniqueConstraintDetails( label, column.getName() ) );
 						}
@@ -152,8 +148,7 @@ public abstract class BaseNeo4jSchemaDefiner extends BaseSchemaDefiner {
 
 	private void logMultipleColumnsWarning(Table table, Constraint constraint) {
 		StringBuilder builder = new StringBuilder();
-		for ( Iterator<Column> columnIterator = constraint.getColumnIterator(); columnIterator.hasNext(); ) {
-			Column column = columnIterator.next();
+		for ( Column column : constraint.getColumns() ) {
 			builder.append( ", " );
 			builder.append( column.getName() );
 		}
@@ -202,9 +197,8 @@ public abstract class BaseNeo4jSchemaDefiner extends BaseSchemaDefiner {
 			for ( Table table : namespace.getTables() ) {
 				if ( table.isPhysicalTable() ) {
 					Label label = label( table.getName() );
-					Iterator<Index> indexIterator = table.getIndexIterator();
-					while ( indexIterator.hasNext() ) {
-						addIndex( label, indexIterator.next() );
+					for ( Index index : table.getIndexes().values() ) {
+						addIndex( label, index );
 					}
 				}
 			}
@@ -216,7 +210,7 @@ public abstract class BaseNeo4jSchemaDefiner extends BaseSchemaDefiner {
 			if ( index.getName() != null ) {
 				log.cannotSetNameForIndex( index.getName() );
 			}
-			List<String> properties = CollectionHelper.toStream( index.getColumnIterator() )
+			List<String> properties = index.getColumns().stream()
 					.map( Column::getName ).collect( Collectors.toList() );
 			indexSpecs.add( new Neo4jIndexSpec( label, properties ) );
 		}

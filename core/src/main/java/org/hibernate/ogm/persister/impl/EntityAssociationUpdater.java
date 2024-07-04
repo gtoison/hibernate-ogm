@@ -6,7 +6,6 @@
  */
 package org.hibernate.ogm.persister.impl;
 
-import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 
 import org.hibernate.Session;
@@ -50,7 +49,7 @@ class EntityAssociationUpdater {
 	private final GridDialect gridDialect;
 	private Tuple resultset;
 	private int tableIndex;
-	private Serializable id;
+	private Object id;
 	private SharedSessionContractImplementor session;
 	private boolean[] propertyMightRequireInverseAssociationManagement;
 
@@ -74,7 +73,7 @@ class EntityAssociationUpdater {
 		return this;
 	}
 
-	public EntityAssociationUpdater id(Serializable id) {
+	public EntityAssociationUpdater id(Object id) {
 		this.id = id;
 		return this;
 	}
@@ -231,7 +230,7 @@ class EntityAssociationUpdater {
 		Object referencedEntity = null;
 
 		GridType propertyType = persister.getGridPropertyTypes()[propertyIndex];
-		Serializable id = (Serializable) propertyType.hydrate(
+		Object id = propertyType.hydrate(
 				resultset, persister.getPropertyColumnNames( propertyIndex ), session, null
 		);
 

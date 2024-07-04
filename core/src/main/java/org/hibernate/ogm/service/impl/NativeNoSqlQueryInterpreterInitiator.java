@@ -6,13 +6,11 @@
  */
 package org.hibernate.ogm.service.impl;
 
-import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.query.spi.NativeQueryInterpreter;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.dialect.query.spi.QueryableGridDialect;
-import org.hibernate.ogm.query.impl.NativeNoSqlQueryInterpreter;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceInitiator;
+import org.hibernate.service.spi.SessionFactoryServiceInitiatorContext;
 
 /**
  * Contributes the {@link NativeNoSqlQueryInterpreter}. No service implementation will be registered in case the current
@@ -26,10 +24,10 @@ public class NativeNoSqlQueryInterpreterInitiator implements SessionFactoryServi
 
 	private NativeNoSqlQueryInterpreterInitiator() {
 	}
-
+	
 	@Override
-	public NativeQueryInterpreter initiateService(SessionFactoryImplementor sessionFactory, SessionFactoryOptions sessionFactoryOptions, ServiceRegistryImplementor registry) {
-		return getParameterMetadataRecognizer( registry );
+	public NativeQueryInterpreter initiateService( SessionFactoryServiceInitiatorContext context ) {
+		return getParameterMetadataRecognizer( context.getServiceRegistry() );
 	}
 
 	@Override
@@ -41,7 +39,8 @@ public class NativeNoSqlQueryInterpreterInitiator implements SessionFactoryServi
 		QueryableGridDialect<?> queryableGridDialect = registry.getService( QueryableGridDialect.class );
 
 		if ( queryableGridDialect != null ) {
-			return new NativeNoSqlQueryInterpreter( queryableGridDialect );
+			// TODO reimplement this
+			return null;// new NativeNoSqlQueryInterpreter( queryableGridDialect );
 		}
 		else {
 			return null;

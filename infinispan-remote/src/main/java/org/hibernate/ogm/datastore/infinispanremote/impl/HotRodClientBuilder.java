@@ -6,16 +6,15 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.impl;
 
-import javax.transaction.TransactionManager;
-
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
 import org.hibernate.ogm.datastore.infinispanremote.configuration.impl.InfinispanRemoteConfiguration;
-
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.infinispan.client.hotrod.configuration.TransactionMode;
 import org.infinispan.commons.marshall.Marshaller;
 import org.infinispan.commons.tx.lookup.TransactionManagerLookup;
+
+import jakarta.transaction.TransactionManager;
 
 public class HotRodClientBuilder {
 

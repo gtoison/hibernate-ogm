@@ -10,17 +10,17 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.fest.assertions.Fail.fail;
 
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 import org.hibernate.ogm.datastore.mongodb.test.inheritance.singletable.SingleTableInheritanceTest;
 import org.hibernate.ogm.utils.TestForIssue;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.PersistenceException;
 
 /**
  * Tests table per class inheritance mapping

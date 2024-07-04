@@ -10,7 +10,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.BooleanTypeDescriptor;
+import org.hibernate.type.descriptor.java.BooleanJavaType;
 
 /**
  * @author Nicolas Helleringer
@@ -20,7 +20,7 @@ public class BooleanType extends AbstractGenericBasicType<Boolean> {
 	public static final BooleanType INSTANCE = new BooleanType();
 
 	public BooleanType() {
-		super( PassThroughGridTypeDescriptor.INSTANCE, BooleanTypeDescriptor.INSTANCE );
+		super( PassThroughGridTypeDescriptor.INSTANCE, BooleanJavaType.INSTANCE );
 	}
 
 	@Override

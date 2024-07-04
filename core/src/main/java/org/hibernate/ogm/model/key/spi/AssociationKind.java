@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.model.key.spi;
 
-import javax.persistence.ElementCollection;
+import jakarta.persistence.ElementCollection;
 
 /**
  * The kind of an association.

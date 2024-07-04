@@ -19,7 +19,7 @@ public class MongoDBTypeContributor implements TypeContributor {
 
 	@Override
 	public void contribute(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
-		typeContributions.contributeType( new StringAsObjectIdType() );
+		typeContributions.contributeJavaType( new StringAsObjectIdType() );
 		typeContributions.contributeType( GridFSType.INSTANCE );
 	}
 }

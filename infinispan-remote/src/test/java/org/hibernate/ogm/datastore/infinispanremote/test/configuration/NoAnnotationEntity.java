@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.test.configuration;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * This class not overrides a cache configuration

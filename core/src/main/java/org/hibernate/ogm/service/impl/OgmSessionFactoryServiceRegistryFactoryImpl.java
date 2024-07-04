@@ -7,7 +7,6 @@
 package org.hibernate.ogm.service.impl;
 
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
-import org.hibernate.boot.spi.BootstrapContext;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.service.internal.SessionFactoryServiceRegistryBuilderImpl;
@@ -32,7 +31,7 @@ public class OgmSessionFactoryServiceRegistryFactoryImpl implements SessionFacto
 	}
 
 	@Override
-	public SessionFactoryServiceRegistry buildServiceRegistry(SessionFactoryImplementor sessionFactory, BootstrapContext bootstrapContext, SessionFactoryOptions options) {
+	public SessionFactoryServiceRegistry buildServiceRegistry(SessionFactoryImplementor sessionFactory, SessionFactoryOptions options) {
 		final ClassLoaderService cls = options.getServiceRegistry().getService( ClassLoaderService.class );
 		final SessionFactoryServiceRegistryBuilderImpl builder = new SessionFactoryServiceRegistryBuilderImpl( theBasicServiceRegistry );
 
@@ -45,6 +44,6 @@ public class OgmSessionFactoryServiceRegistryFactoryImpl implements SessionFacto
 			contributor.contribute( builder );
 		}
 
-		return builder.buildSessionFactoryServiceRegistry( sessionFactory, bootstrapContext, options );
+		return builder.buildSessionFactoryServiceRegistry( sessionFactory, options );
 	}
 }

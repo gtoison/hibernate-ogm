@@ -10,17 +10,17 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.Map;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Environment;
 import org.hibernate.ogm.OgmSession;
 import org.hibernate.ogm.utils.OgmTestCase;
-import org.hibernate.tool.hbm2ddl.UniqueConstraintSchemaUpdateStrategy;
+import org.hibernate.tool.schema.UniqueConstraintSchemaUpdateStrategy;
 import org.junit.Test;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * Test that the creation of unique constraints is skipped when

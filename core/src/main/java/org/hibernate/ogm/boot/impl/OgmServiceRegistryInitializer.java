@@ -26,7 +26,6 @@ import org.hibernate.ogm.jdbc.impl.OgmConnectionProviderInitiator;
 import org.hibernate.ogm.jpa.impl.OgmMutableIdentifierGeneratorFactoryInitiator;
 import org.hibernate.ogm.jpa.impl.OgmPersisterClassResolverInitiator;
 import org.hibernate.ogm.options.navigation.impl.OptionsServiceInitiator;
-import org.hibernate.ogm.query.impl.OgmQueryTranslatorFactoryInitiator;
 import org.hibernate.ogm.service.impl.OgmConfigurationService;
 import org.hibernate.ogm.service.impl.OgmJdbcServicesInitiator;
 import org.hibernate.ogm.service.impl.OgmSessionFactoryServiceRegistryFactoryInitiator;
@@ -48,7 +47,7 @@ public class OgmServiceRegistryInitializer implements ServiceContributor {
 
 	@Override
 	public void contribute(StandardServiceRegistryBuilder serviceRegistryBuilder) {
-		Map<Object, Object> settings = serviceRegistryBuilder.getSettings();
+		Map<String, Object> settings = serviceRegistryBuilder.getSettings();
 		boolean isOgmEnabled = isOgmEnabled( settings );
 
 		// registering OgmService in each case; Other OGM extensions then can recognize whether OGM is enabled or not
@@ -65,7 +64,7 @@ public class OgmServiceRegistryInitializer implements ServiceContributor {
 
 		HibernateSearchIntegration.resetProperties( serviceRegistryBuilder );
 
-		serviceRegistryBuilder.addInitiator( OgmQueryTranslatorFactoryInitiator.INSTANCE );
+		// serviceRegistryBuilder.addInitiator( OgmQueryTranslatorFactoryInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( OgmSessionFactoryServiceRegistryFactoryInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( OgmPersisterClassResolverInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( OgmConnectionProviderInitiator.INSTANCE );

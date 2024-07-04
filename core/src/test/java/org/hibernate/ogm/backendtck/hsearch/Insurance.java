@@ -6,13 +6,13 @@
  */
 package org.hibernate.ogm.backendtck.hsearch;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -34,7 +34,7 @@ public class Insurance {
 		this.id = id;
 	}
 
-	@Field
+	@GenericField
 	public String getName() {
 		return name;
 	}

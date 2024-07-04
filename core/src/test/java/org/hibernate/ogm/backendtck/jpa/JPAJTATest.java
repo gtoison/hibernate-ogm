@@ -9,11 +9,6 @@ package org.hibernate.ogm.backendtck.jpa;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hibernate.ogm.utils.TestHelper.dropSchemaAndDatabase;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.TransactionManager;
-
 import org.hibernate.ogm.utils.GridDialectType;
 import org.hibernate.ogm.utils.PackagingRule;
 import org.hibernate.ogm.utils.SkipByGridDialect;
@@ -21,6 +16,11 @@ import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import jakarta.transaction.TransactionManager;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;

@@ -6,12 +6,6 @@
  */
 package org.hibernate.ogm.test.criteria;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.ogm.exception.NotSupportedException;
@@ -19,6 +13,12 @@ import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 /**
  * Test that when a user tries to access {@link Criteria} or {@link CriteriaBuilder} a we throw a meaningful exception.

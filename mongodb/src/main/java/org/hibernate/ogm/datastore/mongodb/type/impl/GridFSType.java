@@ -6,12 +6,13 @@
  */
 package org.hibernate.ogm.datastore.mongodb.type.impl;
 
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.datastore.mongodb.type.GridFS;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 /**
@@ -57,12 +58,12 @@ public class GridFSType extends AbstractSingleColumnStandardBasicType<GridFS> {
 		}
 
 		@Override
-		public <X> ValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+		public <X> ValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
 			throw new UnsupportedOperationException( "This is only supposed to be used by Hibernate OGM" );
 		}
 	}
 
-	private static class JavaDescriptor implements JavaTypeDescriptor<GridFS> {
+	private static class JavaDescriptor implements BasicJavaType<GridFS> {
 
 		public static final JavaDescriptor INSTANCE = new JavaDescriptor();
 
@@ -72,7 +73,7 @@ public class GridFSType extends AbstractSingleColumnStandardBasicType<GridFS> {
 		}
 
 		@Override
-		public GridFS fromString(String string) {
+		public GridFS fromString(CharSequence string) {
 			return string == null ? null : new GridFS( string.getBytes() );
 		}
 

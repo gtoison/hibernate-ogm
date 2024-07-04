@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.massindex.impl;
 
-import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +18,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.exception.spi.ConversionContext;
+import org.hibernate.ogm.compensation.ErrorHandler;
 import org.hibernate.ogm.loader.impl.OgmLoadingContext;
 import org.hibernate.ogm.loader.impl.TupleBasedEntityLoader;
 import org.hibernate.ogm.model.spi.Tuple;
@@ -26,13 +28,12 @@ import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.search.backend.AddLuceneWork;
 import org.hibernate.search.backend.spi.BatchBackend;
 import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
-import org.hibernate.search.bridge.spi.ConversionContext;
 import org.hibernate.search.bridge.util.impl.ContextualExceptionBridgeHelper;
 import org.hibernate.search.engine.integration.impl.ExtendedSearchIntegrator;
+import org.hibernate.search.engine.logging.impl.Log;
 import org.hibernate.search.engine.service.spi.ServiceManager;
 import org.hibernate.search.engine.spi.DocumentBuilderIndexedEntity;
 import org.hibernate.search.engine.spi.EntityIndexBinding;
-import org.hibernate.search.exception.ErrorHandler;
 import org.hibernate.search.hcore.util.impl.HibernateHelper;
 import org.hibernate.search.indexes.interceptor.EntityIndexingInterceptor;
 import org.hibernate.search.indexes.interceptor.IndexingOverride;
@@ -40,8 +41,6 @@ import org.hibernate.search.orm.loading.impl.HibernateSessionLoadingInitializer;
 import org.hibernate.search.spi.IndexedTypeIdentifier;
 import org.hibernate.search.spi.IndexedTypeMap;
 import org.hibernate.search.spi.InstanceInitializer;
-import org.hibernate.search.util.logging.impl.Log;
-import java.lang.invoke.MethodHandles;
 
 /**
  * Component of batch-indexing pipeline, using chained producer-consumers.
@@ -107,7 +106,7 @@ public class TupleIndexer implements SessionAwareRunnable {
 		if ( entityIndexBinding != null ) {
 			EntityIndexingInterceptor<?> interceptor = entityIndexBinding.getEntityIndexingInterceptor();
 			if ( isNotSkippable( interceptor, entity ) ) {
-				Serializable id = session.getIdentifier( entity );
+				Object id = session.getIdentifier( entity );
 				AddLuceneWork addWork = createAddLuceneWork( tenantId, entity, sessionInitializer, conversionContext, id,
 						entityIndexBinding );
 				backend.enqueueAsyncWork( addWork );
@@ -116,7 +115,7 @@ public class TupleIndexer implements SessionAwareRunnable {
 	}
 
 	private AddLuceneWork createAddLuceneWork(String tenantIdentifier, Object entity, InstanceInitializer sessionInitializer,
-			ConversionContext conversionContext, Serializable id, EntityIndexBinding entityIndexBinding) {
+			ConversionContext conversionContext, Object id, EntityIndexBinding entityIndexBinding) {
 		DocumentBuilderIndexedEntity docBuilder = entityIndexBinding.getDocumentBuilder();
 		String idInString = idInString( conversionContext, id, docBuilder.getTypeIdentifier(), docBuilder );
 		// depending on the complexity of the object graph going to be indexed it's possible
@@ -125,7 +124,7 @@ public class TupleIndexer implements SessionAwareRunnable {
 		return docBuilder.createAddWork( tenantIdentifier, docBuilder.getTypeIdentifier(), entity, id, idInString, sessionInitializer, conversionContext );
 	}
 
-	private String idInString(ConversionContext conversionContext, Serializable id, IndexedTypeIdentifier typeIdentifier,
+	private String idInString(ConversionContext conversionContext, Object id, IndexedTypeIdentifier typeIdentifier,
 			DocumentBuilderIndexedEntity docBuilder) {
 		conversionContext.pushProperty( docBuilder.getIdPropertyName() );
 		try {

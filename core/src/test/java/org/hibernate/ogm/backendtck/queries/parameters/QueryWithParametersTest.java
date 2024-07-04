@@ -13,8 +13,6 @@ import java.util.EnumSet;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.utils.PackagingRule;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
@@ -22,6 +20,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Gunnar Morling

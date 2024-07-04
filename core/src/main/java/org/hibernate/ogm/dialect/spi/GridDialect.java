@@ -20,6 +20,7 @@ import org.hibernate.ogm.util.Experimental;
 import org.hibernate.persister.entity.Lockable;
 import org.hibernate.service.Service;
 import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Dialect abstracting Hibernate OGM from the grid implementation.
@@ -163,7 +164,7 @@ public interface GridDialect extends Service {
 	 * overridden
 	 */
 	@Experimental( "Custom types including the GridType contract will be re-visited after OGM 4.1.0.Final." )
-	GridType overrideType(Type type);
+	GridType overrideType(JavaType<?> type);
 
 	/**
 	 * A consumer is called for each tuple matching the selected {@link EntityKeyMetadata}. The tuples must be of the

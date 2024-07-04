@@ -8,9 +8,9 @@ package org.hibernate.ogm.backendtck.associations.collection.types;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
 
 /**
  * @author Gunnar Morling

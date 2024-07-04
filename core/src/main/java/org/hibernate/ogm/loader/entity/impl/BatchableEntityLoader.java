@@ -6,13 +6,12 @@
  */
 package org.hibernate.ogm.loader.entity.impl;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.loader.entity.UniqueEntityLoader;
+import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.Type;
 
@@ -23,20 +22,20 @@ import org.hibernate.type.Type;
  *
  * @author Emmanuel Bernard emmanuel@hibernate.org
  */
-public interface BatchableEntityLoader extends UniqueEntityLoader {
+public interface BatchableEntityLoader<T> extends SingleIdEntityLoader<T> {
 
 	/**
 	 * Called by wrappers that batch load entities
 	 * @param persister only needed for logging
 	 * @param lockOptions
 	 */
-	List<?> loadEntityBatch(
+	List<T> loadEntityBatch(
 			final SharedSessionContractImplementor session,
-			final Serializable[] ids,
+			final Object[] ids,
 			final Type idType,
 			final Object optionalObject,
 			final String optionalEntityName,
-			final Serializable optionalId,
+			final Object optionalId,
 			final EntityPersister persister,
 			LockOptions lockOptions) throws HibernateException;
 }

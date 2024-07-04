@@ -6,12 +6,12 @@
  */
 package org.hibernate.ogm.jpa.impl;
 
-import javax.persistence.EntityExistsException;
-import javax.transaction.SystemException;
-
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.ogm.exception.EntityAlreadyExistsException;
 import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ExceptionMapper;
+
+import jakarta.persistence.EntityExistsException;
+import jakarta.transaction.SystemException;
 
 /**
  * Maps OGM-specific exceptions, delegates other exceptions to ORM's own default mapper.

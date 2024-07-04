@@ -6,17 +6,17 @@
  */
 package org.hibernate.ogm.datastore.mongodb.type.impl;
 
+import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.datastore.mongodb.type.GridFS;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.java.AbstractClassJavaType;
 
 /**
  * A {@link JavaTypeDescriptor} for {@link GridFS}.
  *
  * @author Davide D'Alto
  */
-public class GridFSJavaTypeDescriptor extends AbstractTypeDescriptor<GridFS> {
+public class GridFSJavaTypeDescriptor extends AbstractClassJavaType<GridFS> {
 
 	public static final GridFSJavaTypeDescriptor INSTANCE = new GridFSJavaTypeDescriptor();
 
@@ -30,7 +30,7 @@ public class GridFSJavaTypeDescriptor extends AbstractTypeDescriptor<GridFS> {
 	}
 
 	@Override
-	public GridFS fromString(String string) {
+	public GridFS fromString(CharSequence string) {
 		if ( string == null ) {
 			return null;
 		}

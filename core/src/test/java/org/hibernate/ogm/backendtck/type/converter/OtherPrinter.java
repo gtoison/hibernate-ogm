@@ -15,10 +15,10 @@ package org.hibernate.ogm.backendtck.type.converter;
 
 import java.util.UUID;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 /**
  * @author Emmanuel Bernard emmanuel@hibernate.org

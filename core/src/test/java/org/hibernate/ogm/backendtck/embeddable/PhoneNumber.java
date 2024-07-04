@@ -6,10 +6,10 @@
  */
 package org.hibernate.ogm.backendtck.embeddable;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-
 import java.util.List;
+
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Davide D'Alto

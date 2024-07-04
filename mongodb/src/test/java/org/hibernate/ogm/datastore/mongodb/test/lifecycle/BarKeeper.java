@@ -6,10 +6,10 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.lifecycle;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.bson.types.ObjectId;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling

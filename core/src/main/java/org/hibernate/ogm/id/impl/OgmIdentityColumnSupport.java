@@ -7,14 +7,14 @@
 package org.hibernate.ogm.id.impl;
 
 import org.hibernate.MappingException;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.identity.GetGeneratedKeysDelegate;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.hibernate.dialect.identity.IdentityColumnSupportImpl;
-import org.hibernate.id.PostInsertIdentityPersister;
+import org.hibernate.generator.EventType;
+import org.hibernate.id.insert.GetGeneratedKeysDelegate;
 import org.hibernate.ogm.dialect.identity.spi.IdentityColumnAwareGridDialect;
 import org.hibernate.ogm.dialect.impl.GridDialects;
 import org.hibernate.ogm.dialect.spi.GridDialect;
+import org.hibernate.persister.entity.EntityPersister;
 
 /**
  * Define what kind of identity generation the {@link GridDialect} support.
@@ -67,9 +67,7 @@ public class OgmIdentityColumnSupport implements IdentityColumnSupport {
 	}
 
 	@Override
-	public GetGeneratedKeysDelegate buildGetGeneratedKeysDelegate(
-			PostInsertIdentityPersister persister,
-			Dialect dialect) {
-		return new GetGeneratedKeysDelegate( persister, dialect );
+	public GetGeneratedKeysDelegate buildGetGeneratedKeysDelegate(EntityPersister persister) {
+		return new GetGeneratedKeysDelegate( persister, true, EventType.INSERT );
 	}
 }

@@ -17,13 +17,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Guillaume Smet

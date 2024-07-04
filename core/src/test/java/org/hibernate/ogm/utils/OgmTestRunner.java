@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.utils;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -14,8 +15,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.transaction.TransactionManager;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
@@ -23,13 +22,14 @@ import org.hibernate.ogm.OgmSessionFactory;
 import org.hibernate.ogm.exception.impl.Exceptions;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.utils.TestSessionFactory.Scope;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
+
+import jakarta.transaction.TransactionManager;
 
 /**
  * A JUnit 4 runner for OGM tests. Based on a given set of entities, it manages a session factory, which is used

@@ -6,12 +6,12 @@
  */
 package org.hibernate.ogm.backendtck.optimisticlocking;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * @author Gunnar Morling
