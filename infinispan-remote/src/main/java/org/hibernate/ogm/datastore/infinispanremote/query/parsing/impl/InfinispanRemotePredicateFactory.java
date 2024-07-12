@@ -9,16 +9,6 @@ package org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl;
 import java.util.List;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate;
-import org.hibernate.hql.ast.spi.predicate.ConjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.DisjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.InPredicate;
-import org.hibernate.hql.ast.spi.predicate.IsNullPredicate;
-import org.hibernate.hql.ast.spi.predicate.LikePredicate;
-import org.hibernate.hql.ast.spi.predicate.NegationPredicate;
-import org.hibernate.hql.ast.spi.predicate.PredicateFactory;
-import org.hibernate.hql.ast.spi.predicate.RangePredicate;
-import org.hibernate.hql.ast.spi.predicate.RootPredicate;
 import org.hibernate.ogm.datastore.infinispanremote.impl.InfinispanRemoteDatastoreProvider;
 import org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.predicate.impl.InfinispanRemoteComparisonPredicate;
 import org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.predicate.impl.InfinispanRemoteConjunctionPredicate;
@@ -32,6 +22,16 @@ import org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.predicate
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.persister.impl.OgmEntityPersister;
+import org.hibernate.ogm.query.spi.predicate.ComparisonPredicate;
+import org.hibernate.ogm.query.spi.predicate.ConjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.DisjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.InPredicate;
+import org.hibernate.ogm.query.spi.predicate.IsNullPredicate;
+import org.hibernate.ogm.query.spi.predicate.LikePredicate;
+import org.hibernate.ogm.query.spi.predicate.NegationPredicate;
+import org.hibernate.ogm.query.spi.predicate.PredicateFactory;
+import org.hibernate.ogm.query.spi.predicate.RangePredicate;
+import org.hibernate.ogm.query.spi.predicate.RootPredicate;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 
 /**

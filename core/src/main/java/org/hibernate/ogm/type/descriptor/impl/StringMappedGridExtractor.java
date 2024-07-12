@@ -11,7 +11,7 @@ import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * @author Nicolas Helleringer
@@ -21,9 +21,9 @@ public class StringMappedGridExtractor<J> implements GridValueExtractor<J> {
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
 	private final GridTypeDescriptor gridTypeDescriptor;
-	private final BasicJavaType<J> javaTypeDescriptor;
+	private final JavaType<J> javaTypeDescriptor;
 
-	public StringMappedGridExtractor( BasicJavaType<J> javaTypeDescriptor, GridTypeDescriptor gridTypeDescriptor ) {
+	public StringMappedGridExtractor( JavaType<J> javaTypeDescriptor, GridTypeDescriptor gridTypeDescriptor ) {
 		this.gridTypeDescriptor = gridTypeDescriptor;
 		this.javaTypeDescriptor = javaTypeDescriptor;
 	}

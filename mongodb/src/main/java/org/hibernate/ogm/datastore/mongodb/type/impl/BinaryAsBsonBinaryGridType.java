@@ -10,7 +10,7 @@ import org.bson.types.Binary;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.impl.AbstractGenericBasicType;
-import org.hibernate.type.descriptor.java.PrimitiveByteArrayTypeDescriptor;
+import org.hibernate.type.descriptor.java.PrimitiveByteArrayJavaType;
 
 /**
  * Persists {@link Binary}s as is in MongoDB.
@@ -23,7 +23,7 @@ public class BinaryAsBsonBinaryGridType extends AbstractGenericBasicType<byte[]>
 	public static final BinaryAsBsonBinaryGridType INSTANCE = new BinaryAsBsonBinaryGridType();
 
 	public BinaryAsBsonBinaryGridType() {
-		super( BinaryMappedGridTypeDescriptor.INSTANCE, PrimitiveByteArrayTypeDescriptor.INSTANCE );
+		super( BinaryMappedGridTypeDescriptor.INSTANCE, PrimitiveByteArrayJavaType.INSTANCE );
 	}
 
 	@Override

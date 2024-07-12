@@ -125,12 +125,17 @@ import org.hibernate.ogm.model.spi.TupleOperation;
 import org.hibernate.ogm.options.spi.OptionsContext;
 import org.hibernate.ogm.storedprocedure.ProcedureQueryParameters;
 import org.hibernate.ogm.type.impl.ByteStringType;
+import org.hibernate.ogm.type.impl.ByteType;
+import org.hibernate.ogm.type.impl.CalendarDateType;
+import org.hibernate.ogm.type.impl.CalendarType;
 import org.hibernate.ogm.type.impl.CharacterStringType;
+import org.hibernate.ogm.type.impl.CharacterType;
 import org.hibernate.ogm.type.impl.LocalDateAsStringType;
 import org.hibernate.ogm.type.impl.LocalDateTimeAsStringType;
 import org.hibernate.ogm.type.impl.LocalTimeAsStringType;
 import org.hibernate.ogm.type.impl.StringCalendarDateType;
 import org.hibernate.ogm.type.impl.TimestampAsDateType;
+import org.hibernate.ogm.type.impl.TimestampType;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.util.impl.CollectionHelper;
 import org.hibernate.ogm.util.impl.StringHelper;
@@ -138,6 +143,7 @@ import org.hibernate.type.MaterializedBlobType;
 import org.hibernate.type.SerializableToBlobType;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.java.BasicJavaType;
 import org.parboiled.Parboiled;
 import org.parboiled.errors.ErrorUtils;
 import org.parboiled.parserunners.RecoveringParseRunner;
@@ -845,19 +851,19 @@ public class MongoDBDialect extends BaseGridDialect implements QueryableGridDial
 	@Override
 	public GridType overrideType(Type type) {
 		// Override handling of calendar types
-		if ( type == StandardBasicTypes.CALENDAR || type == StandardBasicTypes.CALENDAR_DATE ) {
+		if ( type == CalendarType.INSTANCE || type == CalendarDateType.INSTANCE ) {
 			return StringCalendarDateType.INSTANCE;
 		}
-		else if ( type == StandardBasicTypes.TIMESTAMP ) {
+		else if ( type == TimestampType.INSTANCE ) {
 			return TimestampAsDateType.INSTANCE;
 		}
 		else if ( type == StandardBasicTypes.BINARY ) {
 			return BinaryAsBsonBinaryGridType.INSTANCE;
 		}
-		else if ( type == StandardBasicTypes.BYTE ) {
+		else if ( type == ByteType.INSTANCE ) {
 			return ByteStringType.INSTANCE;
 		}
-		else if ( type == StandardBasicTypes.CHARACTER ) {
+		else if ( type == CharacterType.INSTANCE ) {
 			return CharacterStringType.INSTANCE;
 		}
 		else if ( type.getReturnedClass() == ObjectId.class ) {
@@ -871,7 +877,7 @@ public class MongoDBDialect extends BaseGridDialect implements QueryableGridDial
 		}
 		else if ( type instanceof SerializableToBlobType ) {
 			SerializableToBlobType<?> exposedType = (SerializableToBlobType<?>) type;
-			return new SerializableAsBinaryGridType<>( exposedType.getJavaTypeDescriptor() );
+			return new SerializableAsBinaryGridType( (BasicJavaType) exposedType.getJavaTypeDescriptor() );
 		}
 		else if ( type instanceof MaterializedBlobType ) {
 			MaterializedBlobType exposedType = (MaterializedBlobType) type;
@@ -1500,10 +1506,16 @@ public class MongoDBDialect extends BaseGridDialect implements QueryableGridDial
 			Boolean j = (Boolean) obj.get( "j" );
 			Integer t = (Integer) obj.get( "wtimeout" );
 			if ( w instanceof String ) {
-				wc = new WriteConcern( (String) w, ( t != null ? t : 0 ), false, ( j != null ? j : false ) );
+				wc = new WriteConcern( (String) w );
 			}
 			if ( w instanceof Number ) {
-				wc = new WriteConcern( ( (Number) w ).intValue(), ( t != null ? t : 0 ), false, ( j != null ? j : false ) );
+				wc = new WriteConcern( ( (Number) w ).intValue() );
+			}
+			if (j != null) {
+				wc = wc.withJournal( j );
+			}
+			if (t != null) {
+				wc = wc.withWTimeout( t , TimeUnit.MINUTES );
 			}
 		}
 		return wc;
@@ -1828,7 +1840,6 @@ public class MongoDBDialect extends BaseGridDialect implements QueryableGridDial
 
 		Object wObject;
 		int wTimeoutMS;
-		boolean fsync;
 		Boolean journal;
 
 		if ( original.getWObject() instanceof String ) {
@@ -1841,9 +1852,7 @@ public class MongoDBDialect extends BaseGridDialect implements QueryableGridDial
 			wObject = Math.max( original.getW(), writeConcern.getW() );
 		}
 
-		wTimeoutMS = Math.min( original.getWtimeout(), writeConcern.getWtimeout() );
-
-		fsync = original.getFsync() || writeConcern.getFsync();
+		wTimeoutMS = Math.min( original.getWTimeout( TimeUnit.MILLISECONDS ), writeConcern.getWTimeout( TimeUnit.MILLISECONDS ) );
 
 		if ( original.getJournal() == null ) {
 			journal = writeConcern.getJournal();
@@ -1855,12 +1864,15 @@ public class MongoDBDialect extends BaseGridDialect implements QueryableGridDial
 			journal = original.getJournal() || writeConcern.getJournal();
 		}
 
+		WriteConcern wc;
 		if ( wObject instanceof String ) {
-			return new WriteConcern( (String) wObject, wTimeoutMS, fsync, journal );
+			wc = new WriteConcern( (String) wObject );
 		}
 		else {
-			return new WriteConcern( (int) wObject, wTimeoutMS, fsync, journal );
+			wc = new WriteConcern( (int) wObject );
 		}
+		
+		return wc.withWTimeout( wTimeoutMS, TimeUnit.MILLISECONDS ).withJournal( journal );
 	}
 
 	/**

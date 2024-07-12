@@ -15,6 +15,7 @@ import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * A {@link GridTypeDescriptor} which stores/retrieves values from the grid unwrapping/wrapping them as {@link Binary}, delegating to a
@@ -27,7 +28,7 @@ public class BinaryMappedGridTypeDescriptor implements GridTypeDescriptor {
 	public static final BinaryMappedGridTypeDescriptor INSTANCE = new BinaryMappedGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(final JavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 
 			@Override
@@ -39,7 +40,7 @@ public class BinaryMappedGridTypeDescriptor implements GridTypeDescriptor {
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(final JavaType<X> javaTypeDescriptor) {
 		return new GridValueExtractor<X>() {
 
 			@Override

@@ -43,10 +43,4 @@ public class OneToOneType extends EntityType {
 			throws HibernateException {
 		//nothing to do
 	}
-
-	@Override
-	public Object hydrate(Tuple rs, String[] names, SharedSessionContractImplementor session, Object owner)
-			throws HibernateException {
-		return session.getContextEntityIdentifier( owner );
-	}
 }

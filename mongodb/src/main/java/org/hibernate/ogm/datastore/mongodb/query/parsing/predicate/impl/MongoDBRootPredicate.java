@@ -6,9 +6,8 @@
  */
 package org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl;
 
-import org.hibernate.hql.ast.spi.predicate.RootPredicate;
-
 import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.RootPredicate;
 
 
 /**

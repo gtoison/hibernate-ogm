@@ -15,8 +15,11 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
+import org.hibernate.type.NumericBooleanConverter;
+import org.hibernate.type.TrueFalseConverter;
+import org.hibernate.type.YesNoConverter;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -55,13 +58,13 @@ public class Bookmark {
 	private Boolean favourite;
 	private Byte displayMask;
 
-	@Type(type = "true_false")
+	@Convert(converter = TrueFalseConverter.class)
 	private boolean isPrivate;
 
-	@Type(type = "yes_no")
+	@Convert(converter = YesNoConverter.class)
 	private boolean isRead;
 
-	@Type(type = "numeric_boolean")
+	@Convert(converter = NumericBooleanConverter.class)
 	private boolean isShared;
 
 	// Lobs

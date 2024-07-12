@@ -8,13 +8,10 @@ package org.hibernate.ogm.backendtck.queries;
 
 import java.util.Set;
 
-import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

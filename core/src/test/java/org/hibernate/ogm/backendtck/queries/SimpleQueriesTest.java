@@ -30,13 +30,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.hql.ParsingException;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestForIssue;
 import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.ogm.utils.TestSessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.query.SyntaxException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -156,7 +156,7 @@ public class SimpleQueriesTest extends OgmTestCase {
 	@Test
 	@SkipByGridDialect(value = { MONGODB, NEO4J_EMBEDDED, NEO4J_REMOTE, INFINISPAN_REMOTE }, comment = "Doesn't apply to MongoDB, Neo4j or Infinispan Remote queries.")
 	public void testSelectingCompleteIndexedEmbeddedEntityInProjectionQueryRaisesException() throws Exception {
-		thrown.expect( ParsingException.class );
+		thrown.expect( SyntaxException.class );
 		thrown.expectMessage( "HQL100005" );
 
 		session.createQuery( "select h.author from Hypothesis h" ).list();

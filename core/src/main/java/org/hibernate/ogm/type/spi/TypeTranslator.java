@@ -9,7 +9,6 @@ package org.hibernate.ogm.type.spi;
 import org.hibernate.HibernateException;
 import org.hibernate.service.Service;
 import org.hibernate.type.Type;
-import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Translates {@link Type}s from Hibernate ORM to corresponding {@link GridType}s from Hibernate OGM.
@@ -25,5 +24,5 @@ public interface TypeTranslator extends Service {
 	 * @return Hibernate OGM's corresponding type
 	 * @throws HibernateException In case no matching type could be found
 	 */
-	GridType getType(JavaType<?> type);
+	GridType getType(Type type);
 }

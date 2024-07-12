@@ -96,8 +96,8 @@
             patterns so that a common transitive dependency is added in the right folder.
         -->
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-search-orm</artifactId>
+            <groupId>org.hibernate.search</groupId>
+            <artifactId>hibernate-search-mapper-orm</artifactId>
             <exclusions>
                 <exclusion>
                     <artifactId>jboss-logging</artifactId>

@@ -20,11 +20,9 @@ import org.hibernate.mapping.Subclass;
 import org.hibernate.metamodel.mapping.DiscriminatorType;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.persister.entity.DiscriminatorHelper;
 import org.hibernate.sql.InFragment;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
-import org.hibernate.type.descriptor.java.StringJavaType;
 
 /**
  * The discriminator is a column containing a different value for each entity type.
@@ -165,6 +163,11 @@ class ColumnBasedDiscriminator implements EntityDiscriminator {
 	@Override
 	public boolean isNeeded() {
 		return needed;
+	}
+	
+	@Override
+	public Map<Object, String> getSubclassByDiscriminatorValue() {
+		return subclassesByValue;
 	}
 
 	@Override

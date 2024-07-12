@@ -8,9 +8,9 @@ package org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl;
 
 import java.util.Arrays;
 
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-import org.hibernate.hql.ast.spi.predicate.RangePredicate;
 import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.query.spi.predicate.RangePredicate;
 
 /**
  * MongoDB-based implementation of {@link RangePredicate}.

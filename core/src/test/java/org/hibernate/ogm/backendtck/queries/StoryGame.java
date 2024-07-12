@@ -9,8 +9,8 @@ package org.hibernate.ogm.backendtck.queries;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;

@@ -7,6 +7,7 @@
 package org.hibernate.ogm.datastore.mongodb.test.inheritance.singletable;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.ogm.datastore.mongodb.type.impl.StringAsObjectIdType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class NodeLink {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Type(type = "objectid")
+	@Type(StringAsObjectIdType.class)
 	public String getId() {
 		return id;
 	}

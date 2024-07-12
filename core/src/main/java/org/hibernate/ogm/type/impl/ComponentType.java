@@ -8,7 +8,6 @@ package org.hibernate.ogm.type.impl;
 
 import java.util.Arrays;
 
-import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -53,7 +52,7 @@ public class ComponentType extends GridTypeDelegatingToCoreType implements GridT
 	@Override
 	public void nullSafeSet(Tuple resultset, Object value, String[] names, boolean[] settable, SharedSessionContractImplementor session)
 			throws HibernateException {
-		Object[] subvalues = nullSafeGetValues( value, componentType.getEntityMode() );
+		Object[] subvalues = nullSafeGetValues( value, session );
 		//TODO in the original componentType begin and loc are different (namely begin only counts settable slots
 		//I don't think that's relevant for us
 		int columnCurrentIndex = 0;
@@ -119,12 +118,12 @@ public class ComponentType extends GridTypeDelegatingToCoreType implements GridT
 	}
 
 	//utility methods
-	private Object[] nullSafeGetValues(Object value, EntityMode entityMode) throws HibernateException {
+	private Object[] nullSafeGetValues(Object value, SharedSessionContractImplementor session) throws HibernateException {
 		if ( value == null ) {
 			return new Object[propertySpan];
 		}
 		else {
-			return componentType.getPropertyValues( value, entityMode );
+			return componentType.getPropertyValues( value, session );
 		}
 	}
 }

@@ -12,13 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.ogm.datastore.mongodb.type.impl.StringAsObjectIdType;
 
 @Entity
 public class PhoneNumber {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Type(type = "objectid")
+	@Type(StringAsObjectIdType.class)
 	private String id;
 	private String name;
 	private String value;

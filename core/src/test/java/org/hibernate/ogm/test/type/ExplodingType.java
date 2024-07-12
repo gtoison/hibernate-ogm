@@ -15,8 +15,8 @@ import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.ogm.type.impl.AbstractGenericBasicType;
-import org.hibernate.type.descriptor.java.BasicJavaType;
-import org.hibernate.type.descriptor.java.UUIDTypeDescriptor;
+import org.hibernate.type.descriptor.java.JavaType;
+import org.hibernate.type.descriptor.java.UUIDJavaType;
 
 /**
 * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -26,7 +26,7 @@ public class ExplodingType extends AbstractGenericBasicType<UUID> {
 	public static final ExplodingType INSTANCE = new ExplodingType();
 
 	public ExplodingType() {
-		super( ExplodingTypeDescriptor.INSTANCE, UUIDTypeDescriptor.INSTANCE );
+		super( ExplodingTypeDescriptor.INSTANCE, UUIDJavaType.INSTANCE );
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ExplodingType extends AbstractGenericBasicType<UUID> {
 		public static ExplodingTypeDescriptor INSTANCE = new ExplodingTypeDescriptor();
 
 		@Override
-		public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
+		public <X> GridValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
 			return new GridValueBinder<X>() {
 				@Override
 				public void bind(Tuple resultset, X value, String[] names) {
@@ -68,7 +68,7 @@ public class ExplodingType extends AbstractGenericBasicType<UUID> {
 		}
 
 		@Override
-		public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
+		public <X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor) {
 			return new GridValueExtractor<X>() {
 				@Override
 				public X extract(Tuple resultset, String name) {

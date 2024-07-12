@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.ogm.datastore.mongodb.type.impl.StringAsObjectIdType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +35,7 @@ public abstract class Node {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Type(type = "objectid")
+	@Type(StringAsObjectIdType.class)
 	public String getId() {
 		return id;
 	}

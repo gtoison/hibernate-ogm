@@ -21,12 +21,13 @@ import org.hibernate.ogm.type.spi.TypeTranslator;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.type.AbstractStandardBasicType;
+import org.hibernate.type.BasicTypeRegistry;
+import org.hibernate.type.ConvertedBasicType;
 import org.hibernate.type.CustomType;
 import org.hibernate.type.EnumType;
 import org.hibernate.type.SerializableToBlobType;
 import org.hibernate.type.Type;
-import org.hibernate.type.descriptor.converter.AttributeConverterTypeAdapter;
-import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
+import org.hibernate.type.descriptor.converter.spi.BasicValueConverter;
 import org.hibernate.type.descriptor.java.BasicJavaType;
 import org.hibernate.type.descriptor.java.BigDecimalJavaType;
 import org.hibernate.type.descriptor.java.BigIntegerJavaType;
@@ -49,9 +50,9 @@ import org.hibernate.type.descriptor.java.LongJavaType;
 import org.hibernate.type.descriptor.java.ShortJavaType;
 import org.hibernate.type.descriptor.java.StringJavaType;
 import org.hibernate.type.descriptor.java.UrlJavaType;
+import org.hibernate.type.descriptor.java.spi.JavaTypeRegistry;
+import org.hibernate.type.spi.TypeConfiguration;
 import org.hibernate.usertype.UserType;
-
-import com.fasterxml.classmate.TypeResolver;
 
 /**
  * @author Emmanuel Bernard
@@ -65,9 +66,10 @@ public class TypeTranslatorImpl implements TypeTranslator {
 	private final Map<JavaType<?>, GridType> typeConverter;
 	private final GridDialect dialect;
 	// ORM type resolver
-	private final TypeResolver typeResolver;
+	private final BasicTypeRegistry typeResolver;
+	private final JavaTypeRegistry javaTypeRegistry;
 
-	public TypeTranslatorImpl(GridDialect dialect, TypeResolver typeResolver) {
+	public TypeTranslatorImpl(GridDialect dialect, TypeConfiguration typeConfiguration) {
 		this.dialect = dialect;
 		this.typeResolver = typeResolver;
 
@@ -107,7 +109,7 @@ public class TypeTranslatorImpl implements TypeTranslator {
 	}
 
 	@Override
-	public GridType getType(JavaType<?> type) {
+	public GridType getType(Type type) {
 		if ( type == null ) {
 			return null;
 		}
@@ -122,9 +124,9 @@ public class TypeTranslatorImpl implements TypeTranslator {
 			SerializableToBlobType<?> exposedType = (SerializableToBlobType<?>) type;
 			return new SerializableAsByteArrayType<>( exposedType.getJavaTypeDescriptor() );
 		}
-		else if ( type instanceof AttributeConverterTypeAdapter<?> ) {
+		else if ( type instanceof ConvertedBasicType<?> ) {
 			// Handles JPA AttributeConverter integration logic
-			return buildAttributeConverterGridTypeAdaptor( (AttributeConverterTypeAdapter<?>) type );
+			return buildAttributeConverterGridTypeAdaptor( (ConvertedBasicType<?>) type );
 
 		}
 		else if ( type instanceof AbstractStandardBasicType ) {
@@ -172,22 +174,22 @@ public class TypeTranslatorImpl implements TypeTranslator {
 	 * AttributeConverterGridTypeDescriptorAdaptor class which will call the attribute converter and then call the
 	 * GridType compliant with the intermediary type
 	 */
-	private <T> AttributeConverterGridTypeAdaptor<T> buildAttributeConverterGridTypeAdaptor(AttributeConverterTypeAdapter<T> specificType) {
-		JpaAttributeConverter<? extends T, ?> attributeConverter = specificType.getAttributeConverter();
-		BasicJavaType<?> converterJavaTypeDescriptor = attributeConverter.getConverterJavaTypeDescriptor();
+	private <T> AttributeConverterGridTypeAdaptor<T> buildAttributeConverterGridTypeAdaptor(ConvertedBasicType<T> specificType) {
+		BasicValueConverter<T, ?> attributeConverter = specificType.getValueConverter();
+		JavaType<T> converterJavaTypeDescriptor = attributeConverter.getDomainJavaType();
 
 		// Rebuild the definition as we need some generic type extraction logic from it
-		final Class<?> databaseColumnJavaType = attributeConverter.getRelationalJavaTypeDescriptor().getJavaType();
+		final Class<?> databaseColumnJavaType = attributeConverter.getRelationalJavaType().getJavaTypeClass();
 
 		// Find the GridType for the intermediary datastore Java type (from the attribute converter
-		Type intermediaryORMType = typeResolver.basic( databaseColumnJavaType.getName() );
+		Type intermediaryORMType = typeResolver.getRegisteredType( databaseColumnJavaType.getName() );
 		if ( intermediaryORMType == null ) {
-			throw log.cannotFindTypeForAttributeConverter( specificType.getAttributeConverter().getClass(), databaseColumnJavaType );
+			throw log.cannotFindTypeForAttributeConverter( specificType.getValueConverter().getClass(), databaseColumnJavaType );
 		}
 		GridType intermediaryOGMGridType = this.getType( intermediaryORMType );
 
 		// find the JavaTypeDescriptor representing the "intermediate database type representation".
-		final BasicJavaType<?> intermediateJavaTypeDescriptor = JavaTypeDescriptorRegistry.INSTANCE.getDescriptor( databaseColumnJavaType );
+		final BasicJavaType<?> intermediateJavaTypeDescriptor = javaTypeRegistry.resolveDescriptor( intermediaryORMType );
 		// and finally construct the adapter, which injects the AttributeConverter calls into the binding/extraction
 		// 		process...
 		final GridTypeDescriptor gridTypeDescriptorAdapter = new AttributeConverterGridTypeDescriptorAdaptor(

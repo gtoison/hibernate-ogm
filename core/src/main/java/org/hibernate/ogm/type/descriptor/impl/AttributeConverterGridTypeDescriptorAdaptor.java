@@ -8,13 +8,13 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import java.lang.invoke.MethodHandles;
 
-import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.type.descriptor.converter.spi.JpaAttributeConverter;
 import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.PersistenceException;
@@ -48,7 +48,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
 		// Get the binder for the intermediate type representation
 		final GridValueBinder realBinder = delegate.getBinder( intermediateJavaTypeDescriptor );
 
@@ -78,7 +78,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor) {
 		// Get the extractor for the intermediate type representation
 		final GridValueExtractor realExtractor = delegate.getExtractor( intermediateJavaTypeDescriptor );
 
@@ -120,7 +120,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 		}
 
 		@Override
-		public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
+		public <X> GridValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
 			return new GridValueBinder<X>() {
 				@Override
 				public void bind(Tuple resultset, X value, String[] names) {
@@ -132,7 +132,7 @@ public class AttributeConverterGridTypeDescriptorAdaptor implements GridTypeDesc
 		}
 
 		@Override
-		public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
+		public <X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor) {
 			return new GridValueExtractor<X>() {
 				@Override
 				@SuppressWarnings( "unchecked" )

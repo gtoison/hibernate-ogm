@@ -18,8 +18,8 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
 
 public class NativeApiAssociationFindBenchmark extends NativeApiBenchmarkBase {
 
@@ -44,7 +44,7 @@ public class NativeApiAssociationFindBenchmark extends NativeApiBenchmarkBase {
 		public void insertTestData(ClientHolder clientHolder) throws Exception {
 			this.clientHolder = clientHolder;
 
-			DBCollection fieldsOfScienceCollection = clientHolder.db.getCollection( "FieldOfScience" );
+			MongoCollection<DBObject> fieldsOfScienceCollection = clientHolder.db.getCollection( "FieldOfScience", DBObject.class );
 
 			// insert referenced objects
 			for ( int i = 0; i <= NUMBER_OF_REFERENCABLE_ENTITIES; i++ ) {
@@ -57,10 +57,10 @@ public class NativeApiAssociationFindBenchmark extends NativeApiBenchmarkBase {
 				fieldsOfScience.add( fieldOfScience );
 			}
 
-			fieldsOfScienceCollection.insert( fieldsOfScience );
+			fieldsOfScienceCollection.insertMany( fieldsOfScience );
 
 			// insert referencing objects
-			DBCollection scientistCollection = clientHolder.db.getCollection( "Scientist" );
+			MongoCollection<DBObject> scientistCollection = clientHolder.db.getCollection( "Scientist", DBObject.class );
 
 			List<DBObject> scientists = new ArrayList<DBObject>( 1000 );
 			for ( long i = 0; i <= NUMBER_OF_TEST_ENTITIES; i++ ) {
@@ -80,7 +80,7 @@ public class NativeApiAssociationFindBenchmark extends NativeApiBenchmarkBase {
 				scientists.add( scientist );
 
 				if ( i % 1000 == 0 ) {
-					scientistCollection.insert( scientists );
+					scientistCollection.insertMany( scientists );
 					System.out.println( "Inserted " + i + " entities" );
 					scientists = new ArrayList<DBObject>( 1000 );
 				}
@@ -92,13 +92,13 @@ public class NativeApiAssociationFindBenchmark extends NativeApiBenchmarkBase {
 	@OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
 	public void getEntitiesWithAssociationById(TestDataInserter inserter, Blackhole blackhole) throws Exception {
 		ClientHolder stateHolder = inserter.clientHolder;
-		DBCollection scientistCollection = stateHolder.db.getCollection( "Scientist" );
-		DBCollection fieldsOfScienceCollection = stateHolder.db.getCollection( "FieldOfScience" );
+		MongoCollection<DBObject> scientistCollection = stateHolder.db.getCollection( "Scientist", DBObject.class );
+		MongoCollection<DBObject> fieldsOfScienceCollection = stateHolder.db.getCollection( "FieldOfScience", DBObject.class );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
 			long id = stateHolder.rand.nextInt( NUMBER_OF_TEST_ENTITIES - 1 ) + 1;
 
-			DBObject scientist =  scientistCollection.findOne( new BasicDBObject( "_id", id ) );
+			DBObject scientist =  scientistCollection.find( new BasicDBObject( "_id", id ) ).first();
 
 			if ( scientist == null ) {
 				throw new IllegalArgumentException( "Couldn't find entry with id " + id );
@@ -109,7 +109,7 @@ public class NativeApiAssociationFindBenchmark extends NativeApiBenchmarkBase {
 			List<Integer> interests = (List<Integer>) scientist.get( "interestedIn" );
 
 			for ( Integer interestId : interests ) {
-				DBObject fieldOfScience =  fieldsOfScienceCollection.findOne( new BasicDBObject( "_id", interestId ) );
+				DBObject fieldOfScience =  fieldsOfScienceCollection.find( new BasicDBObject( "_id", interestId ) ).first();
 
 				if ( fieldOfScience == null ) {
 					throw new IllegalArgumentException( "Couldn't find entry with id " + id );

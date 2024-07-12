@@ -15,8 +15,8 @@ import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.Threads;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
 
 public class NativeApiInsertBenchmark extends NativeApiBenchmarkBase {
 
@@ -30,7 +30,7 @@ public class NativeApiInsertBenchmark extends NativeApiBenchmarkBase {
 	@Benchmark
 	@OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
 	public void insertEntities(ClientHolder stateHolder) throws Exception {
-		DBCollection authorCollection = stateHolder.db.getCollection( "Author" );
+		MongoCollection<DBObject> authorCollection = stateHolder.db.getCollection( "Author", DBObject.class );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
 			DBObject author = new BasicDBObject( 5 );
@@ -41,7 +41,7 @@ public class NativeApiInsertBenchmark extends NativeApiBenchmarkBase {
 			author.put( "Lname", "Landis " + stateHolder.rand.nextInt() );
 			author.put( "Mname", "" + stateHolder.rand.nextInt( 26 ) );
 
-			authorCollection.insert( author );
+			authorCollection.insertOne( author );
 		}
 	}
 
@@ -73,7 +73,7 @@ public class NativeApiInsertBenchmark extends NativeApiBenchmarkBase {
 	}
 
 	private void doInsertEntitiesUsingBulking(ClientHolder stateHolder) {
-		DBCollection authorCollection = stateHolder.db.getCollection( "Author" );
+		MongoCollection<DBObject> authorCollection = stateHolder.db.getCollection( "Author", DBObject.class );
 		List<DBObject> authors = new ArrayList<DBObject>( OPERATIONS_PER_INVOCATION );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
@@ -88,13 +88,13 @@ public class NativeApiInsertBenchmark extends NativeApiBenchmarkBase {
 			authors.add( author );
 		}
 
-		authorCollection.insert( authors );
+		authorCollection.insertMany( authors );
 	}
 
 	@Benchmark
 	@OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
 	public void insertEntitiesWithElementCollection(ClientHolder stateHolder) throws Exception {
-		DBCollection scientistCollection = stateHolder.db.getCollection( "Scientist" );
+		MongoCollection<DBObject> scientistCollection = stateHolder.db.getCollection( "Scientist", DBObject.class );
 		List<DBObject> scientists = new ArrayList<DBObject>( OPERATIONS_PER_INVOCATION );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
@@ -121,7 +121,7 @@ public class NativeApiInsertBenchmark extends NativeApiBenchmarkBase {
 			scientists.add( scientist );
 		}
 
-		scientistCollection.insert( scientists );
+		scientistCollection.insertMany( scientists );
 	}
 
 	/**

@@ -24,17 +24,6 @@ public enum AuthenticationMechanismType {
 			return MongoCredential.createGSSAPICredential( username );
 		}
 	},
-	/**
-	 * @deprecated since MongoDB 3.0, use {@link #SCRAM_SHA_1} or {@link #BEST}
-	 */
-	@Deprecated
-	MONGODB_CR {
-
-		@Override
-		public MongoCredential createCredential(String username, String databaseName, String password) {
-			return MongoCredential.createMongoCRCredential( username, databaseName, asCharArray( password ) );
-		}
-	},
 	PLAIN {
 
 		@Override

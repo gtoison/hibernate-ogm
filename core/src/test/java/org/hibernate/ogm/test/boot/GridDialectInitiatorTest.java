@@ -13,7 +13,6 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.ogm.boot.OgmSessionFactoryBuilder;
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.utils.TestForIssue;
 import org.junit.Test;
@@ -36,7 +35,6 @@ public class GridDialectInitiatorTest {
 			new MetadataSources( registry )
 					.buildMetadata()
 					.getSessionFactoryBuilder()
-					.unwrap( OgmSessionFactoryBuilder.class )
 					.build();
 
 			fail( "Expected exception was not raised" );

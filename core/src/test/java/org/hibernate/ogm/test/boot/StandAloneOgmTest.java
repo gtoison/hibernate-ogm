@@ -13,7 +13,6 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.ogm.OgmSessionFactory;
-import org.hibernate.ogm.boot.OgmSessionFactoryBuilder;
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.junit.Test;
 
@@ -31,10 +30,9 @@ public class StandAloneOgmTest {
 			.applySetting( AvailableSettings.TRANSACTION_COORDINATOR_STRATEGY, "jta" )
 			.build();
 
-		OgmSessionFactory osf = new MetadataSources( registry )
+		OgmSessionFactory osf = (OgmSessionFactory) new MetadataSources( registry )
 			.buildMetadata()
 			.getSessionFactoryBuilder()
-			.unwrap( OgmSessionFactoryBuilder.class )
 			.build();
 
 		assertThat( osf ).isNotNull();

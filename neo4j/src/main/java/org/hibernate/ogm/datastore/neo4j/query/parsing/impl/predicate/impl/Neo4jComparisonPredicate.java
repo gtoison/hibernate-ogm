@@ -9,8 +9,8 @@ package org.hibernate.ogm.datastore.neo4j.query.parsing.impl.predicate.impl;
 import static org.hibernate.ogm.datastore.neo4j.query.parsing.cypherdsl.impl.CypherDSL.compare;
 import static org.hibernate.ogm.datastore.neo4j.query.parsing.cypherdsl.impl.CypherDSL.identifier;
 
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.query.spi.predicate.ComparisonPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

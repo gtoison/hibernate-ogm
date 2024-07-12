@@ -6,9 +6,9 @@
  */
 package org.hibernate.ogm.datastore.neo4j.query.impl;
 
-import org.hibernate.engine.query.spi.ParameterParser.Recognizer;
 import org.hibernate.ogm.dialect.query.spi.ParameterMetadataBuilder;
 import org.hibernate.ogm.dialect.query.spi.RecognizerBasedParameterMetadataBuilder;
+import org.hibernate.query.sql.spi.ParameterRecognizer;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.RecoveringParseRunner;
 
@@ -21,8 +21,8 @@ import org.parboiled.parserunners.RecoveringParseRunner;
 public class Neo4jParameterMetadataBuilder extends RecognizerBasedParameterMetadataBuilder {
 
 	@Override
-	public void parseQueryParameters(String nativeQuery, Recognizer journaler) {
+	public void parseQueryParameters(String nativeQuery, ParameterRecognizer journaler) {
 		QueryParser parser = Parboiled.createParser( QueryParser.class, journaler );
-		new RecoveringParseRunner<Recognizer>( parser.Query() ).run( nativeQuery );
+		new RecoveringParseRunner<ParameterRecognizer>( parser.Query() ).run( nativeQuery );
 	}
 }

@@ -18,9 +18,9 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
 /**
  * Benchmark for measuring performance of find-by-id / query operations using the native MongoDB API.
@@ -47,7 +47,7 @@ public class NativeApiFindBenchmark extends NativeApiBenchmarkBase {
 		public void setupDatastore(ClientHolder clientHolder) throws Exception {
 			this.clientHolder = clientHolder;
 
-			DBCollection authorCollection = clientHolder.db.getCollection( "Author" );
+			MongoCollection<DBObject> authorCollection = clientHolder.db.getCollection( "Author", DBObject.class );
 
 			List<DBObject> authors = new ArrayList<DBObject>( 1000 );
 			for ( long i = 0; i <= NUMBER_OF_TEST_ENTITIES; i++ ) {
@@ -63,7 +63,7 @@ public class NativeApiFindBenchmark extends NativeApiBenchmarkBase {
 				authors.add( author );
 
 				if ( i % 1000 == 0 ) {
-					authorCollection.insert( authors );
+					authorCollection.insertMany( authors );
 					System.out.println( "Inserted " + i + " entities" );
 					authors = new ArrayList<DBObject>( 1000 );
 				}
@@ -77,12 +77,12 @@ public class NativeApiFindBenchmark extends NativeApiBenchmarkBase {
 	@OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
 	public void findEntityById(TestDataInserter inserter, Blackhole blackhole) throws Exception {
 		ClientHolder clientHolder = inserter.clientHolder;
-		DBCollection authorCollection = clientHolder.db.getCollection( "Author" );
+		MongoCollection<DBObject> authorCollection = clientHolder.db.getCollection( "Author", DBObject.class );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
 			long id = clientHolder.rand.nextInt( NUMBER_OF_TEST_ENTITIES - 1 ) + 1;
 
-			DBObject author =  authorCollection.findOne( new BasicDBObject( "_id", id ) );
+			DBObject author =  authorCollection.find( new BasicDBObject( "_id", id ) ).first();
 
 			if ( author == null ) {
 				throw new IllegalArgumentException( "Couldn't find entry with id " + id );
@@ -96,12 +96,12 @@ public class NativeApiFindBenchmark extends NativeApiBenchmarkBase {
 	@OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
 	public void findEntityByProperty(TestDataInserter inserter, Blackhole blackhole) throws Exception {
 		ClientHolder clientHolder = inserter.clientHolder;
-		DBCollection authorCollection = clientHolder.db.getCollection( "Author" );
+		MongoCollection<DBObject> authorCollection = clientHolder.db.getCollection( "Author", DBObject.class );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
 			int mName = clientHolder.rand.nextInt( 26 );
 
-			DBCursor authors =  authorCollection.find( new BasicDBObject( "mname", "" + mName ) ).limit( 50 );
+			MongoCursor<DBObject> authors =  authorCollection.find( new BasicDBObject( "mname", "" + mName ) ).limit( 50 ).iterator();
 
 			DBObject author;
 			while ( authors.hasNext() ) {

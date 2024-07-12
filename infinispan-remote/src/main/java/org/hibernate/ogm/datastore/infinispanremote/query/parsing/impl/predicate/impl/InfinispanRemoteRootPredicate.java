@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.predicate.impl;
 
-import org.hibernate.hql.ast.spi.predicate.RootPredicate;
 import org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.InfinispanRemoteQueryBuilder;
+import org.hibernate.ogm.query.spi.predicate.RootPredicate;
 
 /**
  * Infinispan server-based implementation of {@link RootPredicate}.

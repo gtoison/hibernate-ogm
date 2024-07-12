@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.datastore.neo4j.query.parsing.impl.predicate.impl;
 
-import org.hibernate.hql.ast.spi.predicate.RootPredicate;
+import org.hibernate.ogm.query.spi.predicate.RootPredicate;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

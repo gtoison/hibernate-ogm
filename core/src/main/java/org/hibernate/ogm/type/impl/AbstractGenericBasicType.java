@@ -11,8 +11,6 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
-import org.hibernate.boot.model.JavaTypeDescriptor;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -24,7 +22,7 @@ import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.descriptor.java.MutabilityPlan;
 
 /**
@@ -40,11 +38,11 @@ public abstract class AbstractGenericBasicType<T>
 	private static final boolean[] FALSE = { false };
 
 	private final GridTypeDescriptor gridTypeDescriptor;
-	private final BasicJavaType<T> javaTypeDescriptor;
+	private final JavaType<T> javaTypeDescriptor;
 	private final GridValueExtractor<T> typeExtractor;
 	private final GridValueBinder<T> typeBinder;
 
-	public AbstractGenericBasicType(GridTypeDescriptor gridTypeDescriptor, BasicJavaType<T> javaTypeDescriptor) {
+	public AbstractGenericBasicType(GridTypeDescriptor gridTypeDescriptor, JavaType<T> javaTypeDescriptor) {
 		this.gridTypeDescriptor = gridTypeDescriptor;
 		this.javaTypeDescriptor = javaTypeDescriptor;
 		this.typeExtractor = gridTypeDescriptor.getExtractor( javaTypeDescriptor );
@@ -97,7 +95,7 @@ public abstract class AbstractGenericBasicType<T>
 
 	// final implementations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	public final BasicJavaType<T> getJavaTypeDescriptor() {
+	public final JavaType<T> getJavaTypeDescriptor() {
 		return javaTypeDescriptor;
 	}
 
@@ -297,21 +295,6 @@ public abstract class AbstractGenericBasicType<T>
 	public final Object hydrate(Tuple rs, String[] names, SharedSessionContractImplementor session, Object owner)
 			throws HibernateException {
 		return nullSafeGet( rs, names, session, owner );
-	}
-
-	@Override
-	public final Object resolve(Object value, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return value;
-	}
-
-	@Override
-	public final Object semiResolve(Object value, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return value;
-	}
-
-	@Override
-	public final GridType getSemiResolvedType(SessionFactoryImplementor factory) {
-		return this;
 	}
 
 	@Override

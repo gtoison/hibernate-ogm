@@ -6,9 +6,8 @@
  */
 package org.hibernate.ogm.datastore.map.impl;
 
-import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 
-import org.hibernate.JDBCException;
 import org.hibernate.LockMode;
 import org.hibernate.StaleObjectStateException;
 import org.hibernate.dialect.lock.LockingStrategy;
@@ -23,8 +22,7 @@ import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.type.spi.TypeTranslator;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
-import org.hibernate.persister.entity.Lockable;
+import org.hibernate.persister.entity.EntityPersister;
 
 /**
  * @author Sanne Grinovero &lt;sanne@hibernate.org&gt; (C) 2011 Red Hat Inc.
@@ -34,13 +32,13 @@ public class MapPessimisticWriteLockingStrategy implements LockingStrategy {
 
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
-	protected final Lockable lockable;
+	protected final EntityPersister lockable;
 	protected final LockMode lockMode;
 	protected final GridType identifierGridType;
 
 	private volatile MapDatastoreProvider provider;
 
-	public MapPessimisticWriteLockingStrategy(Lockable lockable, LockMode lockMode) {
+	public MapPessimisticWriteLockingStrategy(EntityPersister lockable, LockMode lockMode) {
 		this.lockable = lockable;
 		this.lockMode = lockMode;
 		TypeTranslator typeTranslator = lockable.getFactory().getServiceRegistry().getService( TypeTranslator.class );

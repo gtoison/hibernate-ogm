@@ -12,6 +12,7 @@ import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.type.spi.TypeTranslator;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceInitiator;
+import org.hibernate.service.spi.SessionFactoryServiceInitiatorContext;
 
 /**
  * Initializes {@link TypeTranslator}.
@@ -28,8 +29,11 @@ public class TypeTranslatorInitiator implements SessionFactoryServiceInitiator<T
 	}
 
 	@Override
-	public TypeTranslator initiateService(SessionFactoryImplementor sessionFactory, SessionFactoryOptions sessionFactoryOptions, ServiceRegistryImplementor registry) {
+	public TypeTranslator initiateService(SessionFactoryServiceInitiatorContext context) {
+		SessionFactoryImplementor sessionFactory = context.getSessionFactory();
+		ServiceRegistryImplementor registry = context.getServiceRegistry();
+		
 		GridDialect dialect = registry.getService( GridDialect.class );
-		return new TypeTranslatorImpl( dialect, sessionFactory.getTypeResolver() );
+		return new TypeTranslatorImpl( dialect, sessionFactory.getTypeConfiguration() );
 	}
 }

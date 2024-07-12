@@ -10,7 +10,6 @@ import java.lang.invoke.MethodHandles;
 import java.sql.Types;
 
 import org.hibernate.HibernateException;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -36,7 +35,7 @@ public class EnumType extends GridTypeDelegatingToCoreType {
 	public EnumType(CustomType customType, org.hibernate.type.EnumType enumType) {
 		super( customType );
 		this.coreEnumType = enumType;
-		isOrdinal = isOrdinal( coreEnumType.sqlTypes()[0] );
+		isOrdinal = isOrdinal( coreEnumType.getSqlType() );
 	}
 
 	public boolean isOrdinal() {

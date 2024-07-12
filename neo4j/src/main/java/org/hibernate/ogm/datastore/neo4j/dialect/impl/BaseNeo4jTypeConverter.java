@@ -9,6 +9,7 @@ package org.hibernate.ogm.datastore.neo4j.dialect.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.ogm.type.impl.CalendarDateType;
 import org.hibernate.ogm.type.impl.LocalDateAsStringType;
 import org.hibernate.ogm.type.impl.LocalDateTimeAsStringType;
 import org.hibernate.ogm.type.impl.LocalDateTimeType;
@@ -21,6 +22,7 @@ import org.hibernate.ogm.type.impl.StringTimestampTypeDescriptor;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Container for methods used to obtain the {@link GridType} representation of a {@link Type}.
@@ -33,7 +35,7 @@ public abstract class BaseNeo4jTypeConverter {
 
 	protected static Map<Type, GridType> createGridTypeConversionMap() {
 		Map<Type, GridType> conversion = new HashMap<Type, GridType>();
-		conversion.put( StandardBasicTypes.CALENDAR, StringCalendarDateType.INSTANCE );
+		conversion.put( CalendarDateType.INSTANCE, StringCalendarDateType.INSTANCE );
 		conversion.put( StandardBasicTypes.CALENDAR_DATE, StringCalendarDateType.INSTANCE );
 		conversion.put( StandardBasicTypes.DATE, StringDateTypeDescriptor.INSTANCE );
 		conversion.put( StandardBasicTypes.TIME, StringDateTypeDescriptor.INSTANCE );

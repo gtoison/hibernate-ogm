@@ -8,7 +8,7 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import java.io.Serializable;
 
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Descriptor for the <tt>grid</tt> side of a value mapping.
@@ -16,7 +16,7 @@ import org.hibernate.type.descriptor.java.BasicJavaType;
  * @author Emmanuel Bernard
  */
 public interface GridTypeDescriptor extends Serializable {
-	<X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor);
+	<X> GridValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor);
 
-	<X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor);
+	<X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor);
 }

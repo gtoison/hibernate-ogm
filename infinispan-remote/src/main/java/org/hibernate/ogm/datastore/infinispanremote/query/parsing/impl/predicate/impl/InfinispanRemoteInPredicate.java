@@ -8,9 +8,9 @@ package org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.predicat
 
 import java.util.List;
 
-import org.hibernate.hql.ast.spi.predicate.InPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
 import org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.InfinispanRemoteQueryBuilder;
+import org.hibernate.ogm.query.spi.predicate.InPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
 
 /**
  * Infinispan server-based implementation of {@link InPredicate}.

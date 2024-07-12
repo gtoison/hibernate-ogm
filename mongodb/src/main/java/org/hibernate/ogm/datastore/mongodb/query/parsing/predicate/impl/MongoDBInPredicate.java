@@ -8,10 +8,9 @@ package org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl;
 
 import java.util.List;
 
-import org.hibernate.hql.ast.spi.predicate.InPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-
 import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.InPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
 
 
 /**

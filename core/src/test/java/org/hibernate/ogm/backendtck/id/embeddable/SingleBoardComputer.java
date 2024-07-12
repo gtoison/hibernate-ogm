@@ -7,7 +7,7 @@
 package org.hibernate.ogm.backendtck.id.embeddable;
 
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

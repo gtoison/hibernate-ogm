@@ -47,13 +47,6 @@ public class CollectionType extends GridTypeDelegatingToCoreType {
 	}
 
 	@Override
-	public Object hydrate(Tuple rs, String[] names, SharedSessionContractImplementor session, Object owner)
-			throws HibernateException {
-		//CollectionType.delegate returns a marker object. We pass it through.
-		return delegate.hydrate( null, names, session, owner );
-	}
-
-	@Override
 	public Object convertToBackendType(Object value, SessionFactoryImplementor sessionFactory) {
 		return null;
 	}

@@ -7,6 +7,7 @@
 package org.hibernate.ogm.persister.impl;
 
 import static org.hibernate.ogm.util.impl.CollectionHelper.newHashMap;
+import static org.hibernate.pretty.MessageHelper.infoString;
 
 import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
@@ -39,12 +40,14 @@ import org.hibernate.engine.spi.EntityEntry;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.generator.EventType;
+import org.hibernate.generator.Generator;
 import org.hibernate.internal.DynamicFilterAliasGenerator;
 import org.hibernate.internal.FilterAliasGenerator;
 import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
-import org.hibernate.loader.entity.UniqueEntityLoader;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Table;
+import org.hibernate.metamodel.mapping.EntityVersionMapping;
 import org.hibernate.metamodel.mapping.TableDetails;
 import org.hibernate.ogm.compensation.impl.InvocationCollectingGridDialect;
 import org.hibernate.ogm.dialect.batch.spi.GroupingByEntityDialect;
@@ -129,6 +132,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
 	private final EntityDiscriminator discriminator;
+	private final Map<Object,String> subclassByDiscriminatorValue = new HashMap<>();
 
 	private final String tableName;
 	private final String[] constraintOrderedTableNames;
@@ -732,7 +736,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 			throw new HibernateException( "LockMode.FORCE is currently not supported for generated version properties" );
 		}
 
-		Object nextVersion = getVersionType().next( currentVersion, session );
+		Object nextVersion = calculateNextVersion( id, currentVersion, session );
 		if ( log.isTraceEnabled() ) {
 			log.trace(
 					"Forcing version increment [" + MessageHelper.infoString( this, id, getFactory() ) +
@@ -753,6 +757,41 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		gridVersionType.nullSafeSet( resultset, nextVersion, new String[] { getVersionColumnName() }, session );
 		insertOrUpdateTuple( key, tuplePointer, hasUpdateGeneratedProperties(), session );
 
+		return nextVersion;
+	}
+	
+	/**
+	 * Copied from {@link AbstractEntityPersister#calculateNextVersion}
+	 */
+	private Object calculateNextVersion(Object id, Object currentVersion, SharedSessionContractImplementor session) {
+		if ( !isVersioned() ) {
+			throw new AssertionFailure( "cannot force version increment on non-versioned entity" );
+		}
+
+		if ( isVersionGeneratedOnExecution() ) {
+			// the difficulty here is exactly what we update in order to
+			// force the version to be incremented in the db...
+			throw new HibernateException( "LockMode.FORCE is currently not supported for generated version properties" );
+
+		}
+
+		final EntityVersionMapping versionMapping = getVersionMapping();
+		final Object nextVersion = getVersionJavaType().next(
+				currentVersion,
+				versionMapping.getLength(),
+				versionMapping.getTemporalPrecision() != null
+						? versionMapping.getTemporalPrecision()
+						: versionMapping.getPrecision(),
+				versionMapping.getScale(),
+				session
+		);
+		if ( log.isTraceEnabled() ) {
+			log.trace(
+					"Forcing version increment [" + infoString( this, id, getFactory() ) + "; "
+							+ getVersionType().toLoggableString( currentVersion, getFactory() ) + " -> "
+							+ getVersionType().toLoggableString( nextVersion, getFactory() ) + "]"
+			);
+		}
 		return nextVersion;
 	}
 
@@ -1560,6 +1599,11 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		}
 		return tableName;
 	}
+	
+	@Override
+	protected String[] getSubclassTableNames() {
+		return new String[] { tableName };
+	}
 
 	@Override
 	protected String[] getSubclassTableKeyColumns(int j) {
@@ -1617,15 +1661,6 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		return 0;
 	}
 
-	@Override
-	protected String filterFragment(String alias) throws MappingException {
-		//TODO support filter in OGM??? How???
-		return "";
-//		return hasWhere() ?
-//			" and " + getSQLWhereString(alias) :
-//			"";
-	}
-
 	protected GridType[] getGridPropertyTypes() {
 		return gridPropertyTypes;
 	}
@@ -1661,6 +1696,11 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	@Override
 	public BasicType<?> getDiscriminatorType() {
 		return discriminator.getType();
+	}
+	
+	@Override
+	public Map<Object, String> getSubclassByDiscriminatorValue() {
+		return discriminator.getSubclassByDiscriminatorValue();
 	}
 
 	@Override
@@ -1706,7 +1746,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		if ( !hasInsertGeneratedProperties() ) {
 			throw new AssertionFailure( "no insert-generated properties" );
 		}
-		processGeneratedProperties( id, entity, state, session, GenerationTiming.INSERT );
+		processGeneratedProperties( id, entity, state, session, EventType.INSERT );
 	}
 
 	@Override
@@ -1714,7 +1754,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 		if ( !hasUpdateGeneratedProperties() ) {
 			throw new AssertionFailure( "no update-generated properties" );
 		}
-		processGeneratedProperties( id, entity, state, session, GenerationTiming.ALWAYS );
+		processGeneratedProperties( id, entity, state, session, EventType.UPDATE );
 	}
 	
 	@Override
@@ -1744,7 +1784,7 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 			Object entity,
 			Object[] state,
 			SharedSessionContractImplementor session,
-			GenerationTiming matchTiming) {
+			EventType matchTiming) {
 
 		Tuple tuple = getFreshTuple( EntityKeyBuilder.fromPersister( this, id, session ), session );
 		saveSharedTuple( entity, tuple, session );
@@ -1753,10 +1793,8 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 			throw log.couldNotRetrieveEntityForRetrievalOfGeneratedProperties( getEntityName(), id );
 		}
 
-		int propertyIndex = -1;
-		for ( NonIdentifierAttribute attribute : getEntityMetamodel().getProperties() ) {
-			propertyIndex++;
-			final ValueGeneration valueGeneration = attribute.getValueGenerationStrategy();
+		for (int propertyIndex = 0; propertyIndex < getEntityMetamodel().getPropertySpan(); propertyIndex++) {
+			final Generator valueGeneration = getEntityMetamodel().getGenerators()[propertyIndex];
 			if ( isReadRequired( valueGeneration, matchTiming ) ) {
 				Object hydratedState = gridPropertyTypes[propertyIndex].hydrate( tuple, getPropertyAliases( "", propertyIndex ), session, entity );
 				state[propertyIndex] = gridPropertyTypes[propertyIndex].resolve( hydratedState, session, entity );
@@ -1768,14 +1806,13 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	/**
 	 * Whether the given value generation strategy requires to read the value from the database or not.
 	 */
-	private boolean isReadRequired(ValueGeneration valueGeneration, GenerationTiming matchTiming) {
-		return valueGeneration != null && valueGeneration.getValueGenerator() == null &&
-				timingsMatch( valueGeneration.getGenerationTiming(), matchTiming );
+	private boolean isReadRequired(Generator valueGeneration, EventType matchTiming) {
+		return valueGeneration != null && timingsMatch( valueGeneration, matchTiming );
 	}
 
-	private boolean timingsMatch(GenerationTiming timing, GenerationTiming matchTiming) {
-		return ( matchTiming == GenerationTiming.INSERT && timing.includesInsert() ) ||
-				( matchTiming == GenerationTiming.ALWAYS && timing.includesUpdate() );
+	private boolean timingsMatch(Generator generator, EventType matchTiming) {
+		return ( matchTiming == EventType.INSERT && generator.generatesOnInsert() ) ||
+				( matchTiming == EventType.UPDATE && generator.generatesOnUpdate() );
 	}
 
 	// Here the RowKey is made of the foreign key columns pointing to the associated entity
@@ -1818,5 +1855,48 @@ public abstract class OgmEntityPersister extends AbstractEntityPersister impleme
 	private Tuple getFreshTuple(EntityKey key, SharedSessionContractImplementor session) {
 		TupleContext tupleContext = getTupleContext( session );
 		return gridDialect.getTuple( key, tupleContext );
+	}
+	
+	@Override
+	public void visitConstraintOrderedTables(ConstraintOrderedTableConsumer consumer) {
+		for ( int i = 0; i < constraintOrderedTableNames.length; i++ ) {
+			final String tableName = constraintOrderedTableNames[i];
+			final int tablePosition = i;
+			consumer.consume(
+					tableName,
+					() -> columnConsumer -> columnConsumer.accept(
+							tableName,
+							constraintOrderedKeyColumnNames[tablePosition],
+							getIdentifierMapping()::getJdbcMapping
+					)
+			);
+		}
+	}
+
+	@Override
+	protected void visitMutabilityOrderedTables(MutabilityOrderedTableConsumer consumer) {
+		for ( int i = 0; i < qualifiedTableNames.length; i++ ) {
+			final String tableName = qualifiedTableNames[i];
+			final int tableIndex = i;
+			consumer.consume(
+					tableName,
+					tableIndex,
+					() -> columnConsumer -> columnConsumer.accept(
+							tableName,
+							getIdentifierMapping(),
+							keyColumnNames[tableIndex]
+					)
+			);
+		}
+	}
+
+	@Override
+	public TableDetails getMappedTableDetails() {
+		return getTableMapping( 0 );
+	}
+	
+	@Override
+	public boolean hasDuplicateTables() {
+		return false;
 	}
 }

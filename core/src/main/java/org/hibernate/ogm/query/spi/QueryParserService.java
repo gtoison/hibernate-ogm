@@ -11,6 +11,9 @@ import java.util.Map;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.util.Experimental;
 import org.hibernate.service.Service;
+import org.hibernate.sql.ast.SqlAstTranslator;
+import org.hibernate.sql.ast.tree.Statement;
+import org.hibernate.sql.exec.spi.JdbcOperation;
 
 /**
  * Based on JP-QL queries, implementations create native queries in a representation understood by the underlying
@@ -54,4 +57,6 @@ public interface QueryParserService extends Service {
 	 * @return the parsed query
 	 */
 	QueryParsingResult parseQuery(SessionFactoryImplementor sessionFactory, String queryString);
+	
+	<T extends JdbcOperation> SqlAstTranslator<T> buildTranslator(SessionFactoryImplementor sessionFactory, Statement statement);
 }

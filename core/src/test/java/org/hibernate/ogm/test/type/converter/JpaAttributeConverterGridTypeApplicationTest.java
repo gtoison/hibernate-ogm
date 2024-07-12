@@ -20,10 +20,10 @@ import org.hibernate.ogm.datastore.map.impl.MapDatastoreProvider;
 import org.hibernate.ogm.datastore.map.impl.MapDialect;
 import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKey;
+import org.hibernate.ogm.type.impl.PrimitiveByteArrayType;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.TestHelper;
-import org.hibernate.type.BinaryType;
 import org.hibernate.type.Type;
 import org.junit.Test;
 
@@ -94,7 +94,7 @@ public class JpaAttributeConverterGridTypeApplicationTest extends OgmTestCase {
 
 		@Override
 		public GridType overrideType(Type type) {
-			if ( type == BinaryType.INSTANCE ) {
+			if ( type == PrimitiveByteArrayType.INSTANCE ) {
 				return TriplingByteArrayGridType.INSTANCE;
 			}
 			else {

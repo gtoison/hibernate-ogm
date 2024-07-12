@@ -28,10 +28,6 @@
             <artifactId>hibernate-ogm-core</artifactId>
         </dependency>
         <dependency>
-             <groupId>org.hibernate.hql</groupId>
-             <artifactId>hibernate-hql-lucene</artifactId>
-         </dependency>
-        <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging-processor</artifactId>
             <!-- "provided" is used as "compile-only" here; It's NOT needed at runtime -->
@@ -39,8 +35,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-search-orm</artifactId>
+            <groupId>org.hibernate.search</groupId>
+            <artifactId>hibernate-search-mapper-orm</artifactId>
         </dependency>
         <dependency>
             <groupId>org.infinispan</groupId>

@@ -10,8 +10,8 @@ import java.util.UUID;
 
 import org.hibernate.ogm.datastore.map.impl.MapDatastoreProvider;
 import org.hibernate.ogm.datastore.map.impl.MapDialect;
+import org.hibernate.ogm.type.impl.DateType;
 import org.hibernate.ogm.type.spi.GridType;
-import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 
 /**
@@ -30,7 +30,7 @@ public class OverridingTypeDialect extends MapDialect {
 			return ExplodingType.INSTANCE;
 		}
 		//timestamp and time mapping are ignored, only raw dates are handled
-		if ( type == StandardBasicTypes.DATE ) {
+		if ( type == DateType.INSTANCE ) {
 			return CustomDateType.INSTANCE;
 		}
 		return null;

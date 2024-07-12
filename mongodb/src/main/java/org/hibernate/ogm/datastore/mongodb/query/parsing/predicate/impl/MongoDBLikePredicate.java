@@ -8,11 +8,10 @@ package org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl;
 
 import java.util.regex.Pattern;
 
-import org.hibernate.hql.ast.spi.predicate.LikePredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-import org.hibernate.ogm.util.parser.impl.LikeExpressionToRegExpConverter;
-
 import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.LikePredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.util.parser.impl.LikeExpressionToRegExpConverter;
 
 /**
  * MongoDB-based implementation of {@link LikePredicate}.

@@ -6,20 +6,17 @@
  */
 package org.hibernate.ogm.datastore.mongodb.configuration.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.mongodb.ReadConcern;
 import org.hibernate.ogm.cfg.spi.DocumentStoreConfiguration;
 import org.hibernate.ogm.datastore.mongodb.MongoDBProperties;
 import org.hibernate.ogm.datastore.mongodb.impl.MongoDBDatastoreProvider;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.Log;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.datastore.mongodb.options.AuthenticationMechanismType;
 import org.hibernate.ogm.datastore.mongodb.options.impl.ReadConcernOption;
 import org.hibernate.ogm.datastore.mongodb.options.impl.ReadPreferenceOption;
@@ -27,8 +24,9 @@ import org.hibernate.ogm.datastore.mongodb.options.impl.WriteConcernOption;
 import org.hibernate.ogm.options.spi.OptionsContext;
 import org.hibernate.ogm.util.configurationreader.spi.ConfigurationPropertyReader;
 
-import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
+import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 
@@ -76,16 +74,17 @@ public class MongoDBConfiguration extends DocumentStoreConfiguration {
 	}
 
 	/**
-	 * Create a {@link MongoClientOptions} using the {@link MongoDBConfiguration}.
+	 * Create a {@link MongoClientSettings} using the {@link MongoDBConfiguration}.
 	 *
-	 * @return the {@link MongoClientOptions} corresponding to the {@link MongoDBConfiguration}
+	 * @return the {@link MongoClientSettings} corresponding to the {@link MongoDBConfiguration}
 	 */
-	public MongoClientOptions buildOptions() {
-		MongoClientOptions.Builder optionsBuilder = MongoClientOptions.builder();
+	public MongoClientSettings buildOptions() {
+		MongoClientSettings.Builder optionsBuilder = MongoClientSettings.builder();
 
 		optionsBuilder.writeConcern( writeConcern );
 		optionsBuilder.readConcern( readConcern );
 		optionsBuilder.readPreference( readPreference );
+		optionsBuilder.credential( buildCredentials() );
 
 		Map<String, Method> settingsMap = createSettingsMap();
 		for ( Map.Entry<String, Method> entry : settingsMap.entrySet() ) {
@@ -124,7 +123,7 @@ public class MongoDBConfiguration extends DocumentStoreConfiguration {
 	private Map<String, Method> createSettingsMap() {
 		Map<String, Method> settingsMap = new HashMap<>();
 
-		Method[] methods = MongoClientOptions.Builder.class.getDeclaredMethods();
+		Method[] methods = MongoClientSettings.Builder.class.getDeclaredMethods();
 		for ( Method method : methods ) {
 			if ( method.getParameterTypes().length == 1 ) {
 				Class<?> parameterType = method.getParameterTypes()[0];
@@ -144,15 +143,12 @@ public class MongoDBConfiguration extends DocumentStoreConfiguration {
 		return authenticationDatabaseName;
 	}
 
-	public List<MongoCredential> buildCredentials() {
+	private MongoCredential buildCredentials() {
 		if ( getUsername() != null ) {
-			return Collections.singletonList(
-					authenticationMechanism.createCredential(
+			return authenticationMechanism.createCredential(
 							getUsername(),
 							getAuthenticationDatabaseName(),
-							getPassword()
-					)
-			);
+							getPassword());
 		}
 		return null;
 	}

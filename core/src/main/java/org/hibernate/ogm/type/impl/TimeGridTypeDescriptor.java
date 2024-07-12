@@ -16,7 +16,7 @@ import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Force to unwrap a {@link Time}
@@ -28,7 +28,7 @@ public class TimeGridTypeDescriptor implements GridTypeDescriptor {
 	public static final TimeGridTypeDescriptor INSTANCE = new TimeGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 			@Override
 			protected void doBind(Tuple resultset, X value, String[] names, WrapperOptions options) {
@@ -39,7 +39,7 @@ public class TimeGridTypeDescriptor implements GridTypeDescriptor {
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor) {
 		return (resultset, name) -> {
 			Date document = (Date) resultset.get( name );
 			if ( document == null ) {

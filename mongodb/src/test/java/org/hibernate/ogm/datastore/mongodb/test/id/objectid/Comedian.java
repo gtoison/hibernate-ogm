@@ -7,6 +7,7 @@
 package org.hibernate.ogm.datastore.mongodb.test.id.objectid;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.ogm.datastore.mongodb.type.impl.StringAsObjectIdType;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +32,7 @@ public class Comedian {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Type(type = "objectid")
+	@Type(StringAsObjectIdType.class)
 	public String getId() {
 		return id;
 	}

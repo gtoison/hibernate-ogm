@@ -6,8 +6,11 @@
  */
 package org.hibernate.ogm.persister.impl;
 
+import java.util.Map;
+
 import org.hibernate.MappingException;
 import org.hibernate.mapping.PersistentClass;
+import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.hibernate.persister.entity.DiscriminatorHelper;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.Type;
@@ -53,4 +56,9 @@ interface EntityDiscriminator {
 			throw new MappingException( "Illegal discriminator type: " + discriminatorType.getName() );
 		}
 	}
+
+	/**
+	 * @see AbstractEntityPersister#getSubclassByDiscriminatorValue()
+	 */
+	Map<Object, String> getSubclassByDiscriminatorValue();
 }

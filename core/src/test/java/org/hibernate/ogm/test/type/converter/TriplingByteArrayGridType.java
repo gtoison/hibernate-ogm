@@ -15,8 +15,8 @@ import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.ogm.type.impl.AbstractGenericBasicType;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
-import org.hibernate.type.descriptor.java.PrimitiveByteArrayTypeDescriptor;
+import org.hibernate.type.descriptor.java.JavaType;
+import org.hibernate.type.descriptor.java.PrimitiveByteArrayJavaType;
 
 /**
  * Grid types which stores a byte array by tripling it.
@@ -29,7 +29,7 @@ public class TriplingByteArrayGridType extends AbstractGenericBasicType<byte[]> 
 	public static TriplingByteArrayGridType INSTANCE = new TriplingByteArrayGridType();
 
 	public TriplingByteArrayGridType() {
-		super( TriplingByteArrayGridTypeDescriptor.INSTANCE, PrimitiveByteArrayTypeDescriptor.INSTANCE );
+		super( TriplingByteArrayGridTypeDescriptor.INSTANCE, PrimitiveByteArrayJavaType.INSTANCE );
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class TriplingByteArrayGridType extends AbstractGenericBasicType<byte[]> 
 		static TriplingByteArrayGridTypeDescriptor INSTANCE = new TriplingByteArrayGridTypeDescriptor();
 
 		@Override
-		public <X> GridValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+		public <X> GridValueBinder<X> getBinder(final JavaType<X> javaTypeDescriptor) {
 			return new GridValueBinder<X>() {
 
 				@Override
@@ -65,7 +65,7 @@ public class TriplingByteArrayGridType extends AbstractGenericBasicType<byte[]> 
 		}
 
 		@Override
-		public <X> GridValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
+		public <X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor) {
 			return new GridValueExtractor<X>() {
 
 				@Override

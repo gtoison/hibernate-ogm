@@ -11,8 +11,8 @@ import java.util.Map;
 import org.hibernate.engine.query.spi.NamedParameterDescriptor;
 import org.hibernate.engine.query.spi.OrdinalParameterDescriptor;
 import org.hibernate.engine.query.spi.ParamLocationRecognizer;
-import org.hibernate.engine.query.spi.ParameterParser.Recognizer;
 import org.hibernate.query.internal.ParameterMetadataImpl;
+import org.hibernate.query.sql.spi.ParameterRecognizer;
 
 /**
  * Base class for {@link ParameterMetadataBuilder}s based on ORM's {@link ParamLocationRecognizer} SPI.
@@ -34,8 +34,8 @@ public abstract class RecognizerBasedParameterMetadataBuilder implements Paramet
 		parseQueryParameters( nativeQuery, recognizer );
 		recognizer.complete();
 
-		final Map<Integer, OrdinalParameterDescriptor> ordinalDescriptors = recognizer.getOrdinalParameterDescriptionMap();
-		final Map<String, NamedParameterDescriptor> namedDescriptors = recognizer.getNamedParameterDescriptionMap();
+		final Map<Integer, OrdinalParameterDescriptor<?>> ordinalDescriptors = recognizer.getOrdinalParameterDescriptionMap();
+		final Map<String, NamedParameterDescriptor<?>> namedDescriptors = recognizer.getNamedParameterDescriptionMap();
 
 		return new ParameterMetadataImpl( ordinalDescriptors, namedDescriptors );
 	}
@@ -46,5 +46,5 @@ public abstract class RecognizerBasedParameterMetadataBuilder implements Paramet
 	 * @param noSqlQuery the query to parse
 	 * @param recognizer collects any named parameters contained in the given query
 	 */
-	protected abstract void parseQueryParameters(String noSqlQuery, Recognizer recognizer);
+	protected abstract void parseQueryParameters(String noSqlQuery, ParameterRecognizer recognizer);
 }

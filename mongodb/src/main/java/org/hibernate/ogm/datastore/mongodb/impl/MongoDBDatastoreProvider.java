@@ -6,28 +6,21 @@
  */
 package org.hibernate.ogm.datastore.mongodb.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.boot.registry.classloading.spi.ClassLoaderService;
 import org.hibernate.engine.jndi.spi.JndiService;
 import org.hibernate.ogm.cfg.spi.Hosts;
 import org.hibernate.ogm.datastore.mongodb.MongoDBDialect;
-import org.hibernate.ogm.datastore.mongodb.binarystorage.GridFSStorageManager;
 import org.hibernate.ogm.datastore.mongodb.binarystorage.GridFSFields;
+import org.hibernate.ogm.datastore.mongodb.binarystorage.GridFSStorageManager;
 import org.hibernate.ogm.datastore.mongodb.configuration.impl.MongoDBConfiguration;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.Log;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.datastore.mongodb.query.parsing.impl.MongoDBBasedQueryParserService;
 import org.hibernate.ogm.datastore.spi.BaseDatastoreProvider;
 import org.hibernate.ogm.datastore.spi.SchemaDefiner;
@@ -40,6 +33,15 @@ import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.service.spi.Startable;
 import org.hibernate.service.spi.Stoppable;
+
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoDriverInformation;
+import com.mongodb.MongoException;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * Provides access to a MongoDB instance
@@ -152,17 +154,14 @@ public class MongoDBDatastoreProvider extends BaseDatastoreProvider implements S
 	}
 
 	protected MongoClient createMongoClient(MongoDBConfiguration config) {
-		MongoClientOptions clientOptions = config.buildOptions();
-		List<MongoCredential> credentials = config.buildCredentials();
-		log.connectingToMongo( config.getHosts().toString(), clientOptions.getConnectTimeout() );
+		MongoClientSettings clientOptions = config.buildOptions();
+		log.connectingToMongo( config.getHosts().toString(), clientOptions.getSocketSettings().getConnectTimeout(TimeUnit.MILLISECONDS) );
 		try {
 			List<ServerAddress> serverAddresses = new ArrayList<>( config.getHosts().size() );
 			for ( Hosts.HostAndPort hostAndPort : config.getHosts() ) {
 				serverAddresses.add( new ServerAddress( hostAndPort.getHost(), hostAndPort.getPort() ) );
 			}
-			return credentials == null
-					? new MongoClient( serverAddresses, clientOptions )
-					: new MongoClient( serverAddresses, credentials, clientOptions );
+			return MongoClients.create( clientOptions, MongoDriverInformation.builder().build() );
 		}
 		catch (RuntimeException e) {
 			throw log.unableToInitializeMongoDB( e );

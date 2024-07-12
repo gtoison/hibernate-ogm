@@ -31,22 +31,10 @@ public enum WriteConcernType {
 	UNACKNOWLEDGED(WriteConcern.UNACKNOWLEDGED),
 
 	/**
-	 * Exceptions are raised for network issues, and server errors; the write operation waits for the server to flush
-	 * the data to disk.
-	 */
-	FSYNCED(WriteConcern.FSYNCED),
-
-	/**
 	 * Exceptions are raised for network issues, and server errors; the write operation waits for the server to group
 	 * commit to the journal file on disk.
 	 */
 	JOURNALED(WriteConcern.JOURNALED),
-
-	/**
-	 * Exceptions are raised for network issues, and server errors; waits for at least 2 servers for the write
-	 * operation.
-	 */
-	REPLICA_ACKNOWLEDGED(WriteConcern.REPLICA_ACKNOWLEDGED),
 
 	/**
 	 * Exceptions are raised for network issues, and server errors; waits on a majority of servers for the write

@@ -17,8 +17,8 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
 
 public class NativeApiAssociationInsertBenchmark extends NativeApiBenchmarkBase {
 
@@ -41,7 +41,7 @@ public class NativeApiAssociationInsertBenchmark extends NativeApiBenchmarkBase 
 		public void insertTestData(ClientHolder clientHolder) throws Exception {
 			this.clientHolder = clientHolder;
 
-			DBCollection fieldsOfScienceCollection = clientHolder.db.getCollection( "FieldOfScience" );
+			MongoCollection<DBObject> fieldsOfScienceCollection = clientHolder.db.getCollection( "FieldOfScience", DBObject.class );
 
 			for ( int i = 0; i <= NUMBER_OF_REFERENCABLE_ENTITIES; i++ ) {
 				DBObject fieldOfScience = new BasicDBObject( 3 );
@@ -53,7 +53,7 @@ public class NativeApiAssociationInsertBenchmark extends NativeApiBenchmarkBase 
 				fieldsOfScience.add( fieldOfScience );
 			}
 
-			fieldsOfScienceCollection.insert( fieldsOfScience );
+			fieldsOfScienceCollection.insertMany( fieldsOfScience );
 		}
 	}
 
@@ -61,7 +61,7 @@ public class NativeApiAssociationInsertBenchmark extends NativeApiBenchmarkBase 
 	@OperationsPerInvocation(OPERATIONS_PER_INVOCATION)
 	public void insertEntitiesWithAssociation(TestDataInserter inserter) throws Exception {
 		ClientHolder stateHolder = inserter.clientHolder;
-		DBCollection scientistCollection = stateHolder.db.getCollection( "Scientist" );
+		MongoCollection<DBObject> scientistCollection = stateHolder.db.getCollection( "Scientist", DBObject.class );
 		List<DBObject> scientists = new ArrayList<DBObject>( OPERATIONS_PER_INVOCATION );
 
 		for ( int i = 0; i < OPERATIONS_PER_INVOCATION; i++ ) {
@@ -82,7 +82,7 @@ public class NativeApiAssociationInsertBenchmark extends NativeApiBenchmarkBase 
 			scientists.add( scientist );
 		}
 
-		scientistCollection.insert( scientists );
+		scientistCollection.insertMany( scientists );
 	}
 
 	/**

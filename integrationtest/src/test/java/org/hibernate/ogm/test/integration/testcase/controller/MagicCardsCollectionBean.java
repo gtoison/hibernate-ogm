@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 import org.apache.lucene.search.Query;
 import org.hibernate.ogm.test.integration.testcase.model.MagicCard;
 import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
+import org.hibernate.search.mapper.orm.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 
 @Stateful

@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.hibernate.ogm.datastore.mongodb.options.ReadConcern;
 import org.hibernate.ogm.datastore.mongodb.options.ReadConcernType;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

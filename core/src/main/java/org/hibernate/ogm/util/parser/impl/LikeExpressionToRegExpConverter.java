@@ -8,7 +8,7 @@ package org.hibernate.ogm.util.parser.impl;
 
 import java.util.regex.Pattern;
 
-import org.hibernate.hql.ast.spi.predicate.LikePredicate;
+import org.hibernate.ogm.query.spi.predicate.LikePredicate;
 
 /**
  * Creates {@link Pattern} objects equivalent to given HQL/JPQL {@code LIKE} expressions. Used by

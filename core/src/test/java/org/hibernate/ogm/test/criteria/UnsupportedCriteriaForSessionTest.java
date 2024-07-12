@@ -6,10 +6,12 @@
  */
 package org.hibernate.ogm.test.criteria;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.ogm.exception.NotSupportedException;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.criteria.JpaCriteriaQuery;
+import org.hibernate.query.criteria.JpaRoot;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -17,11 +19,10 @@ import org.junit.rules.ExpectedException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Id;
-import jakarta.persistence.Persistence;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
 /**
- * Test that when a user tries to access {@link Criteria} or {@link CriteriaBuilder} a we throw a meaningful exception.
+ * Test that when a user tries to access {@link CriteriaBuilder} a we throw a meaningful exception.
  *
  * @author Davide D'Alto
  */
@@ -36,35 +37,13 @@ public class UnsupportedCriteriaForSessionTest extends OgmJpaTestCase {
 		thrown.expectMessage( "OGM-23 - Criteria queries are not supported yet" );
 
 		inTransaction( em -> {
-			session( em ).createCriteria( Persistence.class );
-		} );
-	}
-
-	@Test
-	public void testCreateCriteriaWithString() {
-		thrown.expect( NotSupportedException.class );
-		inTransaction( em -> {
-			session( em ).createCriteria( "Puppet" );
-		} );
-	}
-
-	@Test
-	public void testCreateCriteriaWithClassAndAlias() {
-		thrown.expect( NotSupportedException.class );
-		thrown.expectMessage( "OGM-23 - Criteria queries are not supported yet" );
-
-		inTransaction( em -> {
-			session( em ).createCriteria( Puppet.class, "p" );
-		} );
-	}
-
-	@Test
-	public void testCreateCriteriaWithStringAndAlias() {
-		thrown.expect( NotSupportedException.class );
-		thrown.expectMessage( "OGM-23 - Criteria queries are not supported yet" );
-
-		inTransaction( em -> {
-			session( em ).createCriteria( "Puppet", "p" );
+			HibernateCriteriaBuilder cb = session( em ).getCriteriaBuilder();
+			JpaCriteriaQuery<Puppet> query = cb.createQuery( Puppet.class );
+			JpaRoot<Puppet> root = query.from( Puppet.class );
+			
+			query.select( root );
+			
+			em.createQuery( query ).getResultList();
 		} );
 	}
 

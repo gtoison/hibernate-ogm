@@ -29,8 +29,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
-import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.internal.MongoClientImpl;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -81,7 +82,7 @@ public class DatastoreInitializationTest {
 		// will start the service
 		TestHelper.getDefaultTestStandardServiceRegistry( cfg ).getService( DatastoreProvider.class );
 
-		assertThat( provider.leakingClient.getCredentialsList().get( 0 ).getMechanism() ).isEqualTo( null );
+		assertThat( provider.leakingClient.getSettings().getCredential().getMechanism() ).isEqualTo( null );
 	}
 
 	@Test
@@ -94,8 +95,8 @@ public class DatastoreInitializationTest {
 		TestHelper.getDefaultTestStandardServiceRegistry( cfg ).getService( DatastoreProvider.class );
 
 		assertThat(
-				provider.leakingClient.getCredentialsList()
-						.get( 0 )
+				provider.leakingClient.getSettings()
+						.getCredential()
 						.getMechanism()
 		).isEqualTo( MongoCredential.SCRAM_SHA_1_MECHANISM );
 	}
@@ -111,8 +112,8 @@ public class DatastoreInitializationTest {
 		TestHelper.getDefaultTestStandardServiceRegistry( cfg ).getService( DatastoreProvider.class );
 
 		assertThat(
-				provider.leakingClient.getCredentialsList()
-						.get( 0 )
+				provider.leakingClient.getSettings()
+						.getCredential()
 						.getMechanism()
 		).isEqualTo( MongoCredential.MONGODB_X509_MECHANISM );
 	}
@@ -127,8 +128,8 @@ public class DatastoreInitializationTest {
 		TestHelper.getDefaultTestStandardServiceRegistry( cfg ).getService( DatastoreProvider.class );
 
 		assertThat(
-				provider.leakingClient.getCredentialsList()
-						.get( 0 )
+				provider.leakingClient.getSettings()
+						.getCredential()
 						.getMechanism()
 		).isEqualTo( MongoCredential.GSSAPI_MECHANISM );
 	}
@@ -143,8 +144,8 @@ public class DatastoreInitializationTest {
 		TestHelper.getDefaultTestStandardServiceRegistry( cfg ).getService( DatastoreProvider.class );
 
 		assertThat(
-				provider.leakingClient.getCredentialsList()
-						.get( 0 )
+				provider.leakingClient.getSettings()
+						.getCredential()
 						.getMechanism()
 		).isEqualTo( MongoCredential.PLAIN_MECHANISM );
 	}
@@ -192,12 +193,12 @@ public class DatastoreInitializationTest {
 
 	class LeakingMongoDBDatastoreProvider extends MongoDBDatastoreProvider {
 
-		public MongoClient leakingClient;
+		public MongoClientImpl leakingClient;
 
 		@Override
 		protected MongoClient createMongoClient(MongoDBConfiguration config) {
 			MongoClient mongoClient = super.createMongoClient( config );
-			this.leakingClient = mongoClient;
+			this.leakingClient = (MongoClientImpl) mongoClient;
 			return mongoClient;
 		}
 

@@ -6,9 +6,9 @@
  */
 package org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.predicate.impl;
 
-import org.hibernate.hql.ast.spi.predicate.IsNullPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
 import org.hibernate.ogm.datastore.infinispanremote.query.parsing.impl.InfinispanRemoteQueryBuilder;
+import org.hibernate.ogm.query.spi.predicate.IsNullPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
 
 /**
  * Infinispan remote-based implementation of {@link IsNullPredicate}.

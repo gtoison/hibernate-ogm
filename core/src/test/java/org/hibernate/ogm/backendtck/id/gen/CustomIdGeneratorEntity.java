@@ -9,7 +9,7 @@ package org.hibernate.ogm.backendtck.id.gen;
 import java.util.Objects;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

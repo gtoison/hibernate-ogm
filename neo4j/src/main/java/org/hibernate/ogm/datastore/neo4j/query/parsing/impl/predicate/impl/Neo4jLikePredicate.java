@@ -9,8 +9,8 @@ package org.hibernate.ogm.datastore.neo4j.query.parsing.impl.predicate.impl;
 import static org.hibernate.ogm.datastore.neo4j.query.parsing.cypherdsl.impl.CypherDSL.compare;
 import static org.hibernate.ogm.datastore.neo4j.query.parsing.cypherdsl.impl.CypherDSL.identifier;
 
-import org.hibernate.hql.ast.spi.predicate.LikePredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.query.spi.predicate.LikePredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
 import org.hibernate.ogm.util.parser.impl.LikeExpressionToRegExpConverter;
 
 /**

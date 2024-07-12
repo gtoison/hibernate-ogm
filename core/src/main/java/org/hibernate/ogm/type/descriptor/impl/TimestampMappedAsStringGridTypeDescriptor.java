@@ -11,7 +11,7 @@ import java.util.Date;
 
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Save the value as string and returns it as Timestamp
@@ -23,7 +23,7 @@ public class TimestampMappedAsStringGridTypeDescriptor implements GridTypeDescri
 	public static final TimestampMappedAsStringGridTypeDescriptor INSTANCE = new TimestampMappedAsStringGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(JavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 
 			@Override
@@ -34,7 +34,7 @@ public class TimestampMappedAsStringGridTypeDescriptor implements GridTypeDescri
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(final BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(final JavaType<X> javaTypeDescriptor) {
 
 		return new GridValueExtractor<X>() {
 

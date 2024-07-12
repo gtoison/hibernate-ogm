@@ -8,7 +8,7 @@ package org.hibernate.ogm.type.descriptor.impl;
 
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Use the Java value as is and persist it to the grid
@@ -19,7 +19,7 @@ public class PassThroughGridTypeDescriptor implements GridTypeDescriptor {
 	public static final PassThroughGridTypeDescriptor INSTANCE = new PassThroughGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(final BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(final JavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 			@Override
 			protected void doBind(Tuple resultset, X value, String[] names, WrapperOptions options) {
@@ -29,7 +29,7 @@ public class PassThroughGridTypeDescriptor implements GridTypeDescriptor {
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(JavaType<X> javaTypeDescriptor) {
 		return new BasicGridExtractor<X>( javaTypeDescriptor, false );
 	}
 }

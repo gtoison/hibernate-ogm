@@ -6,14 +6,12 @@
  */
 package org.hibernate.ogm.datastore.mongodb.configuration.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.mongodb.MongoClientOptions;
-import com.mongodb.ReadConcern;
-import com.mongodb.WriteConcern;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl;
 import org.hibernate.ogm.cfg.OgmProperties;
@@ -21,9 +19,12 @@ import org.hibernate.ogm.options.navigation.impl.OptionsContextImpl;
 import org.hibernate.ogm.options.navigation.source.impl.OptionValueSources;
 import org.hibernate.ogm.options.spi.OptionsContext;
 import org.hibernate.ogm.util.configurationreader.spi.ConfigurationPropertyReader;
+import org.junit.Before;
+import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadConcern;
+import com.mongodb.WriteConcern;
 
 /**
  * @author Hardy Ferentschik
@@ -44,26 +45,26 @@ public class MongoDBConfigurationTest {
 
 	@Test
 	public void testDefaultWriteConcernGetsApplied() {
-		MongoClientOptions clientOptions = createMongoClientOptions();
+		MongoClientSettings clientOptions = createMongoClientSettings();
 
 		assertEquals( "Unexpected write concern", WriteConcern.ACKNOWLEDGED, clientOptions.getWriteConcern() );
 	}
 
 	@Test
 	public void testDefaultReadConcernGetsApplied() {
-		MongoClientOptions clientOptions = createMongoClientOptions();
+		MongoClientSettings clientOptions = createMongoClientSettings();
 
 		assertEquals( "Unexpected read concern", ReadConcern.DEFAULT, clientOptions.getReadConcern() );
 	}
 
 	@Test
 	public void testDefaultServerSelectionTimeoutIsApplied() {
-		MongoClientOptions clientOptions = createMongoClientOptions();
+		MongoClientSettings clientOptions = createMongoClientSettings();
 
 		assertEquals(
 				"Unexpected server selection timeout",
-				MongoClientOptions.builder().build().getServerSelectionTimeout(),
-				clientOptions.getServerSelectionTimeout()
+				MongoClientSettings.builder().build().getClusterSettings().getServerSelectionTimeout(TimeUnit.MILLISECONDS),
+				clientOptions.getClusterSettings().getServerSelectionTimeout(TimeUnit.MILLISECONDS)
 		);
 	}
 
@@ -71,23 +72,23 @@ public class MongoDBConfigurationTest {
 	public void testCustomServerSelectionTimeoutIsApplied() {
 		int expectedTimeout = 1000;
 		configProperties.put( "hibernate.ogm.mongodb.driver.serverSelectionTimeout", String.valueOf( expectedTimeout ) );
-		MongoClientOptions clientOptions = createMongoClientOptions();
+		MongoClientSettings clientOptions = createMongoClientSettings();
 
 		assertEquals(
 				"Unexpected server selection timeout",
 				expectedTimeout,
-				clientOptions.getServerSelectionTimeout()
+				clientOptions.getClusterSettings().getServerSelectionTimeout(TimeUnit.MILLISECONDS)
 		);
 	}
 
-	private MongoClientOptions createMongoClientOptions() {
+	private MongoClientSettings createMongoClientSettings() {
 		MongoDBConfiguration mongoConfig = new MongoDBConfiguration(
 				propertyReader,
 				globalOptions
 		);
 		assertNotNull( mongoConfig );
 
-		MongoClientOptions clientOptions = mongoConfig.buildOptions();
+		MongoClientSettings clientOptions = mongoConfig.buildOptions();
 		assertNotNull( clientOptions );
 		return clientOptions;
 	}

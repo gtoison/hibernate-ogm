@@ -8,7 +8,6 @@ package org.hibernate.ogm.backendtck.queries;
 
 import java.util.Date;
 
-import org.hibernate.search.annotations.SortableField;
 import org.hibernate.search.engine.backend.types.Sortable;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
@@ -72,7 +71,7 @@ public class Hypothesis {
 	}
 
 	@OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	@IndexedEmbedded(indexNullAs = Field.DEFAULT_NULL_TOKEN)
+	@IndexedEmbedded
 	public Author getAuthor() {
 		return author;
 	}

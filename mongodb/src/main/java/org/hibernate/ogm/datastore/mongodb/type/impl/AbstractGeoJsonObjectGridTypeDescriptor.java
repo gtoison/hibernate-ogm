@@ -9,7 +9,6 @@ package org.hibernate.ogm.datastore.mongodb.type.impl;
 import java.util.function.Function;
 
 import org.bson.Document;
-import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.datastore.mongodb.type.AbstractGeoJsonObject;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.type.descriptor.impl.BasicGridBinder;
@@ -17,6 +16,7 @@ import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
 import org.hibernate.ogm.type.descriptor.impl.GridValueBinder;
 import org.hibernate.ogm.type.descriptor.impl.GridValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * Base grid type descriptor for GeoJSON objects.
@@ -35,7 +35,7 @@ class AbstractGeoJsonObjectGridTypeDescriptor<T extends AbstractGeoJsonObject> i
 	}
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(final JavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 
 			@Override
@@ -48,7 +48,7 @@ class AbstractGeoJsonObjectGridTypeDescriptor<T extends AbstractGeoJsonObject> i
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(final JavaTypeDescriptor<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(final JavaType<X> javaTypeDescriptor) {
 		return new GridValueExtractor<X>() {
 
 			@Override

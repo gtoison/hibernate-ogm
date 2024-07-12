@@ -10,19 +10,12 @@ import java.lang.invoke.MethodHandles;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.id.impl.OgmIdentityColumnSupport;
-import org.hibernate.ogm.query.impl.FullTextSearchQueryTranslator;
-import org.hibernate.ogm.query.impl.OgmQueryTranslator;
-import org.hibernate.ogm.query.spi.QueryParserService;
+import org.hibernate.ogm.query.spi.sqm.OgmSqlAstTranslatorFactory;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.sql.ast.SqlAstTranslator;
 import org.hibernate.sql.ast.SqlAstTranslatorFactory;
-import org.hibernate.sql.ast.spi.StandardSqlAstTranslatorFactory;
-import org.hibernate.sql.ast.tree.Statement;
-import org.hibernate.sql.exec.spi.JdbcOperation;
 
 /**
  * A pseudo {@link Dialect} implementation which exposes the current {@link GridDialect}.
@@ -59,22 +52,6 @@ public class OgmDialect extends Dialect {
 	
 	@Override
 	public SqlAstTranslatorFactory getSqlAstTranslatorFactory() {
-		return new StandardSqlAstTranslatorFactory() {
-			@Override
-			protected <T extends JdbcOperation> SqlAstTranslator<T> buildTranslator(SessionFactoryImplementor sessionFactory, Statement statement) {
-				QueryParserService queryParser = sessionFactory.getServiceRegistry().getService( QueryParserService.class );
-				if ( queryParser != null ) {
-					return new OgmQueryTranslator( factory, queryParser, statement );
-				}
-				else {
-					try {
-						return new FullTextSearchQueryTranslator( factory, queryIdentifier, queryString, filters );
-					}
-					catch (Exception e) {
-						throw LOG.cannotLoadLuceneParserBackend( e );
-					}
-				}
-			}
-		};
+		return new OgmSqlAstTranslatorFactory();
 	}
 }

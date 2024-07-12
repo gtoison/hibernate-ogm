@@ -14,7 +14,6 @@ import javax.naming.spi.ObjectFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionFactoryRegistry.ObjectFactoryImpl;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.hibernate.ogm.OgmSession;
 import org.hibernate.ogm.hibernatecore.impl.OgmSessionFactoryImpl;
 import org.hibernate.ogm.hibernatecore.impl.OgmSessionImpl;
@@ -38,7 +37,7 @@ public class HibernateCoreAPIWrappingTest {
 	@Test
 	public void testWrappedFromEntityManagerAPI() throws Exception {
 		final EntityManagerFactory emf = Persistence.createEntityManagerFactory( "ogm", TestHelper.getDefaultTestSettings() );
-		assertThat( HibernateEntityManagerFactory.class.isAssignableFrom( emf.getClass() ) ).isTrue();
+		assertThat( SessionFactory.class.isAssignableFrom( emf.getClass() ) ).isTrue();
 		SessionFactory factory = (SessionFactory) emf;
 		assertThat( factory.getClass() ).isEqualTo( OgmSessionFactoryImpl.class );
 

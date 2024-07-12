@@ -6,6 +6,9 @@
  */
 package org.hibernate.ogm.persister.impl;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.hibernate.type.BasicType;
 
 /**
@@ -60,4 +63,8 @@ public class NotNeededDiscriminator implements EntityDiscriminator {
 		return false;
 	}
 
+	@Override
+	public Map<Object, String> getSubclassByDiscriminatorValue() {
+		return Collections.emptyMap();
+	}
 }

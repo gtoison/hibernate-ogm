@@ -6,10 +6,10 @@
  */
 package org.hibernate.ogm.datastore.neo4j.transaction.impl;
 
-import javax.transaction.Status;
-import javax.transaction.Synchronization;
-
 import org.hibernate.resource.transaction.spi.TransactionStatus;
+
+import jakarta.transaction.Status;
+import jakarta.transaction.Synchronization;
 
 /**
  * {@link Synchronization} implementation for Neo4j.

@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.impl;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.GridTypeDescriptor;
-import org.hibernate.type.descriptor.converter.AttributeConverterTypeAdapter;
+import org.hibernate.type.ConvertedBasicType;
 import org.hibernate.type.descriptor.converter.internal.AttributeConverterMutabilityPlanImpl;
 import org.hibernate.type.descriptor.java.ImmutableMutabilityPlan;
 import org.hibernate.type.descriptor.java.MutabilityPlan;
@@ -24,22 +24,18 @@ import org.hibernate.type.descriptor.java.MutabilityPlan;
 public class AttributeConverterGridTypeAdaptor<T> extends AbstractGenericBasicType<T> {
 
 	private final MutabilityPlan<T> mutabilityPlan;
-	private final AttributeConverterTypeAdapter<T> ormAdapter;
+	private final ConvertedBasicType<T> ormAdapter;
 	private final String description;
 
 	/**
 	 * GridTypeDescriptor is passed and constructed by the caller because it needs to be passed to the super constructor.
 	 * Also it is like what ORM does.
 	 */
-	@SuppressWarnings("unchecked")
-	public AttributeConverterGridTypeAdaptor(AttributeConverterTypeAdapter<T> ormAdapter, GridTypeDescriptor gridTypeDescriptorAdapter) {
+	public AttributeConverterGridTypeAdaptor(ConvertedBasicType<T> ormAdapter, GridTypeDescriptor gridTypeDescriptorAdapter) {
 		super( gridTypeDescriptorAdapter, ormAdapter.getJavaTypeDescriptor() );
+		
 		this.ormAdapter = ormAdapter;
-		// need to build it instead of delegating as it is not exposed by AttributeConverterTypeAdapter
-		this.mutabilityPlan =
-				ormAdapter.getJavaTypeDescriptor().getMutabilityPlan().isMutable() ?
-						new AttributeConverterMutabilityPlanImpl<T>( ormAdapter.getAttributeConverter() ) :
-						ImmutableMutabilityPlan.INSTANCE;
+		this.mutabilityPlan = ormAdapter.getJavaTypeDescriptor().getMutabilityPlan();
 		this.description = "GridType version of " + ormAdapter.toString();
 
 	}

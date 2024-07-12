@@ -81,4 +81,9 @@ public class TablePerClassDiscriminator implements EntityDiscriminator {
 	public boolean isForced() {
 		return false;
 	}
+
+	@Override
+	public Map<Object, String> getSubclassByDiscriminatorValue() {
+		return subclassesByValue;
+	}
 }

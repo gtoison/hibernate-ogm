@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.hql.ast.common.JoinType;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PropertyPath;
 import org.hibernate.hql.ast.spi.EntityNamesResolver;
 import org.hibernate.hql.ast.spi.SingleEntityQueryBuilder;
 import org.hibernate.ogm.datastore.neo4j.logging.impl.Log;
@@ -29,10 +27,9 @@ import org.hibernate.ogm.datastore.neo4j.query.parsing.impl.predicate.impl.Neo4j
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.persister.impl.OgmEntityPersister;
 import org.hibernate.ogm.query.parsing.impl.KeepNamedParametersQueryRendererDelegate;
+import org.hibernate.ogm.query.spi.path.PropertyPath;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.type.spi.TypeTranslator;
-
-import org.antlr.runtime.tree.Tree;
 
 /**
  * Parser delegate which creates Neo4j queries in form of {@link StringBuilder}s.

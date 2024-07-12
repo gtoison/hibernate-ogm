@@ -10,11 +10,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.hibernate.hql.ast.spi.predicate.ConjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-import org.hibernate.hql.ast.spi.predicate.Predicate;
-
 import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.ConjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.query.spi.predicate.Predicate;
 
 
 /**

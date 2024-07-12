@@ -9,20 +9,20 @@ package org.hibernate.ogm.datastore.neo4j.query.parsing.impl.predicate.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate;
-import org.hibernate.hql.ast.spi.predicate.ConjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.DisjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.InPredicate;
-import org.hibernate.hql.ast.spi.predicate.IsNullPredicate;
-import org.hibernate.hql.ast.spi.predicate.LikePredicate;
-import org.hibernate.hql.ast.spi.predicate.NegationPredicate;
-import org.hibernate.hql.ast.spi.predicate.PredicateFactory;
-import org.hibernate.hql.ast.spi.predicate.RangePredicate;
-import org.hibernate.hql.ast.spi.predicate.RootPredicate;
 import org.hibernate.ogm.datastore.neo4j.query.parsing.impl.Neo4jAliasResolver;
 import org.hibernate.ogm.datastore.neo4j.query.parsing.impl.Neo4jPropertyHelper;
 import org.hibernate.ogm.datastore.neo4j.query.parsing.impl.Neo4jQueryParameter;
 import org.hibernate.ogm.datastore.neo4j.query.parsing.impl.PropertyIdentifier;
+import org.hibernate.ogm.query.spi.predicate.ComparisonPredicate;
+import org.hibernate.ogm.query.spi.predicate.ConjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.DisjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.InPredicate;
+import org.hibernate.ogm.query.spi.predicate.IsNullPredicate;
+import org.hibernate.ogm.query.spi.predicate.LikePredicate;
+import org.hibernate.ogm.query.spi.predicate.NegationPredicate;
+import org.hibernate.ogm.query.spi.predicate.PredicateFactory;
+import org.hibernate.ogm.query.spi.predicate.RangePredicate;
+import org.hibernate.ogm.query.spi.predicate.RootPredicate;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

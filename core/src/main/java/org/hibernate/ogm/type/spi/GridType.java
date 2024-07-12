@@ -401,43 +401,6 @@ public interface GridType extends Serializable {
 	throws HibernateException;
 
 	/**
-	 * Map identifiers to entities or collections. This is the second phase of 2-phase property
-	 * initialization.
-	 *
-	 * @see GridType#hydrate(Tuple, String[], SharedSessionContractImplementor, Object)
-	 * @param value an identifier or value returned by <tt>hydrate()</tt>
-	 * @param owner the parent entity
-	 * @param session the session
-	 * @return the given value, or the value associated with the identifier
-	 *
-	 * @throws HibernateException if an error occurs
-	 */
-	Object resolve(Object value, SharedSessionContractImplementor session, Object owner)
-	throws HibernateException;
-
-	/**
-	 * Given a hydrated, but unresolved value, return a value that may be used to
-	 * reconstruct property-ref associations.
-	 *
-	 * @param value the unresolved value
-	 * @param session the session
-	 * @param owner the owner of the association
-	 * @return a value that may be used to reconstruct property-ref associations
-	 *
-	 * @throws HibernateException if an error occurs
-	 */
-	Object semiResolve(Object value, SharedSessionContractImplementor session, Object owner)
-	throws HibernateException;
-
-	/**
-	 * Get the type of a semi-resolved value.
-	 *
-	 * @param factory the session factory
-	 * @return the {@link GridType} of the semi resolve value
-	 */
-	GridType getSemiResolvedType(SessionFactoryImplementor factory);
-
-	/**
 	 * During merge, replace the existing (target) value in the entity we are merging to
 	 * with a new (original) value from the detached entity we are merging. For immutable
 	 * objects, or null values, it is safe to simply return the first parameter. For

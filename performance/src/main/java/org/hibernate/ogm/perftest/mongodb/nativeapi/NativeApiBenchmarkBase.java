@@ -9,19 +9,22 @@ package org.hibernate.ogm.perftest.mongodb.nativeapi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
-import com.mongodb.DB;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * Base class for MongoDB native API benchmarks.
@@ -45,14 +48,14 @@ public class NativeApiBenchmarkBase {
 	public static class ClientHolder {
 
 		MongoClient mongo;
-		DB db;
+		MongoDatabase db;
 		Random rand;
 
 		@Setup
 		public void setupDatastore() throws Exception {
 			MongoClient mongo = getMongoClient();
-			db = mongo.getDB( properties.getProperty( "database" ) );
-			db.dropDatabase();
+			db = mongo.getDatabase( properties.getProperty( "database" ) );
+			db.drop();
 			rand = new Random();
 		}
 	}
@@ -60,15 +63,16 @@ public class NativeApiBenchmarkBase {
 	protected static MongoClient getMongoClient() throws UnknownHostException {
 		ServerAddress serverAddress = new ServerAddress( properties.getProperty( "host" ), 27017 );
 
-		MongoClientOptions.Builder optionsBuilder = new MongoClientOptions.Builder();
+		MongoClientSettings.Builder optionsBuilder = MongoClientSettings.builder()
+				.applyToClusterSettings(b -> b.hosts(Collections.singletonList( serverAddress )))
+				.applyToSocketSettings(b -> b.connectTimeout( 1000, TimeUnit.MILLISECONDS ));
 
-		optionsBuilder.connectTimeout( 1000 );
 		optionsBuilder.writeConcern( WriteConcern.ACKNOWLEDGED );
 		optionsBuilder.readPreference( ReadPreference.primary() );
 
-		MongoClientOptions clientOptions = optionsBuilder.build();
+		MongoClientSettings clientOptions = optionsBuilder.build();
 
-		MongoClient mongo = new MongoClient( serverAddress, clientOptions );
+		MongoClient mongo = MongoClients.create( clientOptions );
 
 		return mongo;
 	}

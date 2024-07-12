@@ -6,10 +6,9 @@
  */
 package org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl;
 
-import org.hibernate.hql.ast.spi.predicate.IsNullPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-
 import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.IsNullPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
 
 
 /**

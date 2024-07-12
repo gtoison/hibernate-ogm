@@ -6,18 +6,18 @@
  */
 package org.hibernate.ogm.datastore.neo4j.query.parsing.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.antlr.runtime.tree.Tree;
-import org.hibernate.hql.ast.common.JoinType;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PathedPropertyReference;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PathedPropertyReferenceSource;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PropertyPath;
 import org.hibernate.hql.ast.spi.QueryResolverDelegate;
 import org.hibernate.ogm.datastore.neo4j.logging.impl.Log;
 import org.hibernate.ogm.datastore.neo4j.logging.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
+import org.hibernate.ogm.query.spi.path.PathedPropertyReference;
+import org.hibernate.ogm.query.spi.path.PathedPropertyReferenceSource;
+import org.hibernate.ogm.query.spi.path.PropertyPath;
+
+import jakarta.persistence.criteria.JoinType;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

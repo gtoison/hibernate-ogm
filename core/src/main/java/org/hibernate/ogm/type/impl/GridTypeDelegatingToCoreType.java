@@ -151,21 +151,6 @@ public abstract class GridTypeDelegatingToCoreType implements GridType {
 		delegate.beforeAssemble( cached, session );
 	}
 
-	@Override
-	public Object resolve(Object value, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return delegate.resolve( value, session, owner );
-	}
-
-	@Override
-	public Object semiResolve(Object value, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return delegate.semiResolve( value, session, owner );
-	}
-
-	@Override
-	public GridType getSemiResolvedType(SessionFactoryImplementor factory) {
-		return this;
-	}
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner, Map copyCache)

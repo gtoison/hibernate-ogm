@@ -29,7 +29,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Environment;
 import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.ogm.OgmSessionFactory;
-import org.hibernate.ogm.boot.OgmSessionFactoryBuilder;
 import org.hibernate.ogm.cfg.OgmProperties;
 import org.hibernate.ogm.cfg.impl.ConfigurableImpl;
 import org.hibernate.ogm.cfg.impl.InternalProperties;
@@ -282,12 +281,11 @@ public class TestHelper {
 	}
 
 	public static OgmSessionFactory getDefaultTestSessionFactory(Map<String, Object> settings, Class<?>... entityTypes) {
-		return getDefaultTestMetadata(
+		return (OgmSessionFactory) getDefaultTestMetadata(
 				settings,
 				entityTypes
 			)
 			.getSessionFactoryBuilder()
-			.unwrap( OgmSessionFactoryBuilder.class )
 			.build();
 	}
 

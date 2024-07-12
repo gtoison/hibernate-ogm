@@ -6,15 +6,13 @@
  */
 package org.hibernate.ogm.loader.entity.impl;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
 import org.hibernate.LockOptions;
+import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
-import org.hibernate.loader.entity.UniqueEntityLoader;
-import org.hibernate.ogm.dialect.query.spi.QueryParameters;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.Type;
 import org.jboss.logging.Logger;
@@ -36,7 +34,6 @@ import org.jboss.logging.Logger;
  * @author Steve Ebersole
  *
  * @see BatchingEntityLoaderBuilder
- * @see UniqueEntityLoader
  */
 public abstract class BatchingEntityLoader<T> implements SingleIdEntityLoader<T> {
 	private static final Logger log = Logger.getLogger( BatchingEntityLoader.class );

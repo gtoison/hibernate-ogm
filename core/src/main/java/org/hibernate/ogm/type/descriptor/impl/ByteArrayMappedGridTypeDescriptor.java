@@ -9,7 +9,7 @@ package org.hibernate.ogm.type.descriptor.impl;
 import org.hibernate.boot.model.JavaTypeDescriptor;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * A {@link GridTypeDescriptor} which stores/retrieves values from the grid unwrapping/wrapping them as byte arrays, delegating to a
@@ -22,7 +22,7 @@ public class ByteArrayMappedGridTypeDescriptor implements GridTypeDescriptor {
 	public static final ByteArrayMappedGridTypeDescriptor INSTANCE = new ByteArrayMappedGridTypeDescriptor();
 
 	@Override
-	public <X> GridValueBinder<X> getBinder(final BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueBinder<X> getBinder(final JavaType<X> javaTypeDescriptor) {
 		return new BasicGridBinder<X>( javaTypeDescriptor, this ) {
 
 			@Override
@@ -33,7 +33,7 @@ public class ByteArrayMappedGridTypeDescriptor implements GridTypeDescriptor {
 	}
 
 	@Override
-	public <X> GridValueExtractor<X> getExtractor(final BasicJavaType<X> javaTypeDescriptor) {
+	public <X> GridValueExtractor<X> getExtractor(final JavaType<X> javaTypeDescriptor) {
 		return new GridValueExtractor<X>() {
 
 			@Override

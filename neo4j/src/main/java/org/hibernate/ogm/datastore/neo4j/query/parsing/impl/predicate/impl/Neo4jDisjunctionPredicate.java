@@ -6,9 +6,9 @@
  */
 package org.hibernate.ogm.datastore.neo4j.query.parsing.impl.predicate.impl;
 
-import org.hibernate.hql.ast.spi.predicate.DisjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-import org.hibernate.hql.ast.spi.predicate.Predicate;
+import org.hibernate.ogm.query.spi.predicate.DisjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.query.spi.predicate.Predicate;
 
 /**
  * @author Davide D'Alto &lt;davide@hibernate.org&gt;

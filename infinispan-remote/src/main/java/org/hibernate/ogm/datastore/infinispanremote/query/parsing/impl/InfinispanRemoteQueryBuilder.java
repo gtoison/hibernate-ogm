@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.HibernateException;
-import org.hibernate.hql.ast.spi.predicate.NegatablePredicate;
-import org.hibernate.hql.ast.spi.predicate.Predicate;
+import org.hibernate.ogm.query.spi.predicate.NegatablePredicate;
+import org.hibernate.ogm.query.spi.predicate.Predicate;
 
 /**
  * Helper class to append single or multiple values to the wrapped {@link StringBuilder}

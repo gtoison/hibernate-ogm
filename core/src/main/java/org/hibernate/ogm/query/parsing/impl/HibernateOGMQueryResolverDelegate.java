@@ -10,15 +10,15 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.hibernate.hql.ast.common.JoinType;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PathedPropertyReference;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PathedPropertyReferenceSource;
-import org.hibernate.hql.ast.origin.hql.resolve.path.PropertyPath;
+import org.antlr.runtime.tree.Tree;
 import org.hibernate.hql.ast.spi.QueryResolverDelegate;
+import org.hibernate.ogm.query.spi.path.PathedPropertyReference;
+import org.hibernate.ogm.query.spi.path.PathedPropertyReferenceSource;
+import org.hibernate.ogm.query.spi.path.PropertyPath;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 
-import org.antlr.runtime.tree.Tree;
+import jakarta.persistence.criteria.JoinType;
 
 /**
  * Query resolver delegate. Very basic implementation atm., need to decide on

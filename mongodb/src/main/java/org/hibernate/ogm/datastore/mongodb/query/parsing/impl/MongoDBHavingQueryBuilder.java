@@ -6,13 +6,13 @@
  */
 package org.hibernate.ogm.datastore.mongodb.query.parsing.impl;
 
+import java.util.List;
+
 import org.bson.Document;
-import org.hibernate.hql.ast.origin.hql.resolve.path.AggregationPropertyPath;
 import org.hibernate.hql.ast.spi.SingleEntityHavingQueryBuilder;
 import org.hibernate.hql.ast.spi.SingleEntityQueryRendererDelegate;
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate;
-
-import java.util.List;
+import org.hibernate.ogm.query.spi.path.AggregationPropertyPath;
+import org.hibernate.ogm.query.spi.predicate.ComparisonPredicate;
 
 /**
  * Having builder for HQL (MongoBD dialect).

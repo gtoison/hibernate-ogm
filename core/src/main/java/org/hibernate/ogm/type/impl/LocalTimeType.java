@@ -11,12 +11,11 @@ import java.time.LocalTime;
 import org.hibernate.MappingException;
 import org.hibernate.engine.spi.Mapping;
 import org.hibernate.ogm.type.descriptor.impl.PassThroughGridTypeDescriptor;
-import org.hibernate.type.descriptor.java.LocalTimeJavaDescriptor;
 import org.hibernate.type.descriptor.java.LocalTimeJavaType;
 
 /**
  * Uses a {@link TimeGridTypeDescriptor} instead of {@link PassThroughGridTypeDescriptor},
- * because at the moment {@link LocalTimeJavaDescriptor} is not able to unwrap {@link LocalTime}.
+ * because at the moment {@link LocalTimeJavaType} is not able to unwrap {@link LocalTime}.
  *
  * @author Fabio Massimo Ercoli
  */

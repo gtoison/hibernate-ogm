@@ -8,17 +8,7 @@ package org.hibernate.ogm.datastore.mongodb.query.parsing.impl;
 
 import java.util.List;
 
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate;
-import org.hibernate.hql.ast.spi.predicate.ComparisonPredicate.Type;
-import org.hibernate.hql.ast.spi.predicate.ConjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.DisjunctionPredicate;
-import org.hibernate.hql.ast.spi.predicate.InPredicate;
-import org.hibernate.hql.ast.spi.predicate.IsNullPredicate;
-import org.hibernate.hql.ast.spi.predicate.LikePredicate;
-import org.hibernate.hql.ast.spi.predicate.NegationPredicate;
-import org.hibernate.hql.ast.spi.predicate.PredicateFactory;
-import org.hibernate.hql.ast.spi.predicate.RangePredicate;
-import org.hibernate.hql.ast.spi.predicate.RootPredicate;
+import org.bson.Document;
 import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBComparisonPredicate;
 import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBConjunctionPredicate;
 import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBDisjunctionPredicate;
@@ -28,8 +18,17 @@ import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBL
 import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBNegationPredicate;
 import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBRangePredicate;
 import org.hibernate.ogm.datastore.mongodb.query.parsing.predicate.impl.MongoDBRootPredicate;
-
-import org.bson.Document;
+import org.hibernate.ogm.query.spi.predicate.ComparisonPredicate;
+import org.hibernate.ogm.query.spi.predicate.ConjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.DisjunctionPredicate;
+import org.hibernate.ogm.query.spi.predicate.InPredicate;
+import org.hibernate.ogm.query.spi.predicate.IsNullPredicate;
+import org.hibernate.ogm.query.spi.predicate.LikePredicate;
+import org.hibernate.ogm.query.spi.predicate.NegationPredicate;
+import org.hibernate.ogm.query.spi.predicate.PredicateFactory;
+import org.hibernate.ogm.query.spi.predicate.RangePredicate;
+import org.hibernate.ogm.query.spi.predicate.RootPredicate;
+import org.hibernate.type.Type;
 
 /**
  * Factory for {@link org.hibernate.hql.ast.spi.predicate.Predicate}s creating MongoDB queries in form of

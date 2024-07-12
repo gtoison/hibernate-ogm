@@ -19,11 +19,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.LockOptions;
 import org.hibernate.WrongClassException;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.engine.internal.TwoPhaseLoad;
 import org.hibernate.engine.spi.EntityUniqueKey;
 import org.hibernate.engine.spi.PersistenceContext;
+import org.hibernate.engine.spi.QueryParameters;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.event.spi.EventSource;
@@ -33,7 +33,6 @@ import org.hibernate.internal.util.collections.ArrayHelper;
 import org.hibernate.loader.CollectionAliases;
 import org.hibernate.loader.ast.spi.SingleIdEntityLoader;
 import org.hibernate.ogm.dialect.multiget.spi.MultigetGridDialect;
-import org.hibernate.ogm.dialect.query.spi.QueryParameters;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.entityentry.impl.OgmEntityEntryState;
 import org.hibernate.ogm.jdbc.impl.TupleAsMapResultSet;
@@ -321,7 +320,7 @@ public class OgmLoader<T> implements SingleIdEntityLoader<T>, BatchableEntityLoa
 		int entitySpan = entityPersisters.length;
 		final List<Object> hydratedObjects = entitySpan == 0 ? null : new ArrayList<Object>( entitySpan * 10 );
 		//TODO yuk! Is there a cleaner way to access the id?
-		final Serializable id;
+		final Object id;
 		// see if we use batching first
 		// then look for direct id
 		// then for a tuple based result set we could extract the id
@@ -545,7 +544,7 @@ public class OgmLoader<T> implements SingleIdEntityLoader<T>, BatchableEntityLoa
 		}
 	}
 
-	private TupleAsMapResultSet getResultSet(Serializable id, QueryParameters qp, OgmLoadingContext ogmLoadingContext, SharedSessionContractImplementor session) {
+	private TupleAsMapResultSet getResultSet(Object id, QueryParameters qp, OgmLoadingContext ogmLoadingContext, SharedSessionContractImplementor session) {
 		if ( id == null && ogmLoadingContext.hasResultSet() ) {
 			return ogmLoadingContext.getResultSet();
 		}
@@ -646,7 +645,7 @@ public class OgmLoader<T> implements SingleIdEntityLoader<T>, BatchableEntityLoa
 						null; //if null, owner will be retrieved from session
 
 				final CollectionPersister collectionPersister = collectionPersisters[i];
-				final Serializable key;
+				final Object key;
 				if ( owner == null ) {
 					key = null;
 				}
@@ -885,7 +884,7 @@ public class OgmLoader<T> implements SingleIdEntityLoader<T>, BatchableEntityLoa
 	 */
 	private static org.hibernate.engine.spi.EntityKey getOptionalObjectKey(QueryParameters queryParameters, SharedSessionContractImplementor session) {
 		final Object optionalObject = queryParameters.getOptionalObject();
-		final Serializable optionalId = queryParameters.getOptionalId();
+		final Object optionalId = queryParameters.getOptionalId();
 		final String optionalEntityName = queryParameters.getOptionalEntityName();
 
 		if ( optionalObject != null && optionalEntityName != null ) {
@@ -1087,7 +1086,7 @@ public class OgmLoader<T> implements SingleIdEntityLoader<T>, BatchableEntityLoa
 		final Tuple resultset,
 		final int i,
 		final Loadable persister,
-		final Serializable id,
+		final Object id,
 		final SharedSessionContractImplementor session)
 	throws HibernateException {
 		String discriminatorColumnName = persister.getDiscriminatorColumnName();

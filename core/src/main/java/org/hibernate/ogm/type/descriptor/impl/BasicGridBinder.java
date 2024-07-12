@@ -18,7 +18,7 @@ import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.JavaType;
 
 /**
  * @author Emmanuel Bernard
@@ -61,10 +61,10 @@ public abstract class BasicGridBinder<X> implements GridValueBinder<X> {
 		}
 	};
 
-	private final BasicJavaType<X> javaDescriptor;
+	private final JavaType<X> javaDescriptor;
 	private final GridTypeDescriptor gridDescriptor;
 
-	public BasicGridBinder(BasicJavaType<X> javaDescriptor, GridTypeDescriptor gridDescriptor) {
+	public BasicGridBinder(JavaType<X> javaDescriptor, GridTypeDescriptor gridDescriptor) {
 		this.javaDescriptor = javaDescriptor;
 		this.gridDescriptor = gridDescriptor;
 	}

@@ -7,20 +7,31 @@
 
 package org.hibernate.ogm.id.impl;
 
+import static org.hibernate.cfg.MappingSettings.ID_DB_STRUCTURE_NAMING_STRATEGY;
+import static org.hibernate.internal.log.IncubationLogger.INCUBATION_LOGGER;
+import static org.hibernate.internal.util.NullnessHelper.coalesceSuppliedValues;
+import static org.hibernate.internal.util.config.ConfigurationHelper.getString;
+
+import java.lang.invoke.MethodHandles;
 import java.util.Properties;
 
 import org.hibernate.MappingException;
+import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.ExportableProducer;
 import org.hibernate.boot.model.relational.Namespace;
 import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
 import org.hibernate.boot.model.relational.Sequence;
+import org.hibernate.boot.registry.selector.spi.StrategySelector;
+import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.PersistentIdentifierGenerator;
+import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.id.enhanced.ImplicitDatabaseObjectNamingStrategy;
 import org.hibernate.id.enhanced.SequenceStyleGenerator;
-import org.hibernate.internal.util.config.ConfigurationHelper;
+import org.hibernate.id.enhanced.StandardNamingStrategy;
+import org.hibernate.internal.util.StringHelper;
 import org.hibernate.ogm.dialect.impl.GridDialects;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.model.impl.DefaultIdSourceKeyMetadata;
@@ -28,7 +39,6 @@ import org.hibernate.ogm.model.key.spi.IdSourceKey;
 import org.hibernate.ogm.model.key.spi.IdSourceKeyMetadata;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 
@@ -86,7 +96,7 @@ public class OgmSequenceGenerator extends OgmGeneratorBase implements Exportable
 
 		this.type = type;
 		this.params = params;
-		logicalQualifiedSequenceName = determineSequenceName( params, jdbcEnvironment );
+		logicalQualifiedSequenceName = determineSequenceName( params, jdbcEnvironment, serviceRegistry );
 		sequenceName = jdbcEnvironment.getQualifiedObjectNameFormatter().format(
 				logicalQualifiedSequenceName,
 				jdbcEnvironment.getDialect()
@@ -114,40 +124,82 @@ public class OgmSequenceGenerator extends OgmGeneratorBase implements Exportable
 	 * Determine the name of the sequence (or table if this resolves to a physical table)
 	 * to use.
 	 * <p>
-	 * Called during {@link #configure configuration}.
+	 * Called during {@linkplain #configure configuration}.
 	 *
 	 * @param params The params supplied in the generator config (plus some standard useful extras).
-	 * @param jdbcEnv
+	 * @param jdbcEnv The JdbcEnvironment
 	 * @return The sequence name
 	 */
-	protected QualifiedName determineSequenceName(Properties params, JdbcEnvironment jdbcEnv) {
-		final String sequencePerEntitySuffix = ConfigurationHelper.getString( SequenceStyleGenerator.CONFIG_SEQUENCE_PER_ENTITY_SUFFIX, params, SequenceStyleGenerator.DEF_SEQUENCE_SUFFIX );
-		// JPA_ENTITY_NAME value honors <class ... entity-name="..."> (HBM) and @Entity#name (JPA) overrides.
-		final String defaultSequenceName = ConfigurationHelper.getBoolean( SequenceStyleGenerator.CONFIG_PREFER_SEQUENCE_PER_ENTITY, params, false )
-				? params.getProperty( JPA_ENTITY_NAME ) + sequencePerEntitySuffix
-				: SequenceStyleGenerator.DEF_SEQUENCE_NAME;
+	protected QualifiedName determineSequenceName(
+			Properties params,
+			JdbcEnvironment jdbcEnv,
+			ServiceRegistry serviceRegistry) {
+		final Identifier catalog = jdbcEnv.getIdentifierHelper().toIdentifier(
+				getString( SequenceStyleGenerator.CATALOG, params )
+		);
+		final Identifier schema =  jdbcEnv.getIdentifierHelper().toIdentifier(
+				getString( SequenceStyleGenerator.SCHEMA, params )
+		);
 
-		final String sequenceName = ConfigurationHelper.getString( SequenceStyleGenerator.SEQUENCE_PARAM, params, defaultSequenceName );
-		if ( sequenceName.contains( "." ) ) {
-			return QualifiedNameParser.INSTANCE.parse( sequenceName );
-		}
-		else {
-			final String schemaName = params.getProperty( PersistentIdentifierGenerator.SCHEMA );
-			if ( schemaName != null ) {
-				log.schemaOptionNotSupportedForSequenceGenerator( schemaName );
+		final String sequenceName = getString(
+				SequenceStyleGenerator.SEQUENCE_PARAM,
+				params,
+				() -> getString( SequenceStyleGenerator.ALT_SEQUENCE_PARAM, params )
+		);
+
+		if ( StringHelper.isNotEmpty( sequenceName ) ) {
+			// we have an explicit name, use it
+			if ( sequenceName.contains( "." ) ) {
+				return QualifiedNameParser.INSTANCE.parse( sequenceName );
 			}
-
-			final String catalogName = params.getProperty( PersistentIdentifierGenerator.CATALOG );
-			if ( catalogName != null ) {
-				log.catalogOptionNotSupportedForSequenceGenerator( catalogName );
+			else {
+				return new QualifiedNameParser.NameParts(
+						catalog,
+						schema,
+						jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
+				);
 			}
-
-			return new QualifiedNameParser.NameParts(
-					null,
-					null,
-					jdbcEnv.getIdentifierHelper().toIdentifier( sequenceName )
-			);
 		}
+
+		// otherwise, determine an implicit name to use
+		return determineImplicitName( catalog, schema, params, serviceRegistry );
+	}
+	
+	/**
+	 * NOTE: Copied from SequenceStyleGenerator
+	 */
+	private QualifiedName determineImplicitName(
+			Identifier catalog,
+			Identifier schema,
+			Properties params,
+			ServiceRegistry serviceRegistry) {
+		final StrategySelector strategySelector = serviceRegistry.requireService( StrategySelector.class );
+
+		final String namingStrategySetting = coalesceSuppliedValues(
+				() -> {
+					final String localSetting = getString( ID_DB_STRUCTURE_NAMING_STRATEGY, params );
+					if ( localSetting != null ) {
+						INCUBATION_LOGGER.incubatingSetting( ID_DB_STRUCTURE_NAMING_STRATEGY );
+					}
+					return localSetting;
+				},
+				() -> {
+					final ConfigurationService configurationService = serviceRegistry.requireService( ConfigurationService.class );
+					final String globalSetting = getString( ID_DB_STRUCTURE_NAMING_STRATEGY, configurationService.getSettings() );
+					if ( globalSetting != null ) {
+						INCUBATION_LOGGER.incubatingSetting( ID_DB_STRUCTURE_NAMING_STRATEGY );
+					}
+					return globalSetting;
+				},
+				StandardNamingStrategy.class::getName
+		);
+
+		final ImplicitDatabaseObjectNamingStrategy namingStrategy = strategySelector.resolveStrategy(
+				ImplicitDatabaseObjectNamingStrategy.class,
+				namingStrategySetting
+		);
+
+		return namingStrategy.determineSequenceName( catalog, schema, params, serviceRegistry );
 	}
 
 	private IdSourceKeyAndKeyMetadataProvider getDelegate(ServiceRegistry serviceRegistry) {
@@ -229,7 +281,23 @@ public class OgmSequenceGenerator extends OgmGeneratorBase implements Exportable
 			sequence.validate( getInitialValue(), getIncrementSize() );
 		}
 		else {
-			sequence = namespace.createSequence( logicalQualifiedSequenceName.getObjectName(), getInitialValue(), getIncrementSize() );
+			sequence = namespace.createSequence(
+					logicalQualifiedSequenceName.getObjectName(),
+					(physicalName) -> new Sequence(
+							determineContributor( params ),
+							namespace.getPhysicalName().getCatalog(),
+							namespace.getPhysicalName().getSchema(),
+							physicalName,
+							getInitialValue(),
+							getIncrementSize()
+					)
+			);
 		}
+	}
+	
+	private String determineContributor(Properties params) {
+		final String contributor = params.getProperty( IdentifierGenerator.CONTRIBUTOR_NAME );
+
+		return contributor == null ? "orm" : contributor;
 	}
 }

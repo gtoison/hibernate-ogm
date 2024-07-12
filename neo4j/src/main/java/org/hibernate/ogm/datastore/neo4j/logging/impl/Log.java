@@ -12,7 +12,6 @@ import static org.jboss.logging.Logger.Level.INFO;
 import static org.jboss.logging.Logger.Level.WARN;
 
 import org.hibernate.HibernateException;
-import org.hibernate.hql.ast.common.JoinType;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.LogMessage;
@@ -53,10 +52,6 @@ public interface Log extends org.hibernate.ogm.util.impl.Log {
 
 	@Message(id = 1408, value = "Error while cheking transaction status")
 	HibernateException exceptionWhileChekingTransactionStatus(@Cause Exception e);
-
-	@LogMessage(level = WARN)
-	@Message(id = 1409, value = "Join type %1$s is not fully supported with Neo4j")
-	void joinTypeNotFullySupported(JoinType joinType);
 
 	@Message(id = 1410, value = "Error performing isolated work")
 	HibernateException unableToPerformIsolatedWork(@Cause Exception e);
