@@ -8,15 +8,12 @@ package org.hibernate.ogm.backendtck.queries.parameters;
 
 import java.util.Date;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.DateBridge;
-import org.hibernate.search.annotations.EncodingType;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Resolution;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.type.YesNoConverter;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,21 +32,20 @@ public class Movie {
 	private String id;
 
 	@Enumerated(EnumType.ORDINAL)
-	@Field(analyze = Analyze.NO, store = Store.YES)
+	@GenericField(projectable = Projectable.YES)
 	private Genre genre;
 
 	private String title;
 
-	@Field(analyze = Analyze.NO, store = Store.YES)
-	@Type(type = "yes_no")
+	@GenericField(projectable = Projectable.YES)
+	@Convert(converter = YesNoConverter.class)
 	private boolean suitableForKids;
 
 	@Temporal(TemporalType.DATE)
-	@Field(analyze = Analyze.NO, store = Store.YES)
-	@DateBridge(encoding = EncodingType.STRING, resolution = Resolution.DAY)
+	@GenericField(projectable = Projectable.YES)
 	private Date releaseDate;
 
-	@Field(analyze = Analyze.NO, store = Store.YES)
+	@GenericField(projectable = Projectable.YES)
 	private byte viewerRating;
 
 	Movie() {

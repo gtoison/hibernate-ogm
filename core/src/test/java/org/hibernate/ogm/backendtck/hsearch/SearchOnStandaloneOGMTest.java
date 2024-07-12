@@ -17,13 +17,9 @@ import org.hibernate.ogm.utils.GridDialectType;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestHelper;
-import org.hibernate.search.FullTextQuery;
-import org.hibernate.search.FullTextSession;
 import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.Test;
-
-import jakarta.persistence.Query;
 
 /**
  * Verifies basic integration of Hibernate Search works
@@ -39,28 +35,25 @@ public class SearchOnStandaloneOGMTest extends OgmTestCase {
 	public void testHibernateSearchJPAAPIUsage() throws Exception {
 		final Session session = openSession();
 		Transaction transaction = session.beginTransaction();
-		final FullTextSession fts = Search.getFullTextSession( session );
+		final SearchSession fts = Search.session( session );
 		final Insurance insurance = new Insurance();
 		insurance.setName( "Macif" );
-		fts.persist( insurance );
+		session.persist( insurance );
 		transaction.commit();
 
-		fts.clear();
+		session.clear();
 
-		transaction = fts.beginTransaction();
-		final QueryBuilder b = fts.getSearchFactory()
-				.buildQueryBuilder()
-				.forEntity( Insurance.class )
-				.get();
-		final Query lq = b.keyword().onField( "name" ).matching( "Macif" ).createQuery();
-		final FullTextQuery ftQuery = fts.createFullTextQuery( lq, Insurance.class );
-		final List<Insurance> resultList = ftQuery.list();
+		transaction = session.beginTransaction();
+		final List<Insurance> resultList = fts.search( Insurance.class )
+				.where( f -> f.match().field( "name" ).matching( "Macif" ) )
+				.fetchAllHits();
+		
 		assertThat( resultList ).hasSize( 1 );
 		for ( Object e : resultList ) {
-			fts.delete( e );
+			session.delete( e );
 		}
 		transaction.commit();
-		fts.close();
+		session.close();
 	}
 
 	@Override

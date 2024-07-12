@@ -6,7 +6,7 @@
  */
 package org.hibernate.ogm.test.integration.testcase.model;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 /**
  * @author Gunnar Morling

@@ -170,7 +170,7 @@ public class OptionalStoryBranch {
 
     // Analyze.NO for filtering in query
     // Store.YES for projection in query
-    @Field(store = Store.YES, analyze = Analyze.NO)
+    @GenericField(projectable = Projectable.YES)
     private String text;
 
     ...
@@ -368,7 +368,7 @@ public class Hypothesis {
 ----
 EntityManager entityManager = ...
 //Add full-text superpowers to any EntityManager:
-FullTextEntityManager ftem = Search.getFullTextEntityManager(entityManager);
+SearchSession ftem = Search.session(entityManager);
 
 //Optionally use the QueryBuilder to simplify Query definition:
 QueryBuilder b = ftem.getSearchFactory()

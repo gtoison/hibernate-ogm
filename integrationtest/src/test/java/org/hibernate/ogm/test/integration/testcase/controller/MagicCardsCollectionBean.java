@@ -9,14 +9,13 @@ package org.hibernate.ogm.test.integration.testcase.controller;
 import java.util.List;
 
 import javax.ejb.Stateful;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
-import org.apache.lucene.search.Query;
 import org.hibernate.ogm.test.integration.testcase.model.MagicCard;
-import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.mapper.orm.session.SearchSession;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Stateful
 public class MagicCardsCollectionBean {
@@ -33,11 +32,11 @@ public class MagicCardsCollectionBean {
 	}
 
 	public List<MagicCard> findByName(String name) {
-		FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager( em );
-		QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory().buildQueryBuilder().forEntity( MagicCard.class ).get();
-
-		Query query = queryBuilder.keyword().onField( "name" ).matching( name ).createQuery();
-		return fullTextEntityManager.createFullTextQuery( query, MagicCard.class ).getResultList();
+		SearchSession SearchSession = Search.session( em );
+		
+		return SearchSession
+				.search( MagicCard.class )
+				.where( f -> f.match().field( "name" ).matching( name ) )
+				.fetchAllHits();
 	}
-
 }

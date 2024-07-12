@@ -16,15 +16,11 @@ import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.Test;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 
 /**
  * @author Emmanuel Bernard &lt;emmanuel@hibernate.org&gt;
@@ -34,56 +30,53 @@ public class HibernateSearchAtopOgmTest extends OgmJpaTestCase {
 
 	@Test
 	public void testHibernateSearchJPAAPIUsage() throws Exception {
-		final FullTextEntityManager ftem = Search.getFullTextEntityManager( getFactory().createEntityManager() );
-		ftem.getTransaction().begin();
+		EntityManager entityManager = getFactory().createEntityManager();
+		final SearchSession ftem = Search.session( entityManager );
+		entityManager.getTransaction().begin();
 		final Insurance insurance = new Insurance();
 		insurance.setName( "Macif" );
-		ftem.persist( insurance );
-		ftem.getTransaction().commit();
+		entityManager.persist( insurance );
+		entityManager.getTransaction().commit();
 
-		ftem.clear();
+		entityManager.clear();
 
-		ftem.getTransaction().begin();
-		final QueryBuilder b = ftem.getSearchFactory()
-				.buildQueryBuilder()
-				.forEntity( Insurance.class )
-				.get();
-		final Query lq = b.keyword().onField( "name" ).matching( "Macif" ).createQuery();
-		final FullTextQuery ftQuery = ftem.createFullTextQuery( lq, Insurance.class );
-		final List<Insurance> resultList = ftQuery.getResultList();
+		entityManager.getTransaction().begin();
+		
+		final List<Insurance> resultList = ftem.search( Insurance.class )
+				.where( f -> f.match().field( "name" ).matching( "Macif" ) )
+				.fetchAllHits();
+		
 		assertThat( getFactory().getPersistenceUnitUtil().isLoaded( resultList.get( 0 ) ) ).isTrue();
 		assertThat( resultList ).hasSize( 1 );
 		for ( Object e : resultList ) {
-			ftem.remove( e );
+			entityManager.remove( e );
 		}
-		ftem.getTransaction().commit();
-		ftem.close();
+		entityManager.getTransaction().commit();
+		entityManager.close();
 	}
 
 	@Test
 	public void testHibernateSearchNativeAPIUsage() throws Exception {
 		final EntityManager entityManager = getFactory().createEntityManager();
-		final FullTextSession ftSession = org.hibernate.search.Search.getFullTextSession( entityManager.unwrap( Session.class ) );
+		Session session = entityManager.unwrap( Session.class );
+		final SearchSession ftSession = Search.session( session );
 		entityManager.getTransaction().begin();
 		final Insurance insurance = new Insurance();
 		insurance.setName( "Macif" );
-		ftSession.persist( insurance );
+		entityManager.persist( insurance );
 		entityManager.getTransaction().commit();
 
-		ftSession.clear();
+		entityManager.clear();
 
 		entityManager.getTransaction().begin();
-		final QueryBuilder b = ftSession.getSearchFactory()
-				.buildQueryBuilder()
-				.forEntity( Insurance.class )
-				.get();
-		final Query lq = b.keyword().onField( "name" ).matching( "Macif" ).createQuery();
-		final org.hibernate.search.FullTextQuery ftQuery = ftSession.createFullTextQuery( lq, Insurance.class );
-		final List<Insurance> resultList = ftQuery.list();
+		final List<Insurance> resultList = ftSession.search( Insurance.class )
+				.where( f -> f.match().field( "name" ).matching( "Macif" ) )
+				.fetchAllHits();
+		
 		assertThat( getFactory().getPersistenceUnitUtil().isLoaded( resultList.get( 0 ) ) ).isTrue();
 		assertThat( resultList ).hasSize( 1 );
 		for ( Object e : resultList ) {
-			ftSession.delete( e );
+			session.delete( e );
 		}
 		entityManager.getTransaction().commit();
 		entityManager.close();

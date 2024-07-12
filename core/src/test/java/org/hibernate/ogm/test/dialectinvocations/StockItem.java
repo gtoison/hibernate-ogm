@@ -6,10 +6,8 @@
  */
 package org.hibernate.ogm.test.dialectinvocations;
 
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +33,7 @@ public class StockItem {
 		this.id = id;
 	}
 
-	@Field(analyze = Analyze.NO)
+	@GenericField
 	public String getItemName() {
 		return itemName;
 	}
@@ -45,8 +43,7 @@ public class StockItem {
 	}
 
 	@Column(name = "cnt")
-	@Field(analyze = Analyze.NO)
-	@NumericField
+	@GenericField
 	public int getCount() {
 		return count;
 	}

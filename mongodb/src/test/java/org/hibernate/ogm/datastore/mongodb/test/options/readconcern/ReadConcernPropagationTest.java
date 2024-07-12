@@ -6,7 +6,17 @@
  */
 package org.hibernate.ogm.datastore.mongodb.test.options.readconcern;
 
-import com.mongodb.ReadConcern;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.hibernate.ogm.datastore.mongodb.utils.MockMongoClientBuilder.mockClient;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bson.Document;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -18,22 +28,12 @@ import org.hibernate.ogm.datastore.mongodb.impl.MongoDBDatastoreProvider;
 import org.hibernate.ogm.datastore.mongodb.utils.MockMongoClientBuilder;
 import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.query.NativeQuery;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.After;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.fest.assertions.Assertions.assertThat;
-import static org.hibernate.ogm.datastore.mongodb.utils.MockMongoClientBuilder.mockClient;
-
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
+import com.mongodb.ReadConcern;
 
 public class ReadConcernPropagationTest {
 
@@ -124,14 +124,13 @@ public class ReadConcernPropagationTest {
 	}
 
 	private void startAndWaitMassIndexing(Class<?> entityType) throws InterruptedException, IOException {
-		FullTextSession session = Search.getFullTextSession( sessions.openSession() );
-		session.createIndexer( entityType ).purgeAllOnStart( true ).startAndWait();
+		SearchSession session = Search.session( sessions.openSession() );
+		session.massIndexer( entityType ).purgeAllOnStart( true ).startAndWait();
 	}
 
 	private void purgeAll(Class<?> entityType) throws IOException {
-		FullTextSession session = Search.getFullTextSession( sessions.openSession() );
-		session.purgeAll( entityType );
-		session.flushToIndexes();
+		SearchSession session = Search.session( sessions.openSession() );
+		session.workspace( entityType ).flush();
 	}
 
 	@Test

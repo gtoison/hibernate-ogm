@@ -10,7 +10,8 @@ import javax.annotation.PreDestroy;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Davide D'Alto

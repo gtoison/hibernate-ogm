@@ -34,6 +34,7 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.engine.ProjectionConstants;
 import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.hibernate.search.spi.SearchIntegrator;
 
 /**
@@ -70,7 +71,7 @@ public class FullTextSearchQueryTranslator extends LegacyParserBridgeQueryTransl
 
 	@Override
 	public List<?> list(SharedSessionContractImplementor session, QueryParameters queryParameters) throws HibernateException {
-		FullTextSession fullTextSession = Search.getFullTextSession( (Session) session );
+		SearchSession fullTextSession = Search.session( (Session) session );
 
 		LuceneQueryParsingResult parsingResult = getLuceneQuery( queryParameters, fullTextSession );
 
@@ -92,7 +93,7 @@ public class FullTextSearchQueryTranslator extends LegacyParserBridgeQueryTransl
 		return fullTextQuery.list();
 	}
 
-	private LuceneQueryParsingResult getLuceneQuery(QueryParameters queryParameters, FullTextSession fullTextSession) {
+	private LuceneQueryParsingResult getLuceneQuery(QueryParameters queryParameters, SearchSession fullTextSession) {
 		CacheKey cacheKey = new CacheKey( queryParameters.getNamedParameters() );
 		LuceneQueryParsingResult parsingResult = luceneQueryCache.get( cacheKey );
 
@@ -138,7 +139,7 @@ public class FullTextSearchQueryTranslator extends LegacyParserBridgeQueryTransl
 		}
 	}
 
-	private LuceneProcessingChain createProcessingChain(Map<String, Object> namedParameters, FullTextSession fullTextSession) {
+	private LuceneProcessingChain createProcessingChain(Map<String, Object> namedParameters, SearchSession fullTextSession) {
 		SearchIntegrator searchFactory = fullTextSession.getSearchFactory().unwrap( SearchIntegrator.class );
 
 		return new LuceneProcessingChain.Builder( searchFactory, entityNamesResolver )

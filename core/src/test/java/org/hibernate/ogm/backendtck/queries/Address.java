@@ -8,7 +8,6 @@ package org.hibernate.ogm.backendtck.queries;
 
 import java.util.Set;
 
-import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
@@ -32,7 +31,6 @@ public class Address {
 	@GenericField
 	private String city;
 
-	@ContainedIn
 	@OneToMany(mappedBy = "address")
 	private Set<Author> authors;
 

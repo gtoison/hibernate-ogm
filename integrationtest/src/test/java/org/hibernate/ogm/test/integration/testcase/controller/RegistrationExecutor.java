@@ -7,14 +7,13 @@
 package org.hibernate.ogm.test.integration.testcase.controller;
 
 import java.util.List;
+import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
-import org.apache.lucene.search.Query;
 import org.hibernate.ogm.test.integration.testcase.model.Member;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * Methods to execute the registration and search of {@link Member}s
@@ -53,10 +52,12 @@ public class RegistrationExecutor {
 	}
 
 	public static Member findWithEmail(EntityManager em, String email) {
-		FullTextEntityManager ftem = Search.getFullTextEntityManager( em );
-		QueryBuilder b = ftem.getSearchFactory().buildQueryBuilder().forEntity( Member.class ).get();
-		Query lq = b.keyword().wildcard().onField( "email" ).matching( email ).createQuery();
-		Object uniqueResult = ftem.createFullTextQuery( lq ).getSingleResult();
-		return (Member) uniqueResult;
+		SearchSession ftem = Search.session( em );
+		Optional<Member> uniqueResult = ftem
+				.search( Member.class )
+				.where( f -> f.wildcard().field( "email" ).matching( email ) )
+				.fetchSingleHit();
+		
+		return uniqueResult.get();
 	}
 }

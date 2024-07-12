@@ -6,10 +6,9 @@
  */
 package org.hibernate.ogm.backendtck.queries;
 
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import jakarta.persistence.Embeddable;
 
@@ -18,10 +17,10 @@ public class OptionalStoryBranch {
 
 	// Analyze.NO for filtering in query
 	// Store.YES for projection in query
-	@Field(store = Store.YES, analyze = Analyze.NO)
+	@GenericField(projectable = Projectable.YES)
 	private String evilText;
 
-	@Field(store = Store.YES, analyze = Analyze.NO)
+	@GenericField(projectable = Projectable.YES)
 	private String goodText;
 
 	@IndexedEmbedded

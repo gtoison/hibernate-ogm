@@ -19,10 +19,9 @@ import org.hibernate.Transaction;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestForIssue;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Store;
+import org.hibernate.search.engine.backend.types.Projectable;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -178,7 +177,7 @@ public class SimpleQueriesWithTablePerClassInheritanceTest extends OgmTestCase {
 	@Indexed
 	public static class CommunityMember extends Person {
 
-		@Field(analyze = Analyze.NO, store = Store.YES)
+		@GenericField(projectable = Projectable.YES)
 		public String project;
 
 		public CommunityMember() {
@@ -203,7 +202,7 @@ public class SimpleQueriesWithTablePerClassInheritanceTest extends OgmTestCase {
 	@Indexed
 	public static class Employee extends CommunityMember {
 
-		@Field(analyze = Analyze.NO, store = Store.YES)
+		@GenericField(projectable = Projectable.YES)
 		public String employer;
 
 		public Employee() {

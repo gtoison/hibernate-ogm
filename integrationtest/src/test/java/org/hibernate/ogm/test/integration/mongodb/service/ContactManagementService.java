@@ -10,10 +10,11 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 import org.hibernate.ogm.test.integration.mongodb.model.EmailAddress;
 import org.hibernate.ogm.test.integration.mongodb.model.PhoneNumber;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Gunnar Morling

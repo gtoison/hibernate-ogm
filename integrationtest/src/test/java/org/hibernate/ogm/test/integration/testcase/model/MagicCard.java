@@ -8,15 +8,15 @@ package org.hibernate.ogm.test.integration.testcase.model;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 @Entity
 @Indexed
@@ -26,7 +26,7 @@ public class MagicCard {
 	@GeneratedValue
 	private Long id;
 
-	@Field(analyze = Analyze.NO)
+	@GenericField
 	private String name;
 
 	@Field

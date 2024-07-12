@@ -6,8 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.massindex.model;
 
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.GenericField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ public class IndexedLabel {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@Field
+	@GenericField
 	private String name;
 
 	public IndexedLabel() {

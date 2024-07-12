@@ -9,9 +9,10 @@ package org.hibernate.ogm.backendtck.massindex.model;
 import java.util.List;
 
 import org.hibernate.ogm.backendtck.id.NewsID;
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.DocumentId;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
@@ -29,7 +30,7 @@ public class IndexedNews {
 
 	@DocumentId
 	@EmbeddedId
-	@FieldBridge(impl = NewsIdFieldBridge.class)
+	@KeywordField(valueBridge = @ValueBridgeRef(type = NewsIdFieldBridge.class))
 	private NewsID newsId;
 
 	private String content;

@@ -8,8 +8,9 @@ package org.hibernate.ogm.backendtck.id.embeddable;
 
 import java.io.Serializable;
 
-import org.hibernate.search.bridge.LuceneOptions;
-import org.hibernate.search.bridge.TwoWayFieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.ValueBridge;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeFromIndexedValueContext;
+import org.hibernate.search.mapper.pojo.bridge.runtime.ValueBridgeToIndexedValueContext;
 
 import jakarta.persistence.Embeddable;
 
@@ -72,25 +73,16 @@ public class SingleBoardComputerPk implements Serializable {
 		return "SingleBoardComputerPk [id=" + id + "]";
 	}
 
-	public static class SingleBoardComputerPkFieldBridge implements TwoWayFieldBridge {
+	public static class SingleBoardComputerPkFieldBridge implements ValueBridge<SingleBoardComputerPk, String> {
 
 		@Override
-		public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-			if ( value == null ) {
-				return;
-			}
-
-			luceneOptions.addFieldToDocument( name, ( (SingleBoardComputerPk) value ).id, document );
+		public SingleBoardComputerPk fromIndexedValue(String value, ValueBridgeFromIndexedValueContext context) {
+			return new SingleBoardComputerPk( value );
 		}
 
 		@Override
-		public Object get(String name, Document document) {
-			return new SingleBoardComputerPk( document.get( name ) );
-		}
-
-		@Override
-		public String objectToString(Object object) {
-			return ( (SingleBoardComputerPk) object ).id;
+		public String toIndexedValue(SingleBoardComputerPk value, ValueBridgeToIndexedValueContext context) {
+			return value == null ? null : value.id;
 		}
 	}
 }

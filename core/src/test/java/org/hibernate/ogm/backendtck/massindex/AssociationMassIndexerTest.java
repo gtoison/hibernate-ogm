@@ -9,10 +9,11 @@ package org.hibernate.ogm.backendtck.massindex;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.hibernate.ogm.utils.GridDialectType.MONGODB;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.lucene.search.Query;
+import org.apache.lucene.index.IndexReader;
 import org.hibernate.ogm.backendtck.id.NewsID;
 import org.hibernate.ogm.backendtck.massindex.model.IndexedLabel;
 import org.hibernate.ogm.backendtck.massindex.model.IndexedNews;
@@ -20,9 +21,11 @@ import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestHelper;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
 import org.hibernate.ogm.utils.jpa.OgmJpaTestCase;
-import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.backend.lucene.LuceneExtension;
+import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.mapper.orm.mapping.SearchMapping;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.Test;
 
 import jakarta.persistence.EntityManager;
@@ -55,46 +58,47 @@ public class AssociationMassIndexerTest extends OgmJpaTestCase {
 	}
 
 	private void assertEntityHasBeenIndexed() throws Exception {
-		FullTextEntityManager fullTextEm = Search.getFullTextEntityManager( createEntityManager() );
-		fullTextEm.getTransaction().begin();
-		QueryBuilder queryBuilder = fullTextEm.getSearchFactory()
-				.buildQueryBuilder()
-				.forEntity( IndexedNews.class )
-				.get();
-		Query luceneQuery = queryBuilder.keyword().wildcard().onField( "newsId" ).ignoreFieldBridge().matching(
-				"tit*"
-		).createQuery();
-		@SuppressWarnings("unchecked")
-		List<IndexedNews> list = fullTextEm.createFullTextQuery( luceneQuery ).getResultList();
+		EntityManager em = createEntityManager();
+		SearchSession fullTextEm = Search.session( em );
+		em.getTransaction().begin();
+		List<IndexedNews> list = fullTextEm.search( IndexedNews.class )
+				.where( f -> f.wildcard().field( "newsId" ).matching( "tit*"))
+				.fetchAllHits();
+						
 		assertThat( list ).hasSize( 1 );
 
 		List<IndexedLabel> labels = list.get( 0 ).getLabels();
 		assertThat( labels ).hasSize( 2 );
 		assertThat( contains( labels, "massindex" ) ).isTrue();
 		assertThat( contains( labels, "test" ) ).isTrue();
-		fullTextEm.getTransaction().commit();
-		fullTextEm.close();
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@SuppressWarnings("unchecked")
 	private void assertAssociatedElementsHaveBeenIndexed() throws Exception {
-		FullTextEntityManager fullTextEm = Search.getFullTextEntityManager( createEntityManager() );
-		fullTextEm.getTransaction().begin();
-		QueryBuilder b = fullTextEm.getSearchFactory().buildQueryBuilder().forEntity( IndexedLabel.class ).get();
+		EntityManager em = createEntityManager();
+		SearchSession fullTextEm = Search.session( em );
+		em.getTransaction().begin();
+		
 		{
-			Query luceneQuery = b.keyword().wildcard().onField( "name" ).matching( "tes*" ).createQuery();
-			List<IndexedLabel> labels = fullTextEm.createFullTextQuery( luceneQuery ).getResultList();
+			List<IndexedLabel> labels = fullTextEm.search( IndexedLabel.class )
+					.where( f -> f.wildcard().field( "name" ).matching( "tes*"))
+					.fetchAllHits();
+			
 			assertThat( labels ).hasSize( 1 );
 			assertThat( contains( labels, "test" ) ).isTrue();
 		}
 		{
-			Query luceneQuery = b.keyword().wildcard().onField( "name" ).matching( "mas*" ).createQuery();
-			List<IndexedLabel> labels = fullTextEm.createFullTextQuery( luceneQuery ).getResultList();
+			List<IndexedLabel> labels = fullTextEm.search( IndexedLabel.class )
+					.where( f -> f.wildcard().field( "name" ).matching( "mas*"))
+					.fetchAllHits();
+			
 			assertThat( labels ).hasSize( 1 );
 			assertThat( contains( labels, "massindex" ) ).isTrue();
 		}
-		fullTextEm.getTransaction().commit();
-		fullTextEm.close();
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	private boolean contains(List<IndexedLabel> list, String label) {
@@ -110,23 +114,38 @@ public class AssociationMassIndexerTest extends OgmJpaTestCase {
 		return getFactory().createEntityManager();
 	}
 
-	private void startAndWaitMassIndexing(Class<?>... entityTypes) throws InterruptedException {
-		FullTextEntityManager fullTextEm = Search.getFullTextEntityManager( createEntityManager() );
-		fullTextEm.createIndexer( entityTypes ).purgeAllOnStart( true ).startAndWait();
-		int numDocs = fullTextEm.getSearchFactory().getIndexReaderAccessor().open( entityTypes ).numDocs();
-		fullTextEm.close();
-		assertThat( numDocs ).isGreaterThan( 0 );
+	private void startAndWaitMassIndexing(Class<?>... entityTypes) throws InterruptedException, IOException {
+		EntityManager em = createEntityManager();
+		SearchSession fullTextEm = Search.session( em );
+		fullTextEm.massIndexer( entityTypes ).purgeAllOnStart( true ).startAndWait();
+		
+		SearchMapping mapping = Search.mapping( em.getEntityManagerFactory() ); 
+		LuceneIndexScope indexScope = mapping.scope( Arrays.asList( entityTypes ) ).extension( LuceneExtension.get() ); 
+		try ( IndexReader indexReader = indexScope.openIndexReader() ) { 
+		    int numDocs = indexReader.numDocs();
+		    assertThat( numDocs ).isGreaterThan( 0 );
+		} finally {
+			em.close();
+		}
+		
 	}
 
 	private void purgeAll(Class<?>... entityTypes) throws Exception {
-		FullTextEntityManager fullTextEm = Search.getFullTextEntityManager( createEntityManager() );
+		EntityManager em = createEntityManager();
+		SearchSession fullTextEm = Search.session( em );
 		for ( Class<?> entityType : entityTypes ) {
-			fullTextEm.purgeAll( entityType );
-			fullTextEm.flushToIndexes();
+			fullTextEm.workspace( entityType ).purge();
+			fullTextEm.indexingPlan().execute();
 		}
-		int numDocs = fullTextEm.getSearchFactory().getIndexReaderAccessor().open( entityTypes ).numDocs();
-		fullTextEm.close();
-		assertThat( numDocs ).isEqualTo( 0 );
+		
+		SearchMapping mapping = Search.mapping( em.getEntityManagerFactory() ); 
+		LuceneIndexScope indexScope = mapping.scope( Arrays.asList( entityTypes ) ).extension( LuceneExtension.get() ); 
+		try ( IndexReader indexReader = indexScope.openIndexReader() ) { 
+		    int numDocs = indexReader.numDocs();
+		    assertThat( numDocs ).isEqualTo( 0 );
+		} finally {
+			em.close();
+		}
 	}
 
 	@Override

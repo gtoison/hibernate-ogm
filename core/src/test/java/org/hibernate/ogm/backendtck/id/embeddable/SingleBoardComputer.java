@@ -6,8 +6,9 @@
  */
 package org.hibernate.ogm.backendtck.id.embeddable;
 
-import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.mapper.pojo.bridge.mapping.annotation.ValueBridgeRef;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.KeywordField;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,7 +21,7 @@ import jakarta.persistence.Id;
 public class SingleBoardComputer {
 
 	@Id
-	@FieldBridge(impl = SingleBoardComputerPk.SingleBoardComputerPkFieldBridge.class)
+	@KeywordField(valueBridge = @ValueBridgeRef(type = SingleBoardComputerPk.SingleBoardComputerPkFieldBridge.class))
 	private SingleBoardComputerPk id;
 
 	private String name;

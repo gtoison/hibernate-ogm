@@ -9,9 +9,10 @@ package org.hibernate.ogm.test.integration.testcase.controller;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 
 import org.hibernate.ogm.test.integration.testcase.model.Member;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * A {@link MemberRegistration} bean that works when the transaction type of the persistence unit is set to JTA

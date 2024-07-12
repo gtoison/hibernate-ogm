@@ -8,11 +8,12 @@ package org.hibernate.ogm.test.integration.testcase.controller;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
 
 import org.hibernate.ogm.test.integration.testcase.model.Member;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 
 /**
  * A {@link MemberRegistration} bean that works when the transaction type of the persistence unit is set to

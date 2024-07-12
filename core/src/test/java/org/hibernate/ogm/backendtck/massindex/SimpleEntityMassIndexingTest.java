@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.search.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ogm.backendtck.hsearch.Insurance;
@@ -24,9 +23,11 @@ import org.hibernate.ogm.backendtck.massindex.model.IndexedNews;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.SkipByGridDialect;
 import org.hibernate.ogm.utils.TestHelper;
-import org.hibernate.search.FullTextSession;
+import org.hibernate.search.backend.lucene.LuceneExtension;
+import org.hibernate.search.backend.lucene.scope.LuceneIndexScope;
 import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.query.dsl.QueryBuilder;
+import org.hibernate.search.mapper.orm.mapping.SearchMapping;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.junit.Test;
 
 /**
@@ -51,12 +52,12 @@ public class SimpleEntityMassIndexingTest extends OgmTestCase {
 			startAndWaitMassIndexing( Insurance.class );
 		}
 		{
-			FullTextSession session = Search.getFullTextSession( openSession() );
-			QueryBuilder queryBuilder = session.getSearchFactory().buildQueryBuilder().forEntity( Insurance.class ).get();
-			Query luceneQuery = queryBuilder.keyword().wildcard().onField( "name" ).matching( "ins*" ).createQuery();
+			Session session = openSession();
+			SearchSession searchSession = Search.session( session );
+			
+			List<Insurance> list = searchSession.search( Insurance.class ).where( f -> f.wildcard().field( "name" ).matching( "ins*" ) ).fetchAllHits();
 			Transaction transaction = session.beginTransaction();
-			@SuppressWarnings("unchecked")
-			List<Insurance> list = session.createFullTextQuery( luceneQuery ).list();
+			
 			assertThat( list ).hasSize( 1 );
 			assertThat( list.get( 0 ).getName() ).isEqualTo( "Insurance Corporation" );
 			transaction.commit();
@@ -83,12 +84,10 @@ public class SimpleEntityMassIndexingTest extends OgmTestCase {
 		}
 		{
 			// Assert index creation
-			FullTextSession session = Search.getFullTextSession( openSession() );
-			QueryBuilder queryBuilder = session.getSearchFactory().buildQueryBuilder().forEntity( IndexedNews.class ).get();
-			Query luceneQuery = queryBuilder.keyword().wildcard().onField( "newsId" ).ignoreFieldBridge().matching( "tit*" ).createQuery();
+			Session session = openSession();
+			SearchSession searchSession = Search.session( session );
+			List<IndexedNews> list = searchSession.search( IndexedNews.class ).where( f -> f.wildcard().field( "newsId" ).matching( "tit*" ) ).fetchAllHits();
 			Transaction transaction = session.beginTransaction();
-			@SuppressWarnings("unchecked")
-			List<IndexedNews> list = session.createFullTextQuery( luceneQuery ).list();
 			assertThat( list ).hasSize( 1 );
 			assertThat( list.get( 0 ).getContent() ).isEqualTo( "content" );
 			assertThat( list.get( 0 ).getNewsId().getTitle() ).isEqualTo( "title" );
@@ -100,25 +99,34 @@ public class SimpleEntityMassIndexingTest extends OgmTestCase {
 	}
 
 	private void startAndWaitMassIndexing(Class<?> entityType) throws InterruptedException, IOException {
-		FullTextSession session = Search.getFullTextSession( openSession() );
-		session.createIndexer( entityType ).purgeAllOnStart( true ).startAndWait();
-		final int numDocs;
-		try ( IndexReader indexReader = session.getSearchFactory().getIndexReaderAccessor().open( entityType ) ) {
-			numDocs = indexReader.numDocs();
+		Session session = openSession();
+		SearchSession searchSession = Search.session( session );
+		searchSession.massIndexer( entityType ).purgeAllOnStart( true ).startAndWait();
+		
+		SearchMapping mapping = Search.mapping( session.getEntityManagerFactory() ); 
+		LuceneIndexScope indexScope = mapping.scope( entityType ).extension( LuceneExtension.get() ); 
+		try ( IndexReader indexReader = indexScope.openIndexReader() ) { 
+		    int numDocs = indexReader.numDocs();
+		    assertThat( numDocs ).isGreaterThan( 0 );
+		} finally {
+			session.close();
 		}
-		assertThat( numDocs ).isGreaterThan( 0 );
 	}
 
 	private void purgeAll(Class<?> entityType) throws IOException {
-		FullTextSession session = Search.getFullTextSession( openSession() );
-		session.purgeAll( entityType );
-		session.flushToIndexes();
-		final int numDocs;
-		try ( IndexReader indexReader = session.getSearchFactory().getIndexReaderAccessor().open( entityType ) ) {
-			numDocs = indexReader.numDocs();
+		Session session = openSession();
+		SearchSession searchSession = Search.session( session );
+		searchSession.workspace( entityType ).flush();
+		searchSession.indexingPlan().execute();
+		
+		SearchMapping mapping = Search.mapping( session.getEntityManagerFactory() ); 
+		LuceneIndexScope indexScope = mapping.scope( entityType ).extension( LuceneExtension.get() ); 
+		try ( IndexReader indexReader = indexScope.openIndexReader() ) { 
+		    int numDocs = indexReader.numDocs();
+		    assertThat( numDocs ).isEqualTo( 0 );
+		} finally {
+			session.close();
 		}
-		session.close();
-		assertThat( numDocs ).isEqualTo( 0 );
 	}
 
 	@Override
