@@ -9,6 +9,7 @@ package org.hibernate.ogm.datastore.neo4j.query.impl;
 import org.hibernate.ogm.dialect.query.spi.ParameterMetadataBuilder;
 import org.hibernate.ogm.dialect.query.spi.RecognizerBasedParameterMetadataBuilder;
 import org.hibernate.query.sql.spi.ParameterRecognizer;
+import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.parboiled.Parboiled;
 import org.parboiled.parserunners.RecoveringParseRunner;
 
@@ -19,6 +20,10 @@ import org.parboiled.parserunners.RecoveringParseRunner;
  * @author Gunnar Morling
  */
 public class Neo4jParameterMetadataBuilder extends RecognizerBasedParameterMetadataBuilder {
+
+	public Neo4jParameterMetadataBuilder(ServiceRegistryImplementor serviceRegistry) {
+		super( serviceRegistry );
+	}
 
 	@Override
 	public void parseQueryParameters(String nativeQuery, ParameterRecognizer journaler) {

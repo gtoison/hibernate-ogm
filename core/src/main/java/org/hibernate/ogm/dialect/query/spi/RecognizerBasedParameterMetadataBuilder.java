@@ -8,18 +8,25 @@ package org.hibernate.ogm.dialect.query.spi;
 
 import java.util.Map;
 
-import org.hibernate.engine.query.spi.NamedParameterDescriptor;
-import org.hibernate.engine.query.spi.OrdinalParameterDescriptor;
-import org.hibernate.engine.query.spi.ParamLocationRecognizer;
+import org.hibernate.engine.query.spi.NativeQueryInterpreter;
 import org.hibernate.query.internal.ParameterMetadataImpl;
+import org.hibernate.query.spi.QueryParameterImplementor;
+import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.hibernate.query.sql.spi.ParameterRecognizer;
+import org.hibernate.service.spi.ServiceRegistryImplementor;
 
 /**
- * Base class for {@link ParameterMetadataBuilder}s based on ORM's {@link ParamLocationRecognizer} SPI.
+ * Base class for {@link ParameterMetadataBuilder}s based on ORM's {@link ParameterRecognizerImpl} SPI.
  *
  * @author Gunnar Morling
  */
 public abstract class RecognizerBasedParameterMetadataBuilder implements ParameterMetadataBuilder {
+
+	private final ServiceRegistryImplementor serviceRegistry;
+	
+	public RecognizerBasedParameterMetadataBuilder(ServiceRegistryImplementor serviceRegistry) {
+		this.serviceRegistry = serviceRegistry;
+	}
 
 	@Override
 	public ParameterMetadataImpl buildParameterMetadata(String nativeQuery) {
@@ -29,13 +36,13 @@ public abstract class RecognizerBasedParameterMetadataBuilder implements Paramet
 		// and even in that scenario I'm not sure it will matter.
 		// I think it makes sense to keep track of the JPA compliance problems in separate issues.
 		// In this case after solving OGM-1407
-		int jdbcStyleOrdinalCountBase = 0;
-		ParamLocationRecognizer recognizer = new ParamLocationRecognizer( jdbcStyleOrdinalCountBase );
-		parseQueryParameters( nativeQuery, recognizer );
-		recognizer.complete();
+		final ParameterRecognizerImpl parameterRecognizer = new ParameterRecognizerImpl();
 
-		final Map<Integer, OrdinalParameterDescriptor<?>> ordinalDescriptors = recognizer.getOrdinalParameterDescriptionMap();
-		final Map<String, NamedParameterDescriptor<?>> namedDescriptors = recognizer.getNamedParameterDescriptionMap();
+		serviceRegistry.requireService( NativeQueryInterpreter.class )
+				.recognizeParameters( nativeQuery, parameterRecognizer );
+		
+		final Map<Integer, QueryParameterImplementor<?>> ordinalDescriptors = parameterRecognizer.getPositionalQueryParameters();
+		final Map<String, QueryParameterImplementor<?>> namedDescriptors = parameterRecognizer.getNamedQueryParameters();
 
 		return new ParameterMetadataImpl( ordinalDescriptors, namedDescriptors );
 	}

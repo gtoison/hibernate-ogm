@@ -10,10 +10,10 @@ import static org.hibernate.ogm.datastore.neo4j.query.parsing.cypherdsl.impl.Cyp
 import static org.hibernate.ogm.datastore.neo4j.query.parsing.cypherdsl.impl.CypherDSL.skip;
 import static org.hibernate.ogm.util.impl.EmbeddedHelper.isPartOfEmbedded;
 
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -179,7 +179,7 @@ public abstract class BaseNeo4jDialect<E extends BaseNeo4jEntityQueries, A exten
 
 	@Override
 	public ParameterMetadataBuilder getParameterMetadataBuilder() {
-		return new Neo4jParameterMetadataBuilder();
+		return new Neo4jParameterMetadataBuilder( serviceRegistry );
 	}
 
 	/**
