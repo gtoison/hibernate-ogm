@@ -59,7 +59,7 @@ public class BoltNeo4jResourceLocalModuleMemberRegistrationIT extends Neo4jModul
 				.createProperty().name( Neo4jProperties.HOST ).value( getNeo4jHostWithPort( RemoteNeo4jConfiguration.DEFAULT_BOLT_PORT ) ).up()
 				.createProperty().name( Neo4jProperties.USERNAME ).value( getNeo4jUsername() ).up()
 				.createProperty().name( Neo4jProperties.PASSWORD ).value( getNeo4jPassword() ).up()
-				.createProperty().name( "hibernate.search.default.directory_provider" ).value( "ram" ).up()
+				.createProperty().name( "hibernate.search.backend.directory.type" ).value( "local-heap" ).up()
 				.createProperty().name( "wildfly.jpa.hibernate.search.module" ).value( "org.hibernate.search.orm:${module-slot.org.hibernate.search.short-id}" ).up()
 				.up().up();
 		return persistenceDescriptor;

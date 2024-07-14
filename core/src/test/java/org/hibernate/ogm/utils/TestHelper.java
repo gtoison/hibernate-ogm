@@ -240,7 +240,7 @@ public class TestHelper {
 		Map<String, String> settings = new HashMap<>();
 		settings.put( OgmProperties.ENABLED, "true" );
 		settings.put( Environment.HBM2DDL_AUTO, "none" );
-		settings.put( "hibernate.search.default.directory_provider", "ram" );
+		settings.put( "hibernate.search.backend.directory.type", "local-heap" );
 		settings.putAll( HELPER.getAdditionalConfigurationProperties() );
 		return settings;
 	}

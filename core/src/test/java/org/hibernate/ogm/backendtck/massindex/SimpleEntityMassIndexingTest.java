@@ -136,7 +136,7 @@ public class SimpleEntityMassIndexingTest extends OgmTestCase {
 
 	@Override
 	protected void configure(Map<String, Object> settings) {
-		settings.put( "hibernate.search.default.directory_provider", "ram" );
+		settings.put( "hibernate.search.backend.directory.type", "local-heap" );
 		TestHelper.enableCountersForInfinispan( settings );
 	}
 }

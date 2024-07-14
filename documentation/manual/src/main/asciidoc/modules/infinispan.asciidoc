@@ -598,7 +598,7 @@ How to configure it? Here is a simple cheat sheet to get you started with this t
 * Add `org.infinispan:infinispan-directory-provider:{infinispan-version}` to your dependencies
 * set these configuration properties:
 
-** `hibernate.search.default.directory_provider = infinispan`
+** `hibernate.search.backend.directory.type = infinispan`
 ** `hibernate.search.default.exclusive_index_use = false`
 ** `hibernate.search.infinispan.configuration_resourcename =` [infinispan configuration filename]
 

@@ -156,7 +156,7 @@ public class AssociationMassIndexerTest extends OgmJpaTestCase {
 	@Override
 	protected void configure(GetterPersistenceUnitInfo info) {
 		super.configure( info );
-		info.getProperties().setProperty( "hibernate.search.default.directory_provider", "ram" );
+		info.getProperties().setProperty( "hibernate.search.backend.directory.type", "local-heap" );
 		TestHelper.enableCountersForInfinispan( info.getProperties() );
 	}
 }

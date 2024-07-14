@@ -11,10 +11,6 @@ import static org.hibernate.ogm.datastore.neo4j.dialect.impl.NodeLabel.ENTITY;
 import static org.hibernate.ogm.datastore.neo4j.test.dsl.GraphAssertions.node;
 import static org.junit.Assert.fail;
 
-import javax.transaction.Synchronization;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
-
 import org.hibernate.ogm.datastore.neo4j.test.dsl.NodeForGraphAssertions;
 import org.hibernate.ogm.datastore.neo4j.test.mapping.Neo4jJpaTestCase;
 import org.hibernate.ogm.utils.jpa.GetterPersistenceUnitInfo;
@@ -22,6 +18,9 @@ import org.junit.Test;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.spi.PersistenceUnitTransactionType;
+import jakarta.transaction.Synchronization;
+import jakarta.transaction.Transaction;
+import jakarta.transaction.TransactionManager;
 
 /**
  * Test for using the compensation SPI with JPA.
