@@ -6,6 +6,8 @@
  */
 package org.hibernate.ogm.backendtck.associations.manytoone;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -47,6 +49,7 @@ public class SalesGuy {
 	}
 
 	@ManyToOne
+	@Fetch(FetchMode.SELECT) // With Jakarta compliance the default is join, which we don't support
 	@NotFound(action = NotFoundAction.IGNORE)
 	public SalesForce getSalesForce() {
 		return salesForce;

@@ -9,6 +9,7 @@ package org.hibernate.ogm.loader.entity.impl;
 import org.hibernate.LockOptions;
 import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.loader.ast.internal.LoaderSelectBuilder;
 import org.hibernate.loader.ast.internal.SingleIdEntityLoaderStandardImpl;
 import org.hibernate.loader.ast.internal.SingleIdLoadPlan;
@@ -21,6 +22,8 @@ import org.hibernate.sql.exec.spi.JdbcParametersList;
  * @author Guillaume Toison
  */
 public class OgmSingleIdEntityLoader<T> extends SingleIdEntityLoaderStandardImpl<T> {
+
+	private OgmDatabaseSnapshotExecutor databaseSnapshotExecutor;
 
 	public OgmSingleIdEntityLoader(
 			EntityMappingType entityDescriptor,
@@ -55,5 +58,14 @@ public class OgmSingleIdEntityLoader<T> extends SingleIdEntityLoaderStandardImpl
 				lockOptions,
 				sessionFactory
 		);
+	}
+	
+	@Override
+	public Object[] loadDatabaseSnapshot(Object id, SharedSessionContractImplementor session) {
+		if ( databaseSnapshotExecutor == null ) {
+			databaseSnapshotExecutor = new OgmDatabaseSnapshotExecutor( getLoadable(), sessionFactory );
+		}
+
+		return databaseSnapshotExecutor.loadDatabaseSnapshot( id, session );
 	}
 }

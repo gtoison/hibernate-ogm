@@ -11,7 +11,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.sql.ast.spi.SqlSelection;
 
 /**
@@ -19,11 +18,9 @@ import org.hibernate.sql.ast.spi.SqlSelection;
  * @author Guillaume Toison
  */
 public class TuplesSelectMetaData implements ResultSetMetaData {
-	private List<Tuple> tuples;
 	private List<SqlSelection> sqlSelections;
 	
-	public TuplesSelectMetaData(List<Tuple> tuples, List<SqlSelection> sqlSelections) {
-		this.tuples = tuples;
+	public TuplesSelectMetaData(List<SqlSelection> sqlSelections) {
 		this.sqlSelections = sqlSelections;
 	}
 	

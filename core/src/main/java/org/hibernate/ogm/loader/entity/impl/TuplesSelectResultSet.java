@@ -31,6 +31,8 @@ import java.util.Map;
 
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.sql.ast.spi.SqlSelection;
+import org.hibernate.sql.ast.tree.expression.Expression;
+import org.hibernate.sql.ast.tree.expression.QueryLiteral;
 
 /**
  * 
@@ -41,14 +43,34 @@ public class TuplesSelectResultSet implements ResultSet {
 	private final List<Tuple> tuples;
 	private final TuplesSelectMetaData metaData;
 	
+	private final boolean[] literals;
+	private final Object[] literalValues;
+			
 	private int rowIndex = -1;
 	private boolean wasNull;
+	
 	
 	public TuplesSelectResultSet(Statement statement, List<Tuple> tuples, List<SqlSelection> sqlSelections) {
 		this.statement = statement;
 		this.tuples = tuples;
 		
-		metaData = new TuplesSelectMetaData( tuples, sqlSelections );
+		metaData = new TuplesSelectMetaData( sqlSelections );
+		
+		int selectionsCount = sqlSelections.size();
+		
+		// The literals do not have a column name, extract the values and handle the case of the 'null' literal
+		literals = new boolean[selectionsCount];
+		literalValues = new Object[selectionsCount];
+		
+		for (int i=0; i<sqlSelections.size(); i++ ) {
+			Expression expression = sqlSelections.get( i ).getExpression();
+			if ( expression instanceof QueryLiteral<?> ) {
+				QueryLiteral<?> literal = (QueryLiteral<?>) expression;
+				
+				literals[i] = true;
+				literalValues[i] = literal.getLiteralValue();
+			}
+		}
 	}
 	
 	private Tuple getCurrentTuple() {
@@ -296,6 +318,12 @@ public class TuplesSelectResultSet implements ResultSet {
 
 	@Override
 	public Object getObject(int columnIndex) throws SQLException {
+		int index = columnIndex-1;
+		
+		if (literals[index]) {
+			return literalValues[index];
+		}
+		
 		String columnName = metaData.getColumnName( columnIndex );
 		return getCurrentTuple().get( columnName );
 	}

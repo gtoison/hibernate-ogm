@@ -28,6 +28,7 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.ogm.model.spi.Tuple;
@@ -40,6 +41,13 @@ import org.hibernate.sql.ast.spi.SqlSelection;
 public class TuplesSelectPreparedStatement implements PreparedStatement {
 	private final List<Tuple> tuples;
 	private final List<SqlSelection> sqlSelections;
+	
+	/**
+	 * @param tuple The {@link Tuple}, in case it is null the {@link ResultSet} will have zero rows
+	 */
+	public TuplesSelectPreparedStatement(Tuple tuple, List<SqlSelection> sqlSelections) {
+		this( tuple == null ? Collections.emptyList() : Collections.singletonList( tuple ), sqlSelections );
+	}
 
 	public TuplesSelectPreparedStatement(List<Tuple> tuples, List<SqlSelection> sqlSelections) {
 		this.tuples = tuples;
@@ -48,7 +56,7 @@ public class TuplesSelectPreparedStatement implements PreparedStatement {
 
 	@Override
 	public ResultSet executeQuery(String sql) throws SQLException {
-		return new TuplesSelectResultSet( this, tuples, sqlSelections );
+		throw new UnsupportedOperationException( "Not implemented" );
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import org.hibernate.engine.spi.LoadQueryInfluencers;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.loader.ast.internal.SingleIdLoadPlan;
-import org.hibernate.metamodel.mapping.BasicEntityIdentifierMapping;
+import org.hibernate.metamodel.mapping.EntityIdentifierMapping;
 import org.hibernate.metamodel.mapping.EntityMappingType;
 import org.hibernate.metamodel.mapping.ModelPart;
 import org.hibernate.metamodel.mapping.ModelPart.JdbcValueConsumer;
@@ -52,11 +52,6 @@ import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.spi.TypeConfiguration;
 
 /**
- * 
- * @author Guillaume Toison
- */
-/**
- * @param <T>
  * @author Guillaume Toison
  */
 public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
@@ -74,7 +69,7 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 	@Override
 	public T load(Object restrictedValue, Object entityInstance, Boolean readOnly, Boolean singleResultExpected,
 			SharedSessionContractImplementor session) {
-		final BasicEntityIdentifierMapping restrictivePart = (BasicEntityIdentifierMapping) getRestrictivePart();
+		final EntityIdentifierMapping restrictivePart = (EntityIdentifierMapping) getRestrictivePart();
 		final JdbcParametersList jdbcParameters = getJdbcParameters();
 		final LockOptions lockOptions = getLockOptions();
 		final JdbcOperationQuerySelect jdbcSelect = getJdbcSelect();
@@ -102,24 +97,7 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		GridDialect dialect = session.getFactory().getServiceRegistry().getService( GridDialect.class );
 		OptionsService optionsService = session.getFactory().getServiceRegistry().getService( OptionsService.class );
 		
-		// Extract the key raw value(s)
-		Object[] keyValues = new Object[restrictivePart.getJdbcTypeCount()];
-		String[] keyColumnName = new String[keyValues.length];
-		
-		JdbcValueConsumer keyValueConsumer = new JdbcValueConsumer() {
-
-			@Override
-			public void consume(int valueIndex, Object value, SelectableMapping jdbcValueMapping) {
-				keyValues[valueIndex] = value;
-				keyColumnName[valueIndex] = jdbcValueMapping.getSelectionExpression();
-			}
-		};
-		
-		restrictivePart.breakDownJdbcValues( restrictedValue, keyValueConsumer, session );
-		
-		String tableName = restrictivePart.getContainingTableExpression();
-		EntityKeyMetadata keyMetadata = new DefaultEntityKeyMetadata( tableName, keyColumnName );
-		EntityKey entityKey = new EntityKey( keyMetadata, keyValues );
+		EntityKey entityKey = extractKey( restrictedValue, session, restrictivePart );
 		TupleTypeContextImpl tupleTypeContext = new TupleTypeContextImpl(
 				Collections.emptyList(),
 				Collections.emptySet(),
@@ -133,36 +111,9 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		
 		Tuple tuple = dialect.getTuple( entityKey, operationContext );
 		
-		// TODO check what we should be doing here, 
-		JdbcValuesMetadata jdbcResultsMetadata = new JdbcValuesMetadata() {
-			
-			@Override
-			public <J> BasicType<J> resolveType(int position, JavaType<J> explicitJavaType,
-					TypeConfiguration typeConfiguration) {
-				return null;
-			}
-			
-			@Override
-			public int resolveColumnPosition(String columnName) {
-				return 0;
-			}
-			
-			@Override
-			public String resolveColumnName(int position) {
-				return null;
-			}
-			
-			@Override
-			public int getColumnCount() {
-				return 0;
-			}
-		};
+		List<SqlSelection> sqlSelections = extractJdbcSelections( session, jdbcSelect );
 		
-		LoadQueryInfluencers loadqueryInfluencers = session.getLoadQueryInfluencers();
-		JdbcValuesMapping valuesMapping = jdbcSelect.getJdbcValuesMappingProducer().resolve( jdbcResultsMetadata, loadqueryInfluencers, session.getFactory() );
-		List<SqlSelection> sqlSelections = valuesMapping.getSqlSelections();
-		
-		Function<String, PreparedStatement> statementCreator = sql -> new TuplesSelectPreparedStatement( Collections.singletonList( tuple ), sqlSelections );
+		Function<String, PreparedStatement> statementCreator = sql -> new TuplesSelectPreparedStatement( tuple, sqlSelections );
 		ListResultsConsumer.UniqueSemantic uniqueSemantic = singleResultExpected ? ListResultsConsumer.UniqueSemantic.ASSERT : ListResultsConsumer.UniqueSemantic.FILTER;
 		
 		final List<T> list = session.getJdbcServices().getJdbcSelectExecutor().executeQuery(
@@ -196,7 +147,62 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		
 		return entity;
 	}
-	
+
+	public static List<SqlSelection> extractJdbcSelections(SharedSessionContractImplementor session,
+			final JdbcOperationQuerySelect jdbcSelect) {
+		// TODO check what we should be doing here, 
+		JdbcValuesMetadata jdbcResultsMetadata = new JdbcValuesMetadata() {
+			
+			@Override
+			public <J> BasicType<J> resolveType(int position, JavaType<J> explicitJavaType,
+					TypeConfiguration typeConfiguration) {
+				return null;
+			}
+			
+			@Override
+			public int resolveColumnPosition(String columnName) {
+				return 0;
+			}
+			
+			@Override
+			public String resolveColumnName(int position) {
+				return null;
+			}
+			
+			@Override
+			public int getColumnCount() {
+				return 0;
+			}
+		};
+		
+		LoadQueryInfluencers loadqueryInfluencers = session.getLoadQueryInfluencers();
+		JdbcValuesMapping valuesMapping = jdbcSelect.getJdbcValuesMappingProducer().resolve( jdbcResultsMetadata, loadqueryInfluencers, session.getFactory() );
+		List<SqlSelection> sqlSelections = valuesMapping.getSqlSelections();
+		return sqlSelections;
+	}
+
+	public static EntityKey extractKey(Object restrictedValue, SharedSessionContractImplementor session,
+			final EntityIdentifierMapping restrictivePart) {
+		Object[] keyValues = new Object[restrictivePart.getJdbcTypeCount()];
+		String[] keyColumnName = new String[keyValues.length];
+		
+		JdbcValueConsumer keyValueConsumer = new JdbcValueConsumer() {
+
+			@Override
+			public void consume(int valueIndex, Object value, SelectableMapping jdbcValueMapping) {
+				keyValues[valueIndex] = value;
+				keyColumnName[valueIndex] = jdbcValueMapping.getSelectionExpression();
+			}
+		};
+		
+		restrictivePart.breakDownJdbcValues( restrictedValue, keyValueConsumer, session );
+		
+		String tableName = restrictivePart.getContainingTableExpression();
+		EntityKeyMetadata keyMetadata = new DefaultEntityKeyMetadata( tableName, keyColumnName );
+		EntityKey entityKey = new EntityKey( keyMetadata, keyValues );
+		
+		return entityKey;
+	}
 
 
 	/**
