@@ -6,35 +6,30 @@
  */
 package org.hibernate.ogm.jpa.impl;
 
-import org.hibernate.id.MultipleHiLoPerTableGenerator;
-import org.hibernate.id.enhanced.SequenceStyleGenerator;
-import org.hibernate.id.enhanced.TableGenerator;
-import org.hibernate.id.factory.IdentifierGeneratorFactory;
-import org.hibernate.id.factory.internal.StandardIdentifierGeneratorFactory;
-import org.hibernate.ogm.id.impl.OgmIdentityGenerator;
-import org.hibernate.ogm.id.impl.OgmSequenceGenerator;
-import org.hibernate.ogm.id.impl.OgmTableGenerator;
+import java.util.function.BiConsumer;
+
+import org.hibernate.id.factory.spi.GenerationTypeStrategy;
+import org.hibernate.id.factory.spi.GenerationTypeStrategyRegistration;
+import org.hibernate.ogm.id.impl.OgmIdentityGenerationStrategy;
+import org.hibernate.ogm.id.impl.OgmSequenceGenerationStrategy;
+import org.hibernate.ogm.id.impl.OgmTableGenerationStrategy;
 import org.hibernate.service.ServiceRegistry;
+
+import jakarta.persistence.GenerationType;
 
 /**
  * Register OGM strategies for identifier generations
  *
  * @author Davide D'Alto
  * @author Gunnar Morling
+ * @author Guillaume Toison
  */
-public class OgmMutableIdentifierGeneratorFactory extends StandardIdentifierGeneratorFactory implements IdentifierGeneratorFactory {
+public class OgmMutableIdentifierGeneratorFactory implements GenerationTypeStrategyRegistration {
 
-	public OgmMutableIdentifierGeneratorFactory(ServiceRegistry serviceRegistry) {
-		super( serviceRegistry );
-		
-		// override the generators when AvailableSettings#USE_NEW_ID_GENERATOR_MAPPINGS is false
-		register( "seqhilo", OgmSequenceGenerator.class );
-		register( MultipleHiLoPerTableGenerator.class.getName(), OgmTableGenerator.class );
-
-		// override the generators when AvailableSettings#USE_NEW_ID_GENERATOR_MAPPINGS is true
-		register( TableGenerator.class.getName(), OgmTableGenerator.class );
-		register( SequenceStyleGenerator.class.getName(), OgmSequenceGenerator.class );
-
-		register( "identity", OgmIdentityGenerator.class );
+	@Override
+	public void registerStrategies(BiConsumer<GenerationType, GenerationTypeStrategy> registry,	ServiceRegistry serviceRegistry) {
+		registry.accept( GenerationType.TABLE, new OgmTableGenerationStrategy() );
+		registry.accept( GenerationType.SEQUENCE, new OgmSequenceGenerationStrategy() );
+		registry.accept( GenerationType.IDENTITY, new OgmIdentityGenerationStrategy() );
 	}
 }
