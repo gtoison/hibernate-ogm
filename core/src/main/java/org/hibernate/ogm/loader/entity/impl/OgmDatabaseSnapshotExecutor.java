@@ -54,7 +54,6 @@ import org.hibernate.sql.exec.spi.JdbcParametersList;
 import org.hibernate.sql.results.graph.DomainResult;
 import org.hibernate.sql.results.graph.internal.ImmutableFetchList;
 import org.hibernate.sql.results.internal.RowTransformerDatabaseSnapshotImpl;
-import org.hibernate.sql.results.jdbc.spi.JdbcValuesMapping;
 import org.hibernate.sql.results.spi.ListResultsConsumer;
 import org.hibernate.type.BasicType;
 import org.hibernate.type.StandardBasicTypes;

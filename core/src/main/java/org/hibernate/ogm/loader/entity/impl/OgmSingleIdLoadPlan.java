@@ -19,17 +19,14 @@ import org.hibernate.loader.ast.internal.SingleIdLoadPlan;
 import org.hibernate.metamodel.mapping.EntityIdentifierMapping;
 import org.hibernate.metamodel.mapping.EntityMappingType;
 import org.hibernate.metamodel.mapping.ModelPart;
-import org.hibernate.metamodel.mapping.ModelPart.JdbcValueConsumer;
-import org.hibernate.metamodel.mapping.SelectableMapping;
 import org.hibernate.ogm.dialect.impl.TupleContextImpl;
 import org.hibernate.ogm.dialect.impl.TupleTypeContextImpl;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.dialect.spi.OperationContext;
 import org.hibernate.ogm.entityentry.impl.OgmEntityEntryState;
 import org.hibernate.ogm.entityentry.impl.TuplePointer;
-import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
+import org.hibernate.ogm.jdbc.impl.JdbcOgmMapper;
 import org.hibernate.ogm.model.key.spi.EntityKey;
-import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.options.spi.OptionsService;
 import org.hibernate.ogm.util.impl.TransactionContextHelper;
@@ -97,7 +94,7 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		GridDialect dialect = session.getFactory().getServiceRegistry().getService( GridDialect.class );
 		OptionsService optionsService = session.getFactory().getServiceRegistry().getService( OptionsService.class );
 		
-		EntityKey entityKey = extractKey( restrictedValue, session, restrictivePart );
+		EntityKey entityKey = JdbcOgmMapper.extractKey( restrictedValue, session, restrictivePart );
 		TupleTypeContextImpl tupleTypeContext = new TupleTypeContextImpl(
 				Collections.emptyList(),
 				Collections.emptySet(),
@@ -179,29 +176,6 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		JdbcValuesMapping valuesMapping = jdbcSelect.getJdbcValuesMappingProducer().resolve( jdbcResultsMetadata, loadqueryInfluencers, session.getFactory() );
 		List<SqlSelection> sqlSelections = valuesMapping.getSqlSelections();
 		return sqlSelections;
-	}
-
-	public static EntityKey extractKey(Object restrictedValue, SharedSessionContractImplementor session,
-			final EntityIdentifierMapping restrictivePart) {
-		Object[] keyValues = new Object[restrictivePart.getJdbcTypeCount()];
-		String[] keyColumnName = new String[keyValues.length];
-		
-		JdbcValueConsumer keyValueConsumer = new JdbcValueConsumer() {
-
-			@Override
-			public void consume(int valueIndex, Object value, SelectableMapping jdbcValueMapping) {
-				keyValues[valueIndex] = value;
-				keyColumnName[valueIndex] = jdbcValueMapping.getSelectionExpression();
-			}
-		};
-		
-		restrictivePart.breakDownJdbcValues( restrictedValue, keyValueConsumer, session );
-		
-		String tableName = restrictivePart.getContainingTableExpression();
-		EntityKeyMetadata keyMetadata = new DefaultEntityKeyMetadata( tableName, keyColumnName );
-		EntityKey entityKey = new EntityKey( keyMetadata, keyValues );
-		
-		return entityKey;
 	}
 
 

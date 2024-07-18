@@ -20,7 +20,6 @@ import org.hibernate.engine.jdbc.mutation.group.PreparedStatementDetails;
 import org.hibernate.engine.jdbc.mutation.internal.AbstractSingleMutationExecutor;
 import org.hibernate.engine.jdbc.mutation.internal.ModelMutationHelper;
 import org.hibernate.engine.jdbc.mutation.internal.PreparedStatementGroupSingleTable;
-import org.hibernate.engine.jdbc.mutation.spi.Binding;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.generator.values.GeneratedValues;
@@ -36,6 +35,7 @@ import org.hibernate.ogm.dialect.spi.TupleContext;
 import org.hibernate.ogm.dialect.spi.TupleTypeContext;
 import org.hibernate.ogm.entityentry.impl.OgmEntityEntryState;
 import org.hibernate.ogm.entityentry.impl.TuplePointer;
+import org.hibernate.ogm.jdbc.impl.JdbcOgmMapper;
 import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
@@ -172,7 +172,7 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 			String tableName = statementDetails.getMutatingTableDetails().getTableName();
 			String[] keyColumnNames = buildKeyColumnNames();
 			EntityKeyMetadata keyMetadata = new DefaultEntityKeyMetadata( tableName, keyColumnNames );
-			EntityKey entityKey = buildEntityKey( valueBindings, tableName, keyColumnNames, keyMetadata );
+			EntityKey entityKey = JdbcOgmMapper.buildEntityKey( valueBindings, tableName, keyColumnNames, keyMetadata, session );
 			
 			TupleTypeContext tupleTypeContext = buildTupleTypeContext( optionsService );
 			TupleContext operationContext = new TupleContextImpl( tupleTypeContext, TransactionContextHelper.transactionContext( session ) );
@@ -211,7 +211,7 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 			else if ( mutationType == MutationType.UPDATE ) {
 				TuplePointer tuplePointer = getSharedTuplePointer( entityKey, modelReference, session, dialect, operationContext );
 				
-				updateTuple( valueBindings, tableName, tuplePointer.getTuple() );
+				JdbcOgmMapper.updateTuple( valueBindings, tableName, tuplePointer.getTuple(), session );
 				
 				dialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
 				
@@ -222,7 +222,7 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 				// Insert the tuple
 				Tuple tuple = dialect.createTuple( entityKey, operationContext );
 				
-				updateTuple( valueBindings, tableName, tuple );
+				JdbcOgmMapper.updateTuple( valueBindings, tableName, tuple, session );
 				
 				TuplePointer tuplePointer = saveSharedTuple( modelReference, tuple, session );
 				
@@ -251,12 +251,6 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 				statementDetails.releaseStatement( session );
 			}
 			valueBindings.afterStatement( tableDetails );
-		}
-	}
-
-	private void updateTuple(JdbcValueBindings valueBindings, String tableName, Tuple tuple) {
-		for (Binding binding : valueBindings.getBindingGroup( tableName ).getBindings()) {
-			tuple.put( binding.getColumnName(), binding.getValue() );
 		}
 	}
 
@@ -297,23 +291,6 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 		}
 		
 		return columnNames;
-	}
-
-	private EntityKey buildEntityKey(
-			JdbcValueBindings valueBindings,
-			String tableName,
-			String[] keyColumnNames,
-			EntityKeyMetadata keyMetadata) {
-		Object[] keyValues = new Object[keyColumnNames.length];
-		for (Binding binding : valueBindings.getBindingGroup( tableName ).getBindings()) {
-			for ( int i=0; i<keyColumnNames.length; i++) {
-				if (keyColumnNames[i].equals( binding .getColumnName())) {
-					keyValues[i] = binding.getValue();
-				}
-			}
-		}
-
-		return new EntityKey( keyMetadata, keyValues );
 	}
 
 	@Override

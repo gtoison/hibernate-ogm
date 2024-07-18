@@ -7,6 +7,7 @@
 package org.hibernate.ogm.dialect.spi;
 
 import org.hibernate.LockMode;
+import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.dialect.lock.LockingStrategy;
 import org.hibernate.ogm.entityentry.impl.TuplePointer;
 import org.hibernate.ogm.model.key.spi.AssociationKey;
@@ -15,10 +16,12 @@ import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.model.spi.Association;
 import org.hibernate.ogm.model.spi.Tuple;
+import org.hibernate.ogm.type.descriptor.jdbc.UUIDStringJdbcType;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.util.Experimental;
 import org.hibernate.persister.entity.Lockable;
 import org.hibernate.service.Service;
+import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 
 /**
@@ -165,6 +168,10 @@ public interface GridDialect extends Service {
 	@Experimental( "Custom types including the GridType contract will be re-visited after OGM 4.1.0.Final." )
 	GridType overrideType(Type type);
 
+	default void contributeTypes(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
+		typeContributions.contributeJdbcType( UUIDStringJdbcType.INSTANCE );
+	}
+	
 	/**
 	 * A consumer is called for each tuple matching the selected {@link EntityKeyMetadata}. The tuples must be of the
 	 * same indexed type.

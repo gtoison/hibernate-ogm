@@ -12,17 +12,13 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.ogm.OgmSessionFactory;
 import org.hibernate.ogm.cfg.OgmConfiguration;
 import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.spi.Tuple;
-import org.hibernate.ogm.type.spi.GridType;
-import org.hibernate.ogm.type.spi.TypeTranslator;
 import org.hibernate.ogm.utils.OgmTestCase;
 import org.hibernate.ogm.utils.TestHelper;
-import org.hibernate.type.StandardBasicTypes;
 import org.junit.Test;
 
 /**
@@ -122,12 +118,8 @@ public class JpaAttributeConverterTest extends OgmTestCase {
 	}
 
 	private EntityKey getPrinterEntityKey(UUID id) {
-		GridType uuidType = ( (SessionFactoryImplementor) sessionFactory ).getServiceRegistry().
-				getService( TypeTranslator.class ).
-				getType( StandardBasicTypes.UUID_BINARY );
-
 		Tuple dummy = new Tuple();
-		uuidType.nullSafeSet( dummy, id, new String[] { "id" }, null );
+		dummy.put( "id", id.toString() );
 
 		return new EntityKey(
 				new DefaultEntityKeyMetadata( "Printer", new String[] { "id" } ),
