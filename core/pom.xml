@@ -28,12 +28,23 @@
             <artifactId>hibernate-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-processor</artifactId>
+            <!-- "provided" is used as "compile-only" here; It's NOT needed at runtime -->
+            <!--<scope>provided</scope>-->
+        </dependency>
+        <dependency>
             <groupId>org.hibernate.common</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate.search</groupId>
             <artifactId>hibernate-search-mapper-orm</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.search</groupId>
+            <artifactId>hibernate-search-v5migrationhelper-engine</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

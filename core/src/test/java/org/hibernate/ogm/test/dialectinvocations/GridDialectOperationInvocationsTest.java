@@ -36,7 +36,7 @@ public class GridDialectOperationInvocationsTest extends AbstractGridDialectOper
 
 		// insert
 		StockItem item = new StockItem();
-		item.setId( "item-1" );
+		item.setId( "item-2" );
 		item.setItemName( "Fairway Wood 19°" );
 		item.setCount( 25 );
 		session.persist( item );
@@ -108,7 +108,7 @@ public class GridDialectOperationInvocationsTest extends AbstractGridDialectOper
 
 		// insert
 		StockItem item = new StockItem();
-		item.setId( "item-1" );
+		item.setId( "item-3" );
 		item.setItemName( "Fairway Wood 19°" );
 		item.setCount( 25 );
 		session.persist( item );

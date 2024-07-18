@@ -11,8 +11,8 @@ import java.util.Map;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Environment;
+import org.hibernate.engine.jdbc.mutation.internal.MutationExecutorServiceInitiator;
 import org.hibernate.ogm.cfg.OgmProperties;
-import org.hibernate.ogm.cfg.impl.HibernateSearchIntegration;
 import org.hibernate.ogm.datastore.impl.DatastoreProviderInitiator;
 import org.hibernate.ogm.dialect.eventstate.impl.EventContextManagerInitiator;
 import org.hibernate.ogm.dialect.impl.GridDialectInitiator;
@@ -23,7 +23,7 @@ import org.hibernate.ogm.dialect.impl.OptimisticLockingAwareGridDialectInitiator
 import org.hibernate.ogm.dialect.impl.QueryableGridDialectInitiator;
 import org.hibernate.ogm.dialect.impl.StoredProcedureGridDialectInitiator;
 import org.hibernate.ogm.jdbc.impl.OgmConnectionProviderInitiator;
-import org.hibernate.ogm.jpa.impl.OgmMutableIdentifierGeneratorFactoryInitiator;
+import org.hibernate.ogm.jdbc.mutation.OgmMutationExecutorService;
 import org.hibernate.ogm.jpa.impl.OgmPersisterClassResolverInitiator;
 import org.hibernate.ogm.options.navigation.impl.OptionsServiceInitiator;
 import org.hibernate.ogm.service.impl.OgmConfigurationService;
@@ -61,8 +61,11 @@ public class OgmServiceRegistryInitializer implements ServiceContributor {
 		if ( !settings.containsKey( AvailableSettings.KEYWORD_AUTO_QUOTING_ENABLED ) ) {
 			serviceRegistryBuilder.applySetting( AvailableSettings.KEYWORD_AUTO_QUOTING_ENABLED, false );
 		}
+		
+		serviceRegistryBuilder.applySetting( MutationExecutorServiceInitiator.EXECUTOR_KEY, new OgmMutationExecutorService( settings ) );
 
-		HibernateSearchIntegration.resetProperties( serviceRegistryBuilder );
+		// TODO fix Hibernate Search integration
+		//HibernateSearchIntegration.resetProperties( serviceRegistryBuilder );
 
 		// serviceRegistryBuilder.addInitiator( OgmQueryTranslatorFactoryInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( OgmSessionFactoryServiceRegistryFactoryInitiator.INSTANCE );
@@ -74,7 +77,6 @@ public class OgmServiceRegistryInitializer implements ServiceContributor {
 		serviceRegistryBuilder.addInitiator( OgmJdbcServicesInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( DatastoreProviderInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( OptionsServiceInitiator.INSTANCE );
-		serviceRegistryBuilder.addInitiator( OgmMutableIdentifierGeneratorFactoryInitiator.INSTANCE );
 		serviceRegistryBuilder.addInitiator( EventContextManagerInitiator.INSTANCE );
 
 		serviceRegistryBuilder.addInitiator( GridDialectInitiator.INSTANCE );

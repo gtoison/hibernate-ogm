@@ -12,7 +12,6 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.id.impl.OgmIdentityColumnSupport;
-import org.hibernate.ogm.query.spi.sqm.OgmSqlAstTranslatorFactory;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.sql.ast.SqlAstTranslatorFactory;
@@ -52,6 +51,6 @@ public class OgmDialect extends Dialect {
 	
 	@Override
 	public SqlAstTranslatorFactory getSqlAstTranslatorFactory() {
-		return new OgmSqlAstTranslatorFactory();
+		return super.getSqlAstTranslatorFactory();
 	}
 }

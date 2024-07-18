@@ -24,11 +24,11 @@ import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.options.spi.AnnotationConverter;
 import org.hibernate.service.spi.ServiceException;
 import org.jboss.logging.BasicLogger;
-import org.jboss.logging.Cause;
-import org.jboss.logging.FormatWith;
-import org.jboss.logging.LogMessage;
-import org.jboss.logging.Message;
-import org.jboss.logging.MessageLogger;
+import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.FormatWith;
+import org.jboss.logging.annotations.LogMessage;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageLogger;
 
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.SystemException;

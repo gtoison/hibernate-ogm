@@ -47,11 +47,6 @@ public class OgmJdbcServicesInitiator implements StandardServiceInitiator<JdbcSe
 		public JdbcServicesImpl delegate = new JdbcServicesImpl();
 
 		@Override
-		public JdbcSelectExecutor getJdbcSelectExecutor() {
-			return new OgmJdbcSelectExecutorImpl();
-		}
-		
-		@Override
 		public void configure(Map configurationValues) {
 			configurationValues.put( "hibernate.temp.use_jdbc_metadata_defaults", Boolean.FALSE );
 			delegate.configure( configurationValues );
