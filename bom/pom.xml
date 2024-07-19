@@ -38,8 +38,8 @@
         <version.net.bytebuddy>1.14.12</version.net.bytebuddy>
         <version.org.hibernate.hql>1.5.0.Final</version.org.hibernate.hql>
         <version.org.antlr>3.4</version.org.antlr>
-        <version.org.parboiled>1.1.8</version.org.parboiled> <!-- needs to be aligned with Neo4j version but is also used for MongoDB -->
-        <version.org.ow2.asm>6.0</version.org.ow2.asm> <!-- used for Parboiled and Neo4j -->
+        <version.org.parboiled>1.4.1</version.org.parboiled> <!-- needs to be aligned with Neo4j version but is also used for MongoDB -->
+        <version.org.ow2.asm>9.2</version.org.ow2.asm> <!-- used for Parboiled and Neo4j -->
 
         <!--
             These dependencies should be aligned with the ones from the WildFly version we support
