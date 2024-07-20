@@ -26,6 +26,7 @@ import org.hibernate.ogm.datastore.spi.DatastoreConfiguration;
 import org.hibernate.ogm.engine.spi.OgmSessionFactoryImplementor;
 import org.hibernate.ogm.exception.NotSupportedException;
 import org.hibernate.ogm.options.navigation.GlobalContext;
+import org.hibernate.ogm.query.impl.OgmQuerySqmImpl;
 import org.hibernate.ogm.storedprocedure.impl.NoSQLProcedureCallMemento;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
@@ -33,9 +34,14 @@ import org.hibernate.procedure.ProcedureCall;
 import org.hibernate.procedure.internal.NoSQLProcedureCallImpl;
 import org.hibernate.procedure.spi.NamedCallableQueryMemento;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
+import org.hibernate.query.spi.HqlInterpretation;
+import org.hibernate.query.spi.QueryEngine;
+import org.hibernate.query.spi.QueryImplementor;
+import org.hibernate.query.sqm.internal.QuerySqmImpl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.criteria.CriteriaQuery;
 
 /**
  * An OGM specific session implementation which delegates most of the work to the underlying Hibernate ORM {@code Session},
@@ -184,6 +190,45 @@ public class OgmSessionImpl extends SessionDelegatorBaseImpl implements OgmSessi
 	@Override
 	public SimpleNaturalIdLoadAccess bySimpleNaturalId(String entityName) {
 		throw new UnsupportedOperationException( "OGM-589 - Natural id look-ups are not yet supported" );
+	}
+	
+	@Override
+	public QueryImplementor createQuery(String queryString) {
+		return createQuery( queryString, null );
+	}
+	
+	@Override
+	public <T> QueryImplementor<T> createQuery(String queryString, Class<T> expectedResultType) {
+		checkOpen();
+		// pulseTransactionCoordinator(); // TODO need to check what these do
+		// delayedAfterCompletion();
+
+		try {
+			final HqlInterpretation<T> interpretation = interpretHql( queryString, expectedResultType );
+			final QuerySqmImpl<T> query = new OgmQuerySqmImpl<>( queryString, interpretation, expectedResultType, this );
+//			applyQuerySettingsAndHints( query ); TODO this is needed for locks and timeouts
+			query.setComment( queryString );
+			return query;
+		}
+		catch (RuntimeException e) {
+			markForRollbackOnly();
+			throw getExceptionConverter().convert( e );
+		}
+	}
+	
+	protected <R> HqlInterpretation<R> interpretHql(String hql, Class<R> resultType) {
+		final QueryEngine queryEngine = getFactory().getQueryEngine();
+		return queryEngine.getInterpretationCache()
+				.resolveHqlInterpretation(
+						hql,
+						resultType,
+						queryEngine.getHqlTranslator()
+				);
+	}
+	
+	@Override
+	public <T> QueryImplementor<T> createQuery(CriteriaQuery<T> criteriaQuery) {
+		return super.createQuery( criteriaQuery );
 	}
 
 	@Override

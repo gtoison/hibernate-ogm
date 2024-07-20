@@ -21,6 +21,7 @@ public class StockItem {
 	private int count;
 
 	@Id
+	@Column(name = "_id") // TODO make this implicit for MongoDB?
 	public String getId() {
 		return id;
 	}

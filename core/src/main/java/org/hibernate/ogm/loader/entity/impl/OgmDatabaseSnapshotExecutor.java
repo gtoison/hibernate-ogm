@@ -25,6 +25,7 @@ import org.hibernate.ogm.dialect.impl.TupleContextImpl;
 import org.hibernate.ogm.dialect.impl.TupleTypeContextImpl;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.dialect.spi.TupleContext;
+import org.hibernate.ogm.jdbc.impl.JdbcOgmMapper;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.options.spi.OptionsService;
@@ -204,7 +205,7 @@ public class OgmDatabaseSnapshotExecutor {
 		);
 		TupleContext tupleContext = new TupleContextImpl( tupleTypeContext, TransactionContextHelper.transactionContext( session ) );
 		
-		EntityKey entityKey = OgmSingleIdLoadPlan.extractKey( id, session, entityDescriptor.getIdentifierMapping() );
+		EntityKey entityKey = JdbcOgmMapper.extractKey( id, session, entityDescriptor.getIdentifierMapping() );
 		Tuple tuple = gridDialect.getTuple( entityKey, tupleContext );
 		
 		List<SqlSelection> sqlSelections = OgmSingleIdLoadPlan.extractJdbcSelections( session, jdbcSelect );

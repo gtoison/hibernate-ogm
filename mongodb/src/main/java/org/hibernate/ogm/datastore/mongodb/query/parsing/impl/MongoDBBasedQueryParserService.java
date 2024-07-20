@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.datastore.mongodb.query.parsing.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 
 import org.hibernate.SessionFactory;
@@ -14,11 +15,12 @@ import org.hibernate.hql.QueryParser;
 import org.hibernate.hql.ast.spi.EntityNamesResolver;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.Log;
 import org.hibernate.ogm.datastore.mongodb.logging.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
 import org.hibernate.ogm.query.spi.BaseQueryParserService;
 import org.hibernate.ogm.query.spi.QueryParserService;
 import org.hibernate.ogm.query.spi.QueryParsingResult;
 import org.hibernate.ogm.service.impl.SessionFactoryEntityNamesResolver;
+import org.hibernate.query.spi.DomainQueryExecutionContext;
+import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
 
 
 /**
@@ -48,6 +50,16 @@ public class MongoDBBasedQueryParserService extends BaseQueryParserService {
 		throw new UnsupportedOperationException( "MongoDB does not support parameterized queries. Parameter values " +
 				"must be passed to the query parser." );
 	}
+	
+	@Override
+	public QueryParsingResult parseQuery(SessionFactoryImplementor sessionFactory, SqmSelectStatement<?> sqm,
+			DomainQueryExecutionContext executionContext) {
+		MongoDBSemanticQueryParser parser = new MongoDBSemanticQueryParser( sqm, executionContext );
+		
+		return parser.parseQuery( sessionFactory, sqm, executionContext );
+	}
+
+	
 
 	@Override
 	public boolean supportsParameters() {

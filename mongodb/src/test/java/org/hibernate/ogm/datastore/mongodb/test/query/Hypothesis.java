@@ -28,6 +28,7 @@ public class Hypothesis {
 	}
 
 	@Id
+	@Column(name = "_id")
 	public String getId() {
 		return id;
 	}

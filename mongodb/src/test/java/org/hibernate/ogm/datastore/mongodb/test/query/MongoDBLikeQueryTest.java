@@ -150,6 +150,19 @@ public class MongoDBLikeQueryTest extends OgmTestCase {
 		results = session.createQuery( "from Hypothesis h where h.description like '100%% scientia' escape '%'" ).list();
 		assertThat( results ).onProperty( "id" ).containsOnly( "7" );
 	}
+	
+	@Test
+	public void shouldApplyEquality() throws Exception {
+		List<Hypothesis> results = session.createQuery( "from Hypothesis h where h.position = 6", Hypothesis.class ).list();
+		assertThat( results ).onProperty( "id" ).containsOnly( "6" );
+	}
+	
+	@Test
+	public void shouldApplyNegation() throws Exception {
+		List<Hypothesis> results = session.createQuery( "from Hypothesis h where not h.position < 6", Hypothesis.class ).list();
+		assertThat( results ).onProperty( "id" ).containsOnly( "6", "7", "8" );
+	}
+	
 	@Override
 	protected Class<?>[] getAnnotatedClasses() {
 		return new Class<?>[] { Hypothesis.class };

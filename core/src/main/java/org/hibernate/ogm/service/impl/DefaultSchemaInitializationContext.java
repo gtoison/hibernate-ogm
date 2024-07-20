@@ -92,8 +92,9 @@ public class DefaultSchemaInitializationContext implements SchemaDefiner.SchemaD
 		Map<String, EntityPersister> entityPersisters = factory.getMetamodel().entityPersisters();
 
 		for ( Entry<String, EntityPersister> entityPersisterEntry : entityPersisters.entrySet() ) {
-			OgmEntityPersister entityPersister = (OgmEntityPersister) entityPersisterEntry.getValue();
-			mapping.put( entityPersister.getEntityKeyMetadata().getTable(), entityPersister.getMappedClass() );
+			EntityPersister entityPersister = entityPersisterEntry.getValue();
+			String tableName = entityPersister.getIdentifierTableDetails().getTableName();
+			mapping.put( tableName, entityPersister.getMappedClass() );
 		}
 
 		return mapping;

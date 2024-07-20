@@ -17,6 +17,7 @@ import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.sql.ast.SqlAstTranslatorFactory;
+import org.hibernate.sql.ast.spi.StandardSqlAstTranslatorFactory;
 
 /**
  * A pseudo {@link Dialect} implementation which exposes the current {@link GridDialect}.
@@ -53,7 +54,7 @@ public class OgmDialect extends Dialect {
 	
 	@Override
 	public SqlAstTranslatorFactory getSqlAstTranslatorFactory() {
-		return super.getSqlAstTranslatorFactory();
+		return new StandardSqlAstTranslatorFactory();
 	}
 	
 	@Override
