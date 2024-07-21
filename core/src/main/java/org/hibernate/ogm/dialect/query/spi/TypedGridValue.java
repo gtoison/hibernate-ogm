@@ -8,6 +8,7 @@ package org.hibernate.ogm.dialect.query.spi;
 
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.TypedValue;
+import org.hibernate.metamodel.mapping.MappingModelExpressible;
 import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.type.spi.TypeTranslator;
 
@@ -19,10 +20,10 @@ import org.hibernate.ogm.type.spi.TypeTranslator;
  */
 public class TypedGridValue {
 
-	private final GridType type;
+	private final MappingModelExpressible<?> type;
 	private final Object value;
 
-	public TypedGridValue(GridType type, Object value) {
+	public TypedGridValue(MappingModelExpressible<?> type, Object value) {
 		this.type = type;
 		this.value = value;
 	}
@@ -33,7 +34,7 @@ public class TypedGridValue {
 		return new TypedGridValue( gridType, backendValue );
 	}
 
-	public GridType getType() {
+	public MappingModelExpressible<?> getType() {
 		return type;
 	}
 

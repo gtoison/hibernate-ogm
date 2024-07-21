@@ -25,8 +25,6 @@ import org.hibernate.ogm.dialect.query.spi.BackendQuery;
 import org.hibernate.ogm.dialect.query.spi.ClosableIterator;
 import org.hibernate.ogm.dialect.query.spi.QueryParameters;
 import org.hibernate.ogm.dialect.query.spi.QueryableGridDialect;
-import org.hibernate.ogm.dialect.query.spi.RowSelection;
-import org.hibernate.ogm.dialect.query.spi.TypedGridValue;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.dialect.spi.TupleContext;
 import org.hibernate.ogm.entityentry.impl.OgmEntityEntryState;
@@ -166,11 +164,7 @@ public class OgmConcreteSqmSelectQueryPlan<R> extends ConcreteSqmSelectQueryPlan
 				EntityMetadataInformation entityMetaData = null;
 				BackendQuery<Serializable> query = new BackendQuery<Serializable>( (Serializable) dialectQuery.getQueryObject(), entityMetaData );
 				
-				RowSelection rowSelection = new RowSelection( jdbcSelect.getRowsToSkip(), jdbcSelect.getMaxRows() );
-				Map<String, TypedGridValue> namedParameters = Collections.emptyMap(); // TODO
-				List<TypedGridValue> positionalParameters = Collections.emptyList();
-				List<String> queryHints = Collections.emptyList();
-				QueryParameters queryParameters = new QueryParameters( rowSelection, namedParameters, positionalParameters, queryHints );
+				QueryParameters queryParameters = QueryParameters.fromJdbcParameterBindings( executionContext.getQueryParameterBindings(), queryOptions );
 				
 				// Query the tuples
 				TupleTypeContextImpl tupleTypeContext = new TupleTypeContextImpl(

@@ -7,6 +7,7 @@
 package org.hibernate.ogm.dialect.query.spi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,12 @@ import java.util.Map.Entry;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.TypedValue;
 import org.hibernate.ogm.type.spi.TypeTranslator;
+import org.hibernate.query.spi.QueryOptions;
+import org.hibernate.query.spi.QueryParameterBindings;
+import org.hibernate.sql.ast.tree.expression.JdbcParameter;
+import org.hibernate.sql.exec.spi.JdbcOperationQuerySelect;
+import org.hibernate.sql.exec.spi.JdbcParameterBinding;
+import org.hibernate.sql.exec.spi.JdbcParameterBindings;
 
 /**
  * Represents the parameters passed to a query. Modelled after {@code QueryParameters} in Hibernate ORM, providing only
@@ -34,6 +41,21 @@ public class QueryParameters {
 		this.namedParameters = namedParameters;
 		this.positionalParameters = positionalParameters;
 		this.queryHints = queryHints;
+	}
+	
+	public static QueryParameters fromJdbcParameterBindings(QueryParameterBindings queryBindings, QueryOptions queryOptions) {
+		RowSelection rowSelection = new RowSelection( queryOptions.getFirstRow(), queryOptions.getMaxRows() );
+		
+		Map<String, TypedGridValue> namedParameters = new HashMap<String, TypedGridValue>();
+		
+		
+		queryBindings.visitBindings( (parameter, binding) -> {
+			namedParameters.put( parameter.getName(), new TypedGridValue( binding.getType(), binding.getBindValue() ) );
+		});
+		
+		List<TypedGridValue> positionalParameters = Collections.emptyList();
+		
+		return new QueryParameters( rowSelection, namedParameters, positionalParameters, queryOptions.getDatabaseHints() );
 	}
 
 	public static QueryParameters fromOrmQueryParameters(org.hibernate.engine.spi.QueryParameters parameters, TypeTranslator typeTranslator, SessionFactoryImplementor sessionFactoryImplementor) {
