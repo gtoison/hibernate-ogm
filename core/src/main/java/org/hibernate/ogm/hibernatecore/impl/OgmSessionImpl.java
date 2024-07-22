@@ -27,12 +27,9 @@ import org.hibernate.ogm.engine.spi.OgmSessionFactoryImplementor;
 import org.hibernate.ogm.exception.NotSupportedException;
 import org.hibernate.ogm.options.navigation.GlobalContext;
 import org.hibernate.ogm.query.impl.OgmQuerySqmImpl;
-import org.hibernate.ogm.storedprocedure.impl.NoSQLProcedureCallMemento;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.procedure.ProcedureCall;
-import org.hibernate.procedure.internal.NoSQLProcedureCallImpl;
-import org.hibernate.procedure.spi.NamedCallableQueryMemento;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import org.hibernate.query.spi.HqlInterpretation;
 import org.hibernate.query.spi.QueryEngine;
@@ -89,50 +86,6 @@ public class OgmSessionImpl extends SessionDelegatorBaseImpl implements OgmSessi
 	@Override
 	public void doWork(Work work) throws HibernateException {
 		throw new IllegalStateException( "Hibernate OGM does not support SQL Connections hence no Work" );
-	}
-
-	@Override
-	public ProcedureCall getNamedProcedureCall(String name) {
-		final NamedCallableQueryMemento memento = getFactory().getQueryEngine()
-				.getNamedObjectRepository()
-				.getCallableQueryMemento( name );
-		
-		if ( memento == null ) {
-			throw new IllegalArgumentException(
-					"Could not find named stored procedure call with that registration name : " + name
-			);
-		}
-		return new NoSQLProcedureCallImpl( this, new NoSQLProcedureCallMemento( memento ) );
-	}
-
-	@Override
-	public ProcedureCall createStoredProcedureCall(String procedureName) {
-		return new NoSQLProcedureCallImpl( this, procedureName );
-	}
-
-	@Override
-	public ProcedureCall createStoredProcedureCall(String procedureName, Class... resultClasses) {
-		return new NoSQLProcedureCallImpl( this, procedureName, resultClasses );
-	}
-
-	@Override
-	public ProcedureCall createStoredProcedureCall(String procedureName, String... resultSetMappings) {
-		return new NoSQLProcedureCallImpl( this, procedureName, resultSetMappings );
-	}
-
-	@Override
-	public ProcedureCall createNamedStoredProcedureQuery(String name) {
-		checkOpen();
-		final NamedCallableQueryMemento memento = getFactory().getQueryEngine()
-				.getNamedObjectRepository()
-				.getCallableQueryMemento( name );
-
-		if ( memento == null ) {
-			throw new IllegalArgumentException( "No @NamedStoredProcedureQuery was found with that name : " + name );
-		}
-
-		NoSQLProcedureCallMemento nosqlMemento = new NoSQLProcedureCallMemento( memento );
-		return nosqlMemento.makeProcedureCall( this );
 	}
 
 	@Override

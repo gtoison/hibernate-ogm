@@ -22,10 +22,6 @@ public class RowSelection {
 		this.maxRows = maxRows;
 	}
 
-	public static RowSelection fromOrmRowSelection(org.hibernate.engine.spi.RowSelection rowSelection) {
-		return new RowSelection( rowSelection.getFirstRow(), rowSelection.getMaxRows() );
-	}
-
 	public Integer getFirstRow() {
 		return firstRow;
 	}

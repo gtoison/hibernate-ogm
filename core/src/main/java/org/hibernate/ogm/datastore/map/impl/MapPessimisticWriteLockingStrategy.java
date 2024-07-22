@@ -14,12 +14,11 @@ import org.hibernate.dialect.lock.LockingStrategy;
 import org.hibernate.dialect.lock.LockingStrategyException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.event.spi.EventSource;
+import org.hibernate.metamodel.mapping.ValuedModelPart;
 import org.hibernate.ogm.datastore.spi.DatastoreProvider;
 import org.hibernate.ogm.model.impl.EntityKeyBuilder;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.persister.impl.OgmEntityPersister;
-import org.hibernate.ogm.type.spi.GridType;
-import org.hibernate.ogm.type.spi.TypeTranslator;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
 import org.hibernate.persister.entity.EntityPersister;
@@ -34,15 +33,14 @@ public class MapPessimisticWriteLockingStrategy implements LockingStrategy {
 
 	protected final EntityPersister lockable;
 	protected final LockMode lockMode;
-	protected final GridType identifierGridType;
+	protected final ValuedModelPart identifierGridType;
 
 	private volatile MapDatastoreProvider provider;
 
 	public MapPessimisticWriteLockingStrategy(EntityPersister lockable, LockMode lockMode) {
 		this.lockable = lockable;
 		this.lockMode = lockMode;
-		TypeTranslator typeTranslator = lockable.getFactory().getServiceRegistry().getService( TypeTranslator.class );
-		this.identifierGridType = typeTranslator.getType( lockable.getIdentifierType() );
+		this.identifierGridType = lockable.getIdentifierMapping();
 	}
 	
 	@Override

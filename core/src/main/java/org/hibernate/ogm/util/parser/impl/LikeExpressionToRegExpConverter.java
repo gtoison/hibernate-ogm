@@ -8,11 +8,11 @@ package org.hibernate.ogm.util.parser.impl;
 
 import java.util.regex.Pattern;
 
-import org.hibernate.ogm.query.spi.predicate.LikePredicate;
+import org.hibernate.query.sqm.tree.predicate.SqmLikePredicate;
 
 /**
  * Creates {@link Pattern} objects equivalent to given HQL/JPQL {@code LIKE} expressions. Used by
- * {@link LikePredicate} implementations to emulate {@code LIKE} predicates via a native regexp operator.
+ * {@link SqmLikePredicate} implementations to emulate {@code LIKE} predicates via a native regexp operator.
  * <p>
  * The following rules apply for creating regular expressions:
  * <ul>

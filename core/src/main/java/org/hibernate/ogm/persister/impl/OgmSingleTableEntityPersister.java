@@ -6,6 +6,8 @@
  */
 package org.hibernate.ogm.persister.impl;
 
+import java.util.Map;
+
 import org.hibernate.HibernateException;
 import org.hibernate.cache.spi.access.EntityDataAccess;
 import org.hibernate.cache.spi.access.NaturalIdDataAccess;
@@ -20,6 +22,7 @@ import org.hibernate.ogm.dialect.impl.TupleTypeContextImpl;
 import org.hibernate.ogm.dialect.spi.TupleTypeContext;
 import org.hibernate.ogm.loader.entity.impl.OgmSingleIdEntityLoader;
 import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
+import org.hibernate.ogm.model.key.spi.AssociationKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.hibernate.query.named.NamedQueryMemento;
@@ -31,6 +34,7 @@ import org.hibernate.query.named.NamedQueryMemento;
 public class OgmSingleTableEntityPersister extends SingleTableEntityPersister implements OgmEntityPersister {
 	private final PersistentClass persistentClass;
 	private final DefaultEntityKeyMetadata entityKeyMetadata;
+	private Map<String, AssociationKeyMetadata> inverseOneToOneAssociationKeyMetadata;
 	
 	private final boolean[] propertyMightBeMainSideOfBidirectionalAssociation;
 	private boolean mightManageInverseAssociations;
@@ -52,6 +56,7 @@ public class OgmSingleTableEntityPersister extends SingleTableEntityPersister im
 		
 		this.persistentClass = persistentClass;
 		this.entityKeyMetadata = new DefaultEntityKeyMetadata( getTableName(), getIdentifierColumnNames() );
+		this.inverseOneToOneAssociationKeyMetadata = initInverseOneToOneAssociationKeyMetadata();
 		
 		this.propertyMightBeMainSideOfBidirectionalAssociation = initPropertyMightBeMainSideOfBidirectionalAssociation( persistentClass );
 		this.mightManageInverseAssociations = initMightManageInverseAssociations();
@@ -101,6 +106,11 @@ public class OgmSingleTableEntityPersister extends SingleTableEntityPersister im
 	@Override
 	public EntityKeyMetadata getEntityKeyMetadata() {
 		return entityKeyMetadata;
+	}
+	
+	@Override
+	public AssociationKeyMetadata getInverseOneToOneAssociationKeyMetadata(String propertyName) {
+		return inverseOneToOneAssociationKeyMetadata.get( propertyName );
 	}
 	
 	@Override

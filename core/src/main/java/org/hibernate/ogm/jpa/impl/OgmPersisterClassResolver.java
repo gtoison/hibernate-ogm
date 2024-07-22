@@ -10,7 +10,6 @@ import org.hibernate.mapping.Collection;
 import org.hibernate.ogm.persister.impl.OgmBasicCollectionPersister;
 import org.hibernate.ogm.persister.impl.OgmCollectionPersister;
 import org.hibernate.ogm.persister.impl.OgmSingleTableEntityPersister;
-import org.hibernate.ogm.persister.impl.UnionSubclassOgmEntityPersister;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.persister.internal.StandardPersisterClassResolver;
@@ -35,7 +34,7 @@ public class OgmPersisterClassResolver extends StandardPersisterClassResolver im
 
 	@Override
 	public Class<? extends EntityPersister> unionSubclassEntityPersister() {
-		return OgmUnionSubclassEntityPersister.class;
+		throw new UnsupportedOperationException( "Union subclasses strategy not supported" );
 	}
 
 	@Override
@@ -44,7 +43,7 @@ public class OgmPersisterClassResolver extends StandardPersisterClassResolver im
 	}
 
 	private Class<OgmCollectionPersister> oneToManyPersister() {
-		return OgmOneToManyPersister.class;
+		throw new UnsupportedOperationException( "One to many not supported" );
 	}
 
 	private Class<OgmBasicCollectionPersister> basicCollectionPersister() {

@@ -9,6 +9,7 @@ package org.hibernate.ogm.persister.impl;
 import static org.hibernate.ogm.util.impl.CollectionHelper.newHashMap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 import org.hibernate.bytecode.enhance.spi.LazyPropertyInitializer;
 import org.hibernate.engine.profile.internal.FetchProfileAffectee;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.PostInsertIdentityPersister;
 import org.hibernate.mapping.PersistentClass;
@@ -27,7 +29,10 @@ import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.dialect.spi.TupleContext;
 import org.hibernate.ogm.dialect.spi.TupleTypeContext;
 import org.hibernate.ogm.model.impl.DefaultAssociatedEntityKeyMetadata;
+import org.hibernate.ogm.model.impl.DefaultAssociationKeyMetadata;
 import org.hibernate.ogm.model.key.spi.AssociatedEntityKeyMetadata;
+import org.hibernate.ogm.model.key.spi.AssociationKeyMetadata;
+import org.hibernate.ogm.model.key.spi.AssociationKind;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.model.spi.Association;
 import org.hibernate.ogm.options.spi.OptionsService;
@@ -42,6 +47,7 @@ import org.hibernate.type.AssociationType;
 import org.hibernate.type.CollectionType;
 import org.hibernate.type.ComponentType;
 import org.hibernate.type.EntityType;
+import org.hibernate.type.OneToOneType;
 import org.hibernate.type.Type;
 /**
  * Basic functionality for persisting an entity using OGM.
@@ -53,6 +59,13 @@ import org.hibernate.type.Type;
  */
 public interface OgmEntityPersister extends InFlightEntityMappingType, EntityMutationTarget, LazyPropertyInitializer, PostInsertIdentityPersister, FetchProfileAffectee, DeprecatedEntityStuff {
 	EntityKeyMetadata getEntityKeyMetadata();
+	
+	default EntityKeyMetadata getRootEntityKeyMetadata() {
+		//we only support single table and table per concrete class strategies
+		//in this case the root to lock to is the entity itself
+		//see its use in read locking strategy.
+		return getEntityKeyMetadata();
+	}
 	
 	default TupleTypeContextImpl createTupleTypeContext(ServiceRegistry serviceRegistry) {
 		OptionsService optionsService = serviceRegistry.getService( OptionsService.class );
@@ -86,6 +99,67 @@ public interface OgmEntityPersister extends InFlightEntityMappingType, EntityMut
 				getDiscriminatorValue()
 		);
 	}
+	
+	default Map<String, AssociationKeyMetadata> initInverseOneToOneAssociationKeyMetadata() {
+		Map<String, AssociationKeyMetadata> associationKeyMetadata = new HashMap<String, AssociationKeyMetadata>();
+		for ( String property : getPropertyNames() ) {
+			Type propertyType = getPropertyType( property );
+
+			if ( !propertyType.isEntityType() ) {
+				continue;
+			}
+
+			String[] propertyColumnNames = getPropertyColumnNames( getPropertyIndex( property ) );
+			String[] rowKeyColumnNames = buildRowKeyColumnNamesForStarToOne( this, propertyColumnNames );
+
+			OgmEntityPersister otherSidePersister = (OgmEntityPersister) ( (EntityType) propertyType ).getAssociatedJoinable( getFactory() );
+			String inverseOneToOneProperty = getInverseOneToOneProperty( property, otherSidePersister );
+
+			if ( inverseOneToOneProperty != null ) {
+				EntityKeyMetadata entityKeyMetadata = getEntityKeyMetadata();
+				AssociationKeyMetadata metadata = new DefaultAssociationKeyMetadata.Builder()
+						.table( getTableName() )
+						.columnNames( propertyColumnNames )
+						.rowKeyColumnNames( rowKeyColumnNames )
+						.entityKeyMetadata( otherSidePersister.getEntityKeyMetadata() )
+						.associatedEntityKeyMetadata( new DefaultAssociatedEntityKeyMetadata( entityKeyMetadata.getColumnNames(), entityKeyMetadata ) )
+						.inverse( true )
+						.collectionRole( inverseOneToOneProperty )
+						.associationKind( AssociationKind.ASSOCIATION )
+						.associationType( org.hibernate.ogm.model.key.spi.AssociationType.ONE_TO_ONE )
+						.build();
+
+				associationKeyMetadata.put( property, metadata );
+			}
+		}
+
+		return associationKeyMetadata;
+	}
+
+	/**
+	 * Returns the name from the inverse side if the given property de-notes a one-to-one association.
+	 */
+	private String getInverseOneToOneProperty(String property, OgmEntityPersister otherSidePersister) {
+		for ( String candidate : otherSidePersister.getPropertyNames() ) {
+			Type candidateType = otherSidePersister.getPropertyType( candidate );
+			if ( candidateType.isEntityType()
+					&& ( ( (EntityType) candidateType ).isOneToOne()
+					&& isOneToOneMatching( this, property, (OneToOneType) candidateType ) ) ) {
+				return candidate;
+			}
+		}
+
+		return null;
+	}
+
+	private static boolean isOneToOneMatching(OgmEntityPersister mainSidePersister, String mainSideProperty, OneToOneType inversePropertyType) {
+		SessionFactoryImplementor factory = mainSidePersister.getFactory();
+		String associatedProperty = inversePropertyType.getRHSUniqueKeyPropertyName();
+
+		// If that's a OneToOne check the associated property name and see if it matches where we come from
+		return mainSidePersister == inversePropertyType.getAssociatedJoinable( factory ) && mainSideProperty.equals( associatedProperty );
+	}
+
 	
 	private static List<String> selectableColumnNames(final OgmEntityPersister persister, final String discriminatorColumnName, GridDialect gridDialect) {
 		Set<String> columnNames = new HashSet<String>();
@@ -277,6 +351,8 @@ public interface OgmEntityPersister extends InFlightEntityMappingType, EntityMut
 	 * @return the tupleTypeContext
 	 */
 	TupleTypeContext getTupleTypeContext();
+	
+	AssociationKeyMetadata getInverseOneToOneAssociationKeyMetadata(String propertyName);
 
 	/**
 	 * Returns the {@link TupleContext}.
@@ -286,6 +362,18 @@ public interface OgmEntityPersister extends InFlightEntityMappingType, EntityMut
 	 */
 	default TupleContext getTupleContext(SharedSessionContractImplementor session) {
 		return new TupleContextImpl( getTupleTypeContext(), TransactionContextHelper.transactionContext( session ) );
+	}
+
+	// Here the RowKey is made of the foreign key columns pointing to the associated entity
+	// and the identifier columns of the owner's entity
+	// We use the same order as the collection: id column names, foreign key column names
+	private String[] buildRowKeyColumnNamesForStarToOne(OgmEntityPersister persister, String[] keyColumnNames) {
+		String[] identifierColumnNames = persister.getIdentifierColumnNames();
+		int length = identifierColumnNames.length + keyColumnNames.length;
+		String[] rowKeyColumnNames = new String[length];
+		System.arraycopy( identifierColumnNames, 0, rowKeyColumnNames, 0, identifierColumnNames.length );
+		System.arraycopy( keyColumnNames, 0, rowKeyColumnNames, identifierColumnNames.length, keyColumnNames.length );
+		return rowKeyColumnNames;
 	}
 	
 	default int getPropertySpan() {

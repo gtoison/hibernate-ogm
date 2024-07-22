@@ -229,7 +229,8 @@ public class EntityAssociationUpdater {
 	private Object getReferencedEntity(int propertyIndex) {
 		Object referencedEntity = null;
 
-		GridType propertyType = persister.getGridPropertyTypes()[propertyIndex];
+		// TODO implement this
+		GridType propertyType = null;// persister.getGridPropertyTypes()[propertyIndex];
 		Object id = propertyType.hydrate(
 				resultset, persister.getPropertyColumnNames( propertyIndex ), session, null
 		);
@@ -272,7 +273,10 @@ public class EntityAssociationUpdater {
 		}
 
 		// add the id column
-		persister.getGridIdentifierType().nullSafeSet( rowKeyValues, id, persister.getIdentifierColumnNames(), session );
+		if (true) {
+			throw new UnsupportedOperationException( "TODO Not implemented" );
+		}
+		//persister.getGridIdentifierType().nullSafeSet( rowKeyValues, id, persister.getIdentifierColumnNames(), session );
 
 		return new RowKeyBuilder()
 			.addColumns( associationKeyMetadata.getRowKeyColumnNames() )

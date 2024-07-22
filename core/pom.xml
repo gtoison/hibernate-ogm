@@ -113,6 +113,103 @@
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
+                
+                <configuration>
+                	<excludes>
+                		<exclude>**\massindex\impl\**</exclude>
+                		<exclude>**/parsing/impl/**</exclude>
+                		
+                		<exclude>**/cfg/impl/HibernateSearchIntegration.java</exclude>
+                		
+                		<exclude>**/hibernatecore/impl/BackendCustomLoader.java</exclude>
+                		
+                		<exclude>**/jpa/impl/OgmMutableIdentifierGeneratorFactory.java</exclude>
+                		
+                		<exclude>**/query/impl/FullTextSearchQueryTranslator.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQueryInterpreter.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQueryPlan.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQuerySpefication.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQuerySpecification.java</exclude>
+                		<exclude>**/query/impl/OGMOrderByParser.java</exclude>
+                		<exclude>**/query/impl/OGMOrderByRendered.java</exclude>
+                		<exclude>**/query/impl/OgmQueryLoader.java</exclude>
+                		<exclude>**/query/impl/OgmQueryTranslator.java</exclude>
+                		
+                		<exclude>**/loader/entity/impl/BatchingEntityLoader.java</exclude>
+                		<exclude>**/loader/entity/impl/BatchingEntityLoaderBuilder.java</exclude>
+                		<exclude>**/loader/entity/impl/DynamicBatchingEntityLoaderBuilder.java</exclude>
+                		<exclude>**/loader/entity/impl/OgmBatchableEntityLoaderBuilder.java</exclude>
+                		<exclude>**/loader/impl/OgmLoader.java</exclude>
+                		<exclude>**/loader/impl/OgmBasicCollectionLoader.java</exclude>
+                		<exclude>**/loader/impl/OgmColumnCollectionAliases.java</exclude>
+                		
+                		<exclude>**/loader/nativeloader/**</exclude>
+                		
+                		<exclude>**/persister/impl/SingleTableOgmEntityPersister.java</exclude>
+                		<exclude>**/persister/impl/UnionSubclassOgmEntityPersister.java</exclude>
+                		
+                		<exclude>**/type/impl/**</exclude>
+                		
+                		<exclude>**/util/impl/CustomLoaderHelper.java</exclude>
+                		
+                		<exclude>**/storedprocedure/impl/**</exclude>
+                		<exclude>**/procedure/internal/NoSQLProcedureCallImpl.java</exclude>
+                	</excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                	<excludes>
+                		<exclude>**\massindex\impl\**</exclude>
+                		<exclude>**/parsing/impl/**</exclude>
+                		
+                		<exclude>**/cfg/impl/HibernateSearchIntegration.java</exclude>
+                		
+                		<exclude>**/hibernatecore/impl/BackendCustomLoader.java</exclude>
+                		
+                		<exclude>**/jpa/impl/OgmMutableIdentifierGeneratorFactory.java</exclude>
+                		
+                		<exclude>**/query/impl/FullTextSearchQueryTranslator.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQueryInterpreter.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQueryPlan.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQuerySpefication.java</exclude>
+                		<exclude>**/query/impl/NativeNoSqlQuerySpecification.java</exclude>
+                		<exclude>**/query/impl/OGMOrderByParser.java</exclude>
+                		<exclude>**/query/impl/OGMOrderByRendered.java</exclude>
+                		<exclude>**/query/impl/OgmQueryLoader.java</exclude>
+                		<exclude>**/query/impl/OgmQueryTranslator.java</exclude>
+                		
+                		<exclude>**/loader/entity/impl/BatchingEntityLoader.java</exclude>
+                		<exclude>**/loader/entity/impl/BatchingEntityLoaderBuilder.java</exclude>
+                		<exclude>**/loader/entity/impl/DynamicBatchingEntityLoaderBuilder.java</exclude>
+                		<exclude>**/loader/entity/impl/OgmBatchableEntityLoaderBuilder.java</exclude>
+                		<exclude>**/loader/impl/OgmLoader.java</exclude>
+                		<exclude>**/loader/impl/OgmBasicCollectionLoader.java</exclude>
+                		<exclude>**/loader/impl/OgmColumnCollectionAliases.java</exclude>
+                		
+                		<exclude>**/loader/nativeloader/**</exclude>
+                		
+                		<exclude>**/persister/impl/SingleTableOgmEntityPersister.java</exclude>
+                		<exclude>**/persister/impl/UnionSubclassOgmEntityPersister.java</exclude>
+                		
+                		<exclude>**/type/impl/**</exclude>
+                		
+                		<exclude>**/util/impl/CustomLoaderHelper.java</exclude>
+                		
+                		<exclude>**/storedprocedure/impl/**</exclude>
+                		<exclude>**/procedure/internal/NoSQLProcedureCallImpl.java</exclude>
+                	</excludes>
+                	
+                	<testExcludes>
+                		<exclude>**/backendtck/loader/LoaderFromTupleTest.java</exclude>
+                		<exclude>**/descriptor/StringDateTypeDescriptorTest.java</exclude>
+                		<exclude>**/storedprocedures/**</exclude>
+                		<exclude>**/type/**</exclude>
+                		<exclude>**/utils/parser/MapBasedEntityNamesResolver.java</exclude>
+                	</testExcludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

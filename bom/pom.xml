@@ -95,7 +95,7 @@
 
         <!-- Maven plugins versions -->
 
-        <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
+        <version.buildhelper.plugin>3.4.0</version.buildhelper.plugin>
 
         <!-- Repository Deployment URLs -->
 
