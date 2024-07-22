@@ -8,10 +8,9 @@ package org.hibernate.ogm.util.impl;
 
 import static org.hibernate.ogm.util.impl.TransactionContextHelper.transactionContext;
 
-import java.io.Serializable;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.mapping.ValuedModelPart;
 import org.hibernate.ogm.dialect.batch.spi.GroupingByEntityDialect;
 import org.hibernate.ogm.dialect.impl.AssociationContextImpl;
 import org.hibernate.ogm.dialect.impl.GridDialects;
@@ -26,7 +25,6 @@ import org.hibernate.ogm.model.key.spi.AssociationKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.spi.Association;
 import org.hibernate.ogm.persister.impl.OgmEntityPersister;
-import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.persister.entity.EntityPersister;
 
 /**
@@ -40,7 +38,7 @@ import org.hibernate.persister.entity.EntityPersister;
  * @author Gunnar Morling
  */
 public class AssociationPersister {
-	private GridType keyGridType;
+	private ValuedModelPart keyGridType;
 	private Object key;
 	private SharedSessionContractImplementor session;
 	private AssociationKey associationKey;
@@ -79,7 +77,7 @@ public class AssociationPersister {
 
 		public AssociationKeyMetadata associationKeyMetadata;
 		public AssociationTypeContext associationTypeContext;
-		public GridType keyGridType;
+		public ValuedModelPart keyGridType;
 		public Object key;
 		public SharedSessionContractImplementor session;
 		public GridDialect gridDialect;
@@ -103,7 +101,7 @@ public class AssociationPersister {
 
 		// one of the following two methods is to be invoked, not both
 
-		public Builder key(Object key, GridType keyGridType) {
+		public Builder key(Object key, ValuedModelPart keyGridType) {
 			this.key = key;
 			this.keyGridType = keyGridType;
 			return this;
@@ -144,7 +142,7 @@ public class AssociationPersister {
 			if ( key != null ) {
 				ownerEntityKey = EntityKeyBuilder.fromPersister(
 						(OgmEntityPersister) getHostingEntityPersister(),
-						(Serializable) key,
+						key,
 						session );
 			}
 			else {

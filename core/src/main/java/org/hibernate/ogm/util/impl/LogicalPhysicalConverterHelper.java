@@ -8,8 +8,8 @@ package org.hibernate.ogm.util.impl;
 
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.mapping.ValuedModelPart;
 import org.hibernate.ogm.model.spi.Tuple;
-import org.hibernate.ogm.type.spi.GridType;
 
 /**
  * Helper methods to convert an object value into its column values
@@ -27,11 +27,9 @@ public class LogicalPhysicalConverterHelper {
 		return columnValues;
 	}
 
-	public static Object[] getColumnsValuesFromObjectValue(Object uniqueKey, GridType gridUniqueKeyType, String[] propertyColumnNames,
+	public static Object[] getColumnsValuesFromObjectValue(Object uniqueKey, ValuedModelPart gridUniqueKeyType, String[] propertyColumnNames,
 			SharedSessionContractImplementor session) {
-		Tuple tempResultset = new Tuple();
-		gridUniqueKeyType.nullSafeSet( tempResultset, uniqueKey, propertyColumnNames, session ) ;
-		Object[] columnValuesFromResultset = LogicalPhysicalConverterHelper.getColumnValuesFromResultset( tempResultset, propertyColumnNames );
-		return columnValuesFromResultset;
+		// TODO handle multi column keys
+		return new Object[] {gridUniqueKeyType.getJdbcMapping( 0 ).convertToRelationalValue( uniqueKey )};
 	}
 }

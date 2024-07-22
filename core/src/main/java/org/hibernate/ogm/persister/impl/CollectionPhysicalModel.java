@@ -51,7 +51,11 @@ public interface CollectionPhysicalModel extends CollectionPersister {
 	String getIdentifierColumnName();
 
 	//The following should really be moved somewhere else or the interface renamed
-	GridType getKeyGridType();
+	default GridType getKeyGridType() {
+		throw new UnsupportedOperationException( "to be removed" );
+	}
 
-	GridType getElementGridType();
+	default GridType getElementGridType() {
+		throw new UnsupportedOperationException( "to be removed" );
+	}
 }

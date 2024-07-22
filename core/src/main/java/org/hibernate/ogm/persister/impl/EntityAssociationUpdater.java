@@ -40,7 +40,7 @@ import org.hibernate.pretty.MessageHelper;
  * @author Gunnar Morling
  * @author Emmanuel Bernard
  */
-class EntityAssociationUpdater {
+public class EntityAssociationUpdater {
 
 	private static final Log log = LoggerFactory.make( MethodHandles.lookup() );
 
@@ -53,7 +53,7 @@ class EntityAssociationUpdater {
 	private SharedSessionContractImplementor session;
 	private boolean[] propertyMightRequireInverseAssociationManagement;
 
-	EntityAssociationUpdater(OgmEntityPersister persister) {
+	public EntityAssociationUpdater(OgmEntityPersister persister) {
 		this.persister = persister;
 		this.gridDialect = persister.getFactory().getServiceRegistry().getService( GridDialect.class );
 	}

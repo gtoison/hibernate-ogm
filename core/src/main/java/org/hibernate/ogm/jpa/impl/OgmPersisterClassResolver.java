@@ -7,6 +7,7 @@
 package org.hibernate.ogm.jpa.impl;
 
 import org.hibernate.mapping.Collection;
+import org.hibernate.ogm.persister.impl.OgmBasicCollectionPersister;
 import org.hibernate.ogm.persister.impl.OgmCollectionPersister;
 import org.hibernate.ogm.persister.impl.OgmSingleTableEntityPersister;
 import org.hibernate.ogm.persister.impl.UnionSubclassOgmEntityPersister;
@@ -34,11 +35,19 @@ public class OgmPersisterClassResolver extends StandardPersisterClassResolver im
 
 	@Override
 	public Class<? extends EntityPersister> unionSubclassEntityPersister() {
-		return UnionSubclassOgmEntityPersister.class;
+		return OgmUnionSubclassEntityPersister.class;
 	}
 
 	@Override
 	public Class<? extends CollectionPersister> getCollectionPersisterClass(Collection metadata) {
-		return OgmCollectionPersister.class;
+		return metadata.isOneToMany() ? oneToManyPersister() : basicCollectionPersister();
+	}
+
+	private Class<OgmCollectionPersister> oneToManyPersister() {
+		return OgmOneToManyPersister.class;
+	}
+
+	private Class<OgmBasicCollectionPersister> basicCollectionPersister() {
+		return OgmBasicCollectionPersister.class;
 	}
 }

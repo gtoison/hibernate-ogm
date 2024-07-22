@@ -10,7 +10,6 @@ import static org.hibernate.sql.model.ModelMutationLogging.MODEL_MUTATION_LOGGER
 
 import java.lang.invoke.MethodHandles;
 import java.sql.SQLException;
-import java.util.Collections;
 
 import org.hibernate.engine.jdbc.mutation.JdbcValueBindings;
 import org.hibernate.engine.jdbc.mutation.OperationResultChecker;
@@ -26,25 +25,27 @@ import org.hibernate.generator.values.GeneratedValues;
 import org.hibernate.generator.values.GeneratedValuesMutationDelegate;
 import org.hibernate.metamodel.mapping.TableDetails.KeyDetails;
 import org.hibernate.ogm.compensation.impl.InvocationCollectingGridDialect;
-import org.hibernate.ogm.dialect.impl.TupleContextImpl;
-import org.hibernate.ogm.dialect.impl.TupleTypeContextImpl;
 import org.hibernate.ogm.dialect.spi.DuplicateInsertPreventionStrategy;
 import org.hibernate.ogm.dialect.spi.GridDialect;
 import org.hibernate.ogm.dialect.spi.TupleAlreadyExistsException;
 import org.hibernate.ogm.dialect.spi.TupleContext;
-import org.hibernate.ogm.dialect.spi.TupleTypeContext;
 import org.hibernate.ogm.entityentry.impl.OgmEntityEntryState;
 import org.hibernate.ogm.entityentry.impl.TuplePointer;
 import org.hibernate.ogm.jdbc.impl.JdbcOgmMapper;
-import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
+import org.hibernate.ogm.model.impl.RowKeyBuilder;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
+import org.hibernate.ogm.model.key.spi.RowKey;
 import org.hibernate.ogm.model.spi.Tuple;
-import org.hibernate.ogm.options.spi.OptionsService;
+import org.hibernate.ogm.persister.impl.EntityAssociationUpdater;
+import org.hibernate.ogm.persister.impl.OgmCollectionPersister;
+import org.hibernate.ogm.persister.impl.OgmEntityPersister;
+import org.hibernate.ogm.util.impl.AssociationPersister;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import org.hibernate.ogm.util.impl.TransactionContextHelper;
+import org.hibernate.persister.collection.mutation.CollectionMutationTarget;
 import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.persister.entity.mutation.EntityMutationTarget;
 import org.hibernate.persister.entity.mutation.EntityTableMapping;
 import org.hibernate.pretty.MessageHelper;
 import org.hibernate.service.ServiceRegistry;
@@ -66,6 +67,8 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 	
 	private final PreparedStatementGroupSingleTable statementGroup;
 	private final GeneratedValuesMutationDelegate generatedValuesDelegate;
+
+	private AssociationPersister associationPersister;
 
 	public OgmMutationExecutorSingleNonBatched(
 			PreparableMutationOperation mutationOperation,
@@ -164,77 +167,12 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 		try {
 			valueBindings.beforeStatement( statementDetails );
 
-			SessionFactoryImplementor factory = session.getSessionFactory();
-			ServiceRegistry serviceRegistry = factory.getServiceRegistry();
-			GridDialect dialect = serviceRegistry.getService( GridDialect.class );
-			OptionsService optionsService = serviceRegistry.getService( OptionsService.class );
-			
-			String tableName = statementDetails.getMutatingTableDetails().getTableName();
-			String[] keyColumnNames = buildKeyColumnNames();
-			EntityKeyMetadata keyMetadata = new DefaultEntityKeyMetadata( tableName, keyColumnNames );
-			EntityKey entityKey = JdbcOgmMapper.buildEntityKey( valueBindings, tableName, keyColumnNames, keyMetadata, session );
-			
-			TupleTypeContext tupleTypeContext = buildTupleTypeContext( optionsService );
-			TupleContext operationContext = new TupleContextImpl( tupleTypeContext, TransactionContextHelper.transactionContext( session ) );
-			MutationType mutationType = getMutationOperation().getMutationType();
-
-			// Check for duplicate if needed
-			if ( mutationType == MutationType.INSERT && dialect.getDuplicateInsertPreventionStrategy( keyMetadata ) == DuplicateInsertPreventionStrategy.LOOK_UP ) {
-				Tuple existingTuple = dialect.getTuple( entityKey, operationContext );
-
-				if ( existingTuple != null ) {
-					if ( dialect instanceof InvocationCollectingGridDialect ) {
-						InvocationCollectingGridDialect invocationCollectingGridDialect = (InvocationCollectingGridDialect) dialect;
-						try {
-							invocationCollectingGridDialect.onInsertOrUpdateTupleFailure( entityKey, existingTuple,
-									new TupleAlreadyExistsException(
-											entityKey ) );
-						} catch (TupleAlreadyExistsException taee) {
-							throw log.mustNotInsertSameEntityTwice( MessageHelper.infoString( (EntityPersister) getMutationOperation().getMutationTarget(), id, factory ),
-									taee );
-						}
-					}
-					else {
-						throw log.mustNotInsertSameEntityTwice( MessageHelper.infoString( (EntityPersister) getMutationOperation().getMutationTarget(), id, factory ), null );
-					}
-				}
+			if (getMutationOperation().getMutationTarget() instanceof EntityMutationTarget) {
+				mutateEntity( statementDetails, id, valueBindings, resultChecker, session, modelReference );
 			}
-
-			int affectedRowCount;
-			
-			if ( mutationType == MutationType.DELETE ) {
-				dialect.removeTuple( entityKey, operationContext );
-				
-				// Assume we have deleted the tuple: the assumption seems to be that we don't need to check its existence
-				affectedRowCount = 1;
+			else if (getMutationOperation().getMutationTarget() instanceof CollectionMutationTarget) {
+				mutateCollection( statementDetails, id, valueBindings, resultChecker, session, modelReference );
 			}
-			else if ( mutationType == MutationType.UPDATE ) {
-				TuplePointer tuplePointer = getSharedTuplePointer( entityKey, modelReference, session, dialect, operationContext );
-				
-				JdbcOgmMapper.updateTuple( valueBindings, tableName, tuplePointer.getTuple(), session );
-				
-				dialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
-				
-				// Assume we have updated the tuple
-				affectedRowCount = 1;
-			}
-			else if ( mutationType == MutationType.INSERT ) {
-				// Insert the tuple
-				Tuple tuple = dialect.createTuple( entityKey, operationContext );
-				
-				JdbcOgmMapper.updateTuple( valueBindings, tableName, tuple, session );
-				
-				TuplePointer tuplePointer = saveSharedTuple( modelReference, tuple, session );
-				
-				dialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
-				
-				affectedRowCount = tuple == null ? 0 : 1;
-			}
-			else {
-				throw new IllegalArgumentException( "Unexepected mutation type: " + mutationType );
-			}
-			
-			ModelMutationHelper.checkResults( resultChecker, statementDetails, affectedRowCount, -1 );
 		}
 		catch (SQLException e) {
 			throw session.getJdbcServices().getSqlExceptionHelper().convert(
@@ -254,17 +192,144 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 		}
 	}
 
-	private TupleTypeContext buildTupleTypeContext( OptionsService optionsService ) {
-		// TODO this is most likely incorrect, need to figure out how that matters
-		return new TupleTypeContextImpl(
-				Collections.emptyList(),
-				Collections.emptySet(),
-				Collections.emptyMap(),
-				Collections.emptyMap(),
-				optionsService.context().getEntityOptions( Object.class ),
-				null,
-				null
-		);
+	private void mutateEntity(PreparedStatementDetails statementDetails, Object id, JdbcValueBindings valueBindings,
+			OperationResultChecker resultChecker, SharedSessionContractImplementor session, Object modelReference)
+			throws SQLException {
+		SessionFactoryImplementor factory = session.getSessionFactory();
+		ServiceRegistry serviceRegistry = factory.getServiceRegistry();
+		GridDialect gridDialect = serviceRegistry.getService( GridDialect.class );
+		OgmEntityPersister ogmEntityPersister = (OgmEntityPersister) getMutationOperation().getMutationTarget();
+		
+		String tableName = statementDetails.getMutatingTableDetails().getTableName();
+		String[] keyColumnNames = buildKeyColumnNames();
+		EntityKeyMetadata keyMetadata = ogmEntityPersister.getEntityKeyMetadata();
+		EntityKey entityKey = JdbcOgmMapper.buildEntityKey( valueBindings, tableName, keyColumnNames, keyMetadata, session );
+		
+		TupleContext operationContext = ogmEntityPersister.getTupleContext( session );
+		MutationType mutationType = getMutationOperation().getMutationType();
+
+		// Check for duplicate if needed
+		if ( mutationType == MutationType.INSERT && gridDialect.getDuplicateInsertPreventionStrategy( keyMetadata ) == DuplicateInsertPreventionStrategy.LOOK_UP ) {
+			Tuple existingTuple = gridDialect.getTuple( entityKey, operationContext );
+
+			if ( existingTuple != null ) {
+				if ( gridDialect instanceof InvocationCollectingGridDialect ) {
+					InvocationCollectingGridDialect invocationCollectingGridDialect = (InvocationCollectingGridDialect) gridDialect;
+					try {
+						invocationCollectingGridDialect.onInsertOrUpdateTupleFailure( entityKey, existingTuple,
+								new TupleAlreadyExistsException(
+										entityKey ) );
+					} catch (TupleAlreadyExistsException taee) {
+						throw log.mustNotInsertSameEntityTwice( MessageHelper.infoString( (EntityPersister) getMutationOperation().getMutationTarget(), id, factory ),
+								taee );
+					}
+				}
+				else {
+					throw log.mustNotInsertSameEntityTwice( MessageHelper.infoString( (EntityPersister) getMutationOperation().getMutationTarget(), id, factory ), null );
+				}
+			}
+		}
+
+		int affectedRowCount;
+		
+		if ( mutationType == MutationType.DELETE ) {
+			boolean mightManageInverseAssociations = ogmEntityPersister.mightManageInverseAssociations();
+			
+			if ( gridDialect.usesNavigationalInformationForInverseSideOfAssociations() ) {
+				//delete inverse association information
+				//needs to be executed before the tuple removal because the AtomicMap in ISPN is cleared upon removal
+				if ( mightManageInverseAssociations ) {
+					Tuple currentState = gridDialect.getTuple( entityKey, operationContext );
+					new EntityAssociationUpdater( ogmEntityPersister )
+							.id( id )
+							.resultset( currentState )
+							.session( session )
+							.tableIndex( 0 )
+							.propertyMightRequireInverseAssociationManagement( ogmEntityPersister.getPropertyMightBeMainSideOfBidirectionalAssociation() )
+							.removeNavigationalInformationFromInverseSide();
+				}
+
+				if (ogmEntityPersister.mightHaveNavigationalInformation() ) {
+					ogmEntityPersister.removeNavigationInformation( id, modelReference, session );
+				}
+			}
+
+			gridDialect.removeTuple( entityKey, operationContext );
+			
+			// Assume we have deleted the tuple: the assumption seems to be that we don't need to check its existence
+			affectedRowCount = 1;
+		}
+		else if ( mutationType == MutationType.UPDATE ) {
+			TuplePointer tuplePointer = getSharedTuplePointer( entityKey, modelReference, session, gridDialect, operationContext );
+			
+			JdbcOgmMapper.updateTuple( valueBindings, tableName, tuplePointer.getTuple(), session );
+			
+			gridDialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
+			
+			// Assume we have updated the tuple
+			affectedRowCount = 1;
+		}
+		else if ( mutationType == MutationType.INSERT ) {
+			// Insert the tuple
+			Tuple tuple = gridDialect.createTuple( entityKey, operationContext );
+			
+			JdbcOgmMapper.updateTuple( valueBindings, tableName, tuple, session );
+			
+			TuplePointer tuplePointer = saveSharedTuple( modelReference, tuple, session );
+			
+			gridDialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
+			
+			affectedRowCount = tuple == null ? 0 : 1;
+		}
+		else {
+			throw new IllegalArgumentException( "Unexepected mutation type: " + mutationType );
+		}
+		
+		ModelMutationHelper.checkResults( resultChecker, statementDetails, affectedRowCount, -1 );
+	}
+
+	private void mutateCollection(PreparedStatementDetails statementDetails, Object id, JdbcValueBindings valueBindings,
+			OperationResultChecker resultChecker, SharedSessionContractImplementor session, Object modelReference)
+			throws SQLException {
+		OgmCollectionPersister ogmCollectionPersister = (OgmCollectionPersister) getMutationOperation().getMutationTarget();
+		String tableName = statementDetails.getMutatingTableDetails().getTableName();
+		
+		MutationType mutationType = getMutationOperation().getMutationType();
+		
+		// If we had access to the collection we could do collection.getOwner() here
+		// Instead we do this ugly hack: getting the value from the first binding and loading the owner
+		Object ownerId = valueBindings.getBindingGroup( tableName ).getBindings().iterator().next().getValue();
+		String ownerEntityName = ogmCollectionPersister.getOwnerEntityPersister().getEntityName();
+		Object owner = session.internalLoad( ownerEntityName, ownerId, false, false );
+		associationPersister = ogmCollectionPersister.getAssociationPersister( owner, ownerId, session );
+		
+		Tuple associationRow = new Tuple();
+		JdbcOgmMapper.updateTuple( valueBindings, tableName, associationRow, session );
+		RowKeyBuilder rowKeyBuilder = ogmCollectionPersister.initializeRowKeyBuilder();
+		RowKey rowKey = rowKeyBuilder.values( associationRow ).build();
+
+		int affectedRowCount;
+		
+		if ( mutationType == MutationType.DELETE ) {
+			associationPersister.getAssociation().remove( rowKey );
+			
+			affectedRowCount = 1;
+		}
+		else if ( mutationType == MutationType.UPDATE ) {
+			throw new UnsupportedOperationException( "TODO implement this" );
+			
+//			affectedRowCount = 1;
+		}
+		else if ( mutationType == MutationType.INSERT ) {
+			associationPersister.getAssociation().put( rowKey, associationRow );
+			
+			affectedRowCount = 1;
+		}
+		else {
+			throw new IllegalArgumentException( "Unexepected mutation type: " + mutationType );
+		}
+		
+		ModelMutationHelper.checkResults( resultChecker, statementDetails, affectedRowCount, -1 );
 	}
 
 	private TuplePointer getSharedTuplePointer(EntityKey key, Object entity, SharedSessionContractImplementor session, GridDialect dialect, TupleContext tupleContext) {
@@ -295,5 +360,9 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 
 	@Override
 	public void release() {
+		if ( associationPersister != null ) {
+			associationPersister.flushToDatastore();
+			associationPersister = null;
+		}
 	}
 }

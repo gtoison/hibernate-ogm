@@ -7,7 +7,6 @@
 package org.hibernate.ogm.loader.entity.impl;
 
 import java.sql.PreparedStatement;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -28,10 +27,11 @@ import org.hibernate.ogm.entityentry.impl.TuplePointer;
 import org.hibernate.ogm.jdbc.impl.JdbcOgmMapper;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.spi.Tuple;
-import org.hibernate.ogm.options.spi.OptionsService;
+import org.hibernate.ogm.persister.impl.OgmEntityPersister;
 import org.hibernate.ogm.util.impl.TransactionContextHelper;
 import org.hibernate.query.internal.SimpleQueryOptions;
 import org.hibernate.query.spi.QueryOptions;
+import org.hibernate.service.spi.ServiceRegistryImplementor;
 import org.hibernate.sql.ast.spi.SqlSelection;
 import org.hibernate.sql.ast.tree.select.SelectStatement;
 import org.hibernate.sql.exec.internal.BaseExecutionContext;
@@ -71,6 +71,7 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		final LockOptions lockOptions = getLockOptions();
 		final JdbcOperationQuerySelect jdbcSelect = getJdbcSelect();
 		final EntityMappingType entityMappingType = (EntityMappingType) getLoadable();
+		final OgmEntityPersister ogmEntityPersister = (OgmEntityPersister) entityMappingType.getEntityPersister();
 		
 		final int jdbcTypeCount = restrictivePart.getJdbcTypeCount();
 		assert jdbcParameters.size() % jdbcTypeCount == 0;
@@ -91,19 +92,11 @@ public class OgmSingleIdLoadPlan<T> extends SingleIdLoadPlan<T> {
 		final QueryOptions queryOptions = new SimpleQueryOptions( lockOptions, readOnly );
 		final Callback callback = new CallbackImpl();
 		
-		GridDialect dialect = session.getFactory().getServiceRegistry().getService( GridDialect.class );
-		OptionsService optionsService = session.getFactory().getServiceRegistry().getService( OptionsService.class );
+		ServiceRegistryImplementor serviceRegistry = session.getFactory().getServiceRegistry();
+		GridDialect dialect = serviceRegistry.getService( GridDialect.class );
 		
 		EntityKey entityKey = JdbcOgmMapper.extractKey( restrictedValue, session, restrictivePart );
-		TupleTypeContextImpl tupleTypeContext = new TupleTypeContextImpl(
-				Collections.emptyList(),
-				Collections.emptySet(),
-				Collections.emptyMap(),
-				Collections.emptyMap(),
-				optionsService.context().getEntityOptions( entityMappingType.getEntityPersister().getMappedClass() ),
-				null,
-				null
-		);
+		TupleTypeContextImpl tupleTypeContext = ogmEntityPersister.createTupleTypeContext( serviceRegistry );
 		OperationContext operationContext = new TupleContextImpl( tupleTypeContext, TransactionContextHelper.transactionContext( session ) );
 		
 		Tuple tuple = dialect.getTuple( entityKey, operationContext );

@@ -7,10 +7,10 @@
 package org.hibernate.ogm.model.impl;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.mapping.ValuedModelPart;
 import org.hibernate.ogm.model.key.spi.EntityKey;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.persister.impl.OgmEntityPersister;
-import org.hibernate.ogm.type.spi.GridType;
 import org.hibernate.ogm.util.impl.LogicalPhysicalConverterHelper;
 
 /**
@@ -28,7 +28,7 @@ public final class EntityKeyBuilder {
 			SharedSessionContractImplementor session) {
 		return fromData(
 				persister.getEntityKeyMetadata(),
-				persister.getGridIdentifierType(),
+				persister.getIdentifierMapping(),
 				id,
 				session );
 	}
@@ -36,7 +36,7 @@ public final class EntityKeyBuilder {
 	//static method because the builder pattern version was showing up during profiling
 	public static EntityKey fromData(
 			EntityKeyMetadata entityKeyMetadata,
-			GridType identifierGridType,
+			ValuedModelPart identifierGridType,
 			final Object id,
 			SharedSessionContractImplementor session) {
 		Object[] values = LogicalPhysicalConverterHelper.getColumnsValuesFromObjectValue(

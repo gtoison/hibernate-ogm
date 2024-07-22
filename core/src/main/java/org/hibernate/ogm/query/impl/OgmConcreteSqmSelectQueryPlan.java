@@ -160,6 +160,7 @@ public class OgmConcreteSqmSelectQueryPlan<R> extends ConcreteSqmSelectQueryPlan
 				session.autoFlushIfRequired( jdbcSelect.getAffectedTableNames(), true );
 				
 				// Build the query
+				// TODO this fails if the dialect doesn't provide a query service, we shouls degrade to Hibernate Search
 				QueryParsingResult dialectQuery = queryParserService.parseQuery( factory, sqm, executionContext );
 				EntityMetadataInformation entityMetaData = null;
 				BackendQuery<Serializable> query = new BackendQuery<Serializable>( (Serializable) dialectQuery.getQueryObject(), entityMetaData );
