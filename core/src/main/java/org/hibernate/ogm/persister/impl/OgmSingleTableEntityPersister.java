@@ -56,7 +56,6 @@ public class OgmSingleTableEntityPersister extends SingleTableEntityPersister im
 		
 		this.persistentClass = persistentClass;
 		this.entityKeyMetadata = new DefaultEntityKeyMetadata( getTableName(), getIdentifierColumnNames() );
-		this.inverseOneToOneAssociationKeyMetadata = initInverseOneToOneAssociationKeyMetadata();
 		
 		this.propertyMightBeMainSideOfBidirectionalAssociation = initPropertyMightBeMainSideOfBidirectionalAssociation( persistentClass );
 		this.mightManageInverseAssociations = initMightManageInverseAssociations();
@@ -72,6 +71,8 @@ public class OgmSingleTableEntityPersister extends SingleTableEntityPersister im
 		super.prepareLoaders();
 		
 		this.tupleTypeContext = createTupleTypeContext( getFactory().getServiceRegistry() );
+		
+		this.inverseOneToOneAssociationKeyMetadata = initInverseOneToOneAssociationKeyMetadata();
 	}
 
 	// TODO check if we can pull this in a base class for all persisters

@@ -365,40 +365,44 @@ public class TuplesSelectResultSet implements ResultSet {
 
 	@Override
 	public boolean isBeforeFirst() throws SQLException {
-		return false;
+		return rowIndex < 0 || tuples.isEmpty();
 	}
 
 	@Override
 	public boolean isAfterLast() throws SQLException {
-		return false;
+		return rowIndex >= tuples.size() || tuples.isEmpty();
 	}
 
 	@Override
 	public boolean isFirst() throws SQLException {
-		return false;
+		return rowIndex == 0;
 	}
 
 	@Override
 	public boolean isLast() throws SQLException {
-		return false;
+		return rowIndex == tuples.size() - 1;
 	}
 
 	@Override
 	public void beforeFirst() throws SQLException {
+		rowIndex = -1;
 	}
 
 	@Override
 	public void afterLast() throws SQLException {
+		rowIndex = tuples.size();
 	}
 
 	@Override
 	public boolean first() throws SQLException {
-		return false;
+		rowIndex = 0;
+		return !tuples.isEmpty();
 	}
 
 	@Override
 	public boolean last() throws SQLException {
-		return false;
+		rowIndex = tuples.size() - 1;
+		return !tuples.isEmpty();
 	}
 
 	@Override
@@ -408,17 +412,20 @@ public class TuplesSelectResultSet implements ResultSet {
 
 	@Override
 	public boolean absolute(int row) throws SQLException {
-		return false;
+		rowIndex = row;
+		return !isBeforeFirst() && !isAfterLast();
 	}
 
 	@Override
 	public boolean relative(int rows) throws SQLException {
-		return false;
+		rowIndex += rows;
+		return !isBeforeFirst() && !isAfterLast();
 	}
 
 	@Override
 	public boolean previous() throws SQLException {
-		return false;
+		rowIndex--;
+		return !isBeforeFirst() && !isAfterLast();
 	}
 
 	@Override
@@ -446,7 +453,7 @@ public class TuplesSelectResultSet implements ResultSet {
 
 	@Override
 	public int getConcurrency() throws SQLException {
-		return 0;
+		return ResultSet.CONCUR_READ_ONLY;
 	}
 
 	@Override

@@ -23,15 +23,22 @@ import org.hibernate.engine.spi.SubselectFetch;
 import org.hibernate.loader.ast.internal.CollectionLoaderSingleKey;
 import org.hibernate.loader.ast.internal.LoaderSelectBuilder;
 import org.hibernate.loader.ast.spi.CollectionLoader;
+import org.hibernate.metamodel.mapping.JdbcMapping;
 import org.hibernate.metamodel.mapping.PluralAttributeMapping;
+import org.hibernate.ogm.dialect.multiget.spi.MultigetGridDialect;
 import org.hibernate.ogm.dialect.spi.GridDialect;
+import org.hibernate.ogm.dialect.spi.TupleContext;
 import org.hibernate.ogm.entityentry.impl.OgmEntityEntryState;
 import org.hibernate.ogm.loader.entity.impl.OgmSingleIdLoadPlan;
 import org.hibernate.ogm.loader.entity.impl.TuplesSelectPreparedStatement;
+import org.hibernate.ogm.model.key.spi.EntityKey;
+import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.model.key.spi.RowKey;
 import org.hibernate.ogm.model.spi.Association;
 import org.hibernate.ogm.model.spi.Tuple;
+import org.hibernate.ogm.model.spi.Tuple.SnapshotType;
 import org.hibernate.ogm.persister.impl.OgmBasicCollectionPersister;
+import org.hibernate.ogm.persister.impl.OgmEntityPersister;
 import org.hibernate.ogm.util.impl.AssociationPersister;
 import org.hibernate.query.spi.QueryOptions;
 import org.hibernate.sql.ast.spi.SqlSelection;
@@ -46,6 +53,7 @@ import org.hibernate.sql.exec.spi.JdbcParameterBindings;
 import org.hibernate.sql.exec.spi.JdbcParametersList;
 import org.hibernate.sql.results.internal.RowTransformerStandardImpl;
 import org.hibernate.sql.results.spi.ListResultsConsumer;
+import org.hibernate.type.BasicType;
 
 /**
  * Large portions of the code is from {@link CollectionLoaderSingleKey}
@@ -106,13 +114,13 @@ public class OgmEmbeddedCollectionLoader implements CollectionLoader {
 
 	@Override
 	public PersistentCollection<?> load(Object key, SharedSessionContractImplementor session) {
-		GridDialect gridDialect = session.getSessionFactory().getServiceRegistry().getService( GridDialect.class );
-		String ownerEntityName = collectionPersister.getOwnerEntityPersister().getEntityName();
-		Object owner = session.internalLoad( ownerEntityName, key, false, false );
-		Class<?> mappedClass = collectionPersister.getOwnerEntityPersister().getMappedClass();
+		final GridDialect gridDialect = session.getSessionFactory().getServiceRegistry().getService( GridDialect.class );
+		final String ownerEntityName = collectionPersister.getOwnerEntityPersister().getEntityName();
+		final Object owner = session.internalLoad( ownerEntityName, key, false, false );
+		final Class<?> mappedClass = collectionPersister.getOwnerEntityPersister().getMappedClass();
 
 		// Load the tuples corresponding to the collection elements
-		AssociationPersister associationPersister = new AssociationPersister.Builder(mappedClass)
+		final AssociationPersister associationPersister = new AssociationPersister.Builder(mappedClass)
 			.gridDialect( gridDialect )
 			.key( key, attributeMapping.getKeyDescriptor() )
 			.associationKeyMetadata( collectionPersister.getAssociationKeyMetadata() )
@@ -121,12 +129,81 @@ public class OgmEmbeddedCollectionLoader implements CollectionLoader {
 			.session( session )
 			.build();
 
-		Association association = associationPersister.getAssociationOrNull();
-		List<Tuple> tuples = new ArrayList<>();
+		final boolean entityElements = collectionPersister.getElementType().isEntityType();
+		final Association association = associationPersister.getAssociationOrNull();
+		final List<Tuple> tuples = new ArrayList<>();
+		
+		String elementEntityName = null;
+		OgmEntityPersister elementPersister = null;
+		List<EntityKeyAndTuple> elementsKeysAndTuples = null;
+		JdbcMapping elementIdentifierMapping = null;
 		
 		if ( association != null ) {
-			for ( RowKey rowKey : association.getKeys() ) {
-				tuples.add( association.get( rowKey ) );
+			if (entityElements) {
+				// Entity elements: the tuple only contains the ID of the elements
+				elementEntityName = collectionPersister.getElementType().getName();
+				elementPersister = (OgmEntityPersister) session.getFactory().getRuntimeMetamodels()
+				.getMappingMetamodel()
+				.getEntityDescriptor( elementEntityName )
+				.getEntityPersister();
+				EntityKeyMetadata elementKeyMetadata = elementPersister.getEntityKeyMetadata();
+				elementIdentifierMapping = ((BasicType<?>) elementPersister.getIdentifierType()).getJdbcMapping();
+				
+				TupleContext tupleContext = elementPersister.getTupleContext( session );
+				
+				List<Tuple> elementTuples;
+				elementsKeysAndTuples = new ArrayList<>();
+				
+				if (gridDialect instanceof MultigetGridDialect) {
+					MultigetGridDialect multigetGridDialect = (MultigetGridDialect) gridDialect;
+					List<EntityKey> elementKeys = new ArrayList<>();
+					
+					for ( RowKey rowKey : association.getKeys() ) {
+						// TODO handle multi valued keys
+						Object value = rowKey.getColumnValues()[1];
+						EntityKey elementKey = new EntityKey( elementKeyMetadata, new Object[] { value } );
+
+						elementKeys.add( elementKey );
+					}
+					
+					// TODO account for the case when the some tuples were not found, and @NotFound(IGNORE)
+					elementTuples = multigetGridDialect.getTuples( elementKeys.toArray( EntityKey[]::new ), tupleContext );
+					
+					for (int i = 0; i < elementKeys.size(); i++) {
+						elementsKeysAndTuples.add( new EntityKeyAndTuple( elementKeys.get( i ), elementTuples.get( i ) ) );
+					}
+				}
+				else {
+					elementTuples = new ArrayList<>();
+					
+					// This is effectively a N+1 case: we're doing one get per element, maybe we could get away with returning proxies somehow
+					for ( RowKey rowKey : association.getKeys() ) {
+						// TODO handle multi valued keys
+						Object value = rowKey.getColumnValues()[1];
+
+						EntityKey elementKey = new EntityKey( elementKeyMetadata, new Object[] { value } );
+						Tuple tuple = gridDialect.getTuple( elementKey, tupleContext );
+
+						// TODO account for the case when the tuple wasn't found, and @NotFound(IGNORE)
+						elementTuples.add( tuple );
+						elementsKeysAndTuples.add( new EntityKeyAndTuple( elementKey, tuple ) );
+					}
+				}
+				
+				String keyColumnName = association.getKeys().iterator().next().getColumnNames()[0];
+				for (Tuple tuple : elementTuples) {
+					// Add a value for the owner id because our select statement contains a column for it and the row reader expects a value
+					Tuple tupleWithForeignKey = new Tuple( tuple.getSnapshot(), SnapshotType.UPDATE );
+					tupleWithForeignKey.put( keyColumnName, key );
+					
+					tuples.add( tupleWithForeignKey );
+				}
+			}
+			else {
+				// Embeddable elements, the tuple already contains the data
+				for ( RowKey rowKey : association.getKeys() ) {
+					tuples.add( association.get( rowKey ) );
+				}
 			}
 		}
 		
@@ -163,7 +240,16 @@ public class OgmEmbeddedCollectionLoader implements CollectionLoader {
 				statementCreator,
 				ListResultsConsumer.instance( ListResultsConsumer.UniqueSemantic.FILTER )
 		);
-
+		
+		if (elementsKeysAndTuples != null) {
+			// We cannot iterate over the collection because we are still initialising it
+			for (EntityKeyAndTuple entry : elementsKeysAndTuples) {
+				Object entity = session.internalLoad( elementEntityName, elementIdentifierMapping.convertToDomainValue( entry.entityKey.getColumnValues()[0] ), false, false );
+				OgmEntityEntryState entityState = OgmEntityEntryState.getStateFor( session, entity );
+				entityState.getTuplePointer().setTuple( entry.tuple );
+			}
+		}
+		
 		return session.getPersistenceContext().getCollection( collectionKey );
 	}
 
@@ -188,6 +274,16 @@ public class OgmEmbeddedCollectionLoader implements CollectionLoader {
 		@Override
 		public void registerLoadingEntityHolder(EntityHolder holder) {
 			subSelectFetchableKeysHandler.addKey( holder );
+		}
+	}
+	
+	private static class EntityKeyAndTuple {
+		private final EntityKey entityKey;
+		private final Tuple tuple;
+		
+		public EntityKeyAndTuple(EntityKey entityKey, Tuple tuple) {
+			this.entityKey = entityKey;
+			this.tuple = tuple;
 		}
 	}
 }

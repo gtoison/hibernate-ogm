@@ -6,6 +6,7 @@
  */
 package org.hibernate.ogm.entityentry.impl;
 
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,8 @@ import org.hibernate.ogm.model.spi.Association;
 import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.util.impl.Log;
 import org.hibernate.ogm.util.impl.LoggerFactory;
-import java.lang.invoke.MethodHandles;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 
 /**
  * Entity-dependent state specific to Hibernate OGM.
@@ -81,7 +83,7 @@ public class OgmEntityEntryState implements EntityEntryExtraState {
 	}
 
 	public static OgmEntityEntryState getStateFor(SharedSessionContractImplementor session, Object object) {
-		EntityEntry entityEntry = session.getPersistenceContext().getEntry( object );
+		EntityEntry entityEntry = extractEntityEntry( session, object );
 		if ( entityEntry == null ) {
 			throw log.cannotFindEntityEntryForEntity( object );
 		}
@@ -93,6 +95,19 @@ public class OgmEntityEntryState implements EntityEntryExtraState {
 		}
 
 		return ogmEntityState;
+	}
+
+	/**
+	 * In case we are loading an uninitialized proxy the persistence context contains the entry for the target persistent object, not the proxy. The entity we get is a proxy so we extract its underlying entity
+	 */
+	private static EntityEntry extractEntityEntry(SharedSessionContractImplementor session, Object object) {
+		LazyInitializer lazyInitializer = HibernateProxy.extractLazyInitializer( object );
+		
+		if (lazyInitializer != null) {
+			return session.getPersistenceContext().getEntry( lazyInitializer.getImplementation() );
+		} else {
+			return session.getPersistenceContext().getEntry( object );
+		}
 	}
 
 	// state chain management ops below
