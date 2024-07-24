@@ -63,4 +63,13 @@ public class OgmDialect extends Dialect {
 		
 		gridDialect.contributeTypes( typeContributions, serviceRegistry );
 	}
+	
+	/**
+	 * For embedded values (such as country.name) Hibernate generates quoted column names by default
+	 * In OGM we want the column to be country.name and not "country.name" so we can lookup tuple values
+	 */
+	@Override
+	public String toQuotedIdentifier(String name) {
+		return name;
+	}
 }

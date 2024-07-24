@@ -8,7 +8,7 @@ package org.hibernate.ogm.jpa.impl;
 
 import org.hibernate.mapping.Collection;
 import org.hibernate.ogm.persister.impl.OgmBasicCollectionPersister;
-import org.hibernate.ogm.persister.impl.OgmCollectionPersister;
+import org.hibernate.ogm.persister.impl.OgmOneToManyPersister;
 import org.hibernate.ogm.persister.impl.OgmSingleTableEntityPersister;
 import org.hibernate.persister.collection.CollectionPersister;
 import org.hibernate.persister.entity.EntityPersister;
@@ -42,8 +42,8 @@ public class OgmPersisterClassResolver extends StandardPersisterClassResolver im
 		return metadata.isOneToMany() ? oneToManyPersister() : basicCollectionPersister();
 	}
 
-	private Class<OgmCollectionPersister> oneToManyPersister() {
-		throw new UnsupportedOperationException( "One to many not supported" );
+	private Class<OgmOneToManyPersister> oneToManyPersister() {
+		return OgmOneToManyPersister.class;
 	}
 
 	private Class<OgmBasicCollectionPersister> basicCollectionPersister() {

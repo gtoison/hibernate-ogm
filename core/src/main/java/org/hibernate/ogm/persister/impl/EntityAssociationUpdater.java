@@ -14,6 +14,7 @@ import org.hibernate.ogm.dialect.impl.AssociationTypeContextImpl;
 import org.hibernate.ogm.dialect.impl.BatchOperationsDelegator;
 import org.hibernate.ogm.dialect.spi.AssociationTypeContext;
 import org.hibernate.ogm.dialect.spi.GridDialect;
+import org.hibernate.ogm.jdbc.impl.JdbcOgmMapper;
 import org.hibernate.ogm.model.impl.RowKeyBuilder;
 import org.hibernate.ogm.model.key.spi.AssociationKeyMetadata;
 import org.hibernate.ogm.model.key.spi.EntityKey;
@@ -50,6 +51,7 @@ public class EntityAssociationUpdater {
 	private Tuple resultset;
 	private int tableIndex;
 	private Object id;
+	private Object entity;
 	private SharedSessionContractImplementor session;
 	private boolean[] propertyMightRequireInverseAssociationManagement;
 
@@ -75,6 +77,11 @@ public class EntityAssociationUpdater {
 
 	public EntityAssociationUpdater id(Object id) {
 		this.id = id;
+		return this;
+	}
+
+	public EntityAssociationUpdater entity(Object entity) {
+		this.entity = entity;
 		return this;
 	}
 
@@ -227,6 +234,10 @@ public class EntityAssociationUpdater {
 	 * Returns the object referenced by the specified property (which represents an association).
 	 */
 	private Object getReferencedEntity(int propertyIndex) {
+		if (entity != null) {
+			return persister.getValue( entity, propertyIndex );
+		}
+		
 		Object referencedEntity = null;
 
 		// TODO implement this
@@ -273,10 +284,7 @@ public class EntityAssociationUpdater {
 		}
 
 		// add the id column
-		if (true) {
-			throw new UnsupportedOperationException( "TODO Not implemented" );
-		}
-		//persister.getGridIdentifierType().nullSafeSet( rowKeyValues, id, persister.getIdentifierColumnNames(), session );
+		JdbcOgmMapper.updateTuple( persister.getIdentifierDescriptor(), rowKeyValues,  id, session );
 
 		return new RowKeyBuilder()
 			.addColumns( associationKeyMetadata.getRowKeyColumnNames() )

@@ -8,7 +8,9 @@ package org.hibernate.ogm.util.impl;
 
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.metamodel.mapping.SelectableMapping;
 import org.hibernate.metamodel.mapping.ValuedModelPart;
+import org.hibernate.metamodel.mapping.ModelPart.JdbcValueConsumer;
 import org.hibernate.ogm.model.spi.Tuple;
 
 /**
@@ -27,9 +29,20 @@ public class LogicalPhysicalConverterHelper {
 		return columnValues;
 	}
 
-	public static Object[] getColumnsValuesFromObjectValue(Object uniqueKey, ValuedModelPart gridUniqueKeyType, String[] propertyColumnNames,
+	public static Object[] getColumnsValuesFromObjectValue(Object uniqueKey, ValuedModelPart keyType, String[] propertyColumnNames,
 			SharedSessionContractImplementor session) {
-		// TODO handle multi column keys
-		return new Object[] {gridUniqueKeyType.getJdbcMapping( 0 ).convertToRelationalValue( uniqueKey )};
+		Object[] values = new Object[keyType.getJdbcTypeCount()];
+		
+		JdbcValueConsumer keyValueConsumer = new JdbcValueConsumer() {
+			private int index = 0;
+			@Override
+			public void consume(int valueIndex, Object value, SelectableMapping jdbcValueMapping) {
+				values[index++] = value;
+			}
+		};
+		
+		keyType.breakDownJdbcValues( uniqueKey, keyValueConsumer, session );
+		
+		return values;
 	}
 }

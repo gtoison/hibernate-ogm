@@ -233,26 +233,7 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 		int affectedRowCount;
 		
 		if ( mutationType == MutationType.DELETE ) {
-			boolean mightManageInverseAssociations = ogmEntityPersister.mightManageInverseAssociations();
-			
-			if ( gridDialect.usesNavigationalInformationForInverseSideOfAssociations() ) {
-				//delete inverse association information
-				//needs to be executed before the tuple removal because the AtomicMap in ISPN is cleared upon removal
-				if ( mightManageInverseAssociations ) {
-					Tuple currentState = gridDialect.getTuple( entityKey, operationContext );
-					new EntityAssociationUpdater( ogmEntityPersister )
-							.id( id )
-							.resultset( currentState )
-							.session( session )
-							.tableIndex( 0 )
-							.propertyMightRequireInverseAssociationManagement( ogmEntityPersister.getPropertyMightBeMainSideOfBidirectionalAssociation() )
-							.removeNavigationalInformationFromInverseSide();
-				}
-
-				if (ogmEntityPersister.mightHaveNavigationalInformation() ) {
-					ogmEntityPersister.removeNavigationInformation( id, modelReference, session );
-				}
-			}
+			removeInverseAssociations( session, modelReference, gridDialect, ogmEntityPersister, entityKey, operationContext );
 
 			gridDialect.removeTuple( entityKey, operationContext );
 			
@@ -263,6 +244,8 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 			TuplePointer tuplePointer = getSharedTuplePointer( entityKey, modelReference, session, gridDialect, operationContext );
 			
 			JdbcOgmMapper.updateTuple( valueBindings, tableName, tuplePointer.getTuple(), session );
+
+			removeInverseAssociations( session, modelReference, gridDialect, ogmEntityPersister, entityKey, operationContext );
 			
 			gridDialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
 			
@@ -279,6 +262,9 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 			
 			gridDialect.insertOrUpdateTuple( entityKey, tuplePointer, operationContext );
 			
+			id = ogmEntityPersister.getIdentifier( modelReference, session );
+			ogmEntityPersister.addToInverseAssociations( tuple, 0, id, modelReference, session );
+			
 			affectedRowCount = tuple == null ? 0 : 1;
 		}
 		else {
@@ -286,6 +272,33 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 		}
 		
 		ModelMutationHelper.checkResults( resultChecker, statementDetails, affectedRowCount, -1 );
+	}
+
+	private void removeInverseAssociations(SharedSessionContractImplementor session, Object modelReference, GridDialect gridDialect,
+			OgmEntityPersister ogmEntityPersister, EntityKey entityKey, TupleContext operationContext) {
+		boolean mightManageInverseAssociations = ogmEntityPersister.mightManageInverseAssociations();
+		
+		if ( gridDialect.usesNavigationalInformationForInverseSideOfAssociations() ) {
+			Object id = ogmEntityPersister.getIdentifier( modelReference, session );
+			
+			//delete inverse association information
+			//needs to be executed before the tuple removal because the AtomicMap in ISPN is cleared upon removal
+			if ( mightManageInverseAssociations ) {
+				Tuple currentState = gridDialect.getTuple( entityKey, operationContext );
+				new EntityAssociationUpdater( ogmEntityPersister )
+						.id( id )
+						.entity( modelReference )
+						.resultset( currentState )
+						.session( session )
+						.tableIndex( 0 )
+						.propertyMightRequireInverseAssociationManagement( ogmEntityPersister.getPropertyMightBeMainSideOfBidirectionalAssociation() )
+						.removeNavigationalInformationFromInverseSide();
+			}
+
+			if (ogmEntityPersister.mightHaveNavigationalInformation() ) {
+				ogmEntityPersister.removeNavigationInformation( id, modelReference, session );
+			}
+		}
 	}
 
 	private void mutateCollection(PreparedStatementDetails statementDetails, Object id, JdbcValueBindings valueBindings,
@@ -304,8 +317,8 @@ public class OgmMutationExecutorSingleNonBatched extends AbstractSingleMutationE
 		associationPersister = ogmCollectionPersister.getAssociationPersister( owner, ownerId, session );
 		
 		Tuple associationRow = new Tuple();
-		JdbcOgmMapper.updateTuple( valueBindings, tableName, associationRow, session );
 		RowKeyBuilder rowKeyBuilder = ogmCollectionPersister.initializeRowKeyBuilder();
+		JdbcOgmMapper.updateTuple( valueBindings, tableName, associationRow, session );
 		RowKey rowKey = rowKeyBuilder.values( associationRow ).build();
 
 		int affectedRowCount;

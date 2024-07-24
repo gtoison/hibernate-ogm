@@ -15,6 +15,7 @@ import org.hibernate.engine.jdbc.mutation.spi.Binding;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.metamodel.mapping.EntityIdentifierMapping;
 import org.hibernate.metamodel.mapping.JdbcMapping;
+import org.hibernate.metamodel.mapping.ModelPart;
 import org.hibernate.metamodel.mapping.ModelPart.JdbcValueConsumer;
 import org.hibernate.metamodel.mapping.SelectableMapping;
 import org.hibernate.ogm.model.impl.DefaultEntityKeyMetadata;
@@ -66,6 +67,19 @@ public class JdbcOgmMapper {
 			bindValue( st, options, binding.getValue(), 0, binding.getValueDescriptor().getJdbcMapping() );
 			tuple.put( binding.getColumnName(), st.getValues()[0] );
 		}
+	}
+
+	public static void updateTuple(ModelPart mapping, Tuple tuple, Object domainValue,
+			SharedSessionContractImplementor session) {
+		JdbcValueConsumer consumer = new JdbcValueConsumer() {
+			
+			@Override
+			public void consume(int valueIndex, Object value, SelectableMapping jdbcValueMapping) {
+				tuple.put( jdbcValueMapping.getSelectionExpression(), value );
+			}
+		};
+		
+		mapping.breakDownJdbcValues( domainValue, consumer, session );
 	}
 
 	/**

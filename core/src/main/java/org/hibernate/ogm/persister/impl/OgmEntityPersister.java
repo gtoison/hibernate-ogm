@@ -35,6 +35,7 @@ import org.hibernate.ogm.model.key.spi.AssociationKeyMetadata;
 import org.hibernate.ogm.model.key.spi.AssociationKind;
 import org.hibernate.ogm.model.key.spi.EntityKeyMetadata;
 import org.hibernate.ogm.model.spi.Association;
+import org.hibernate.ogm.model.spi.Tuple;
 import org.hibernate.ogm.options.spi.OptionsService;
 import org.hibernate.ogm.util.impl.AssociationPersister;
 import org.hibernate.ogm.util.impl.TransactionContextHelper;
@@ -335,6 +336,44 @@ public interface OgmEntityPersister extends InFlightEntityMappingType, EntityMut
 				}
 			}
 		}
+	}
+	
+
+
+	/**
+	 * Removes the given entity from the inverse associations it manages.
+	 */
+	default void removeFromInverseAssociations(
+			Tuple resultset,
+			int tableIndex,
+			Object id,
+			SharedSessionContractImplementor session) {
+		new EntityAssociationUpdater( this )
+				.id( id )
+				.resultset( resultset )
+				.session( session )
+				.tableIndex( tableIndex )
+				.propertyMightRequireInverseAssociationManagement( getPropertyMightBeMainSideOfBidirectionalAssociation() )
+				.removeNavigationalInformationFromInverseSide();
+	}
+
+	/**
+	 * Adds the given entity to the inverse associations it manages.
+	 */
+	default void addToInverseAssociations(
+			Tuple resultset,
+			int tableIndex,
+			Object id,
+			Object entity,
+			SharedSessionContractImplementor session) {
+		new EntityAssociationUpdater( this )
+				.id( id )
+				.entity( entity )
+				.resultset( resultset )
+				.session( session )
+				.tableIndex( tableIndex )
+				.propertyMightRequireInverseAssociationManagement( getPropertyMightBeMainSideOfBidirectionalAssociation() )
+				.addNavigationalInformationForInverseSide();
 	}
 
 	/**
